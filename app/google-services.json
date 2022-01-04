@@ -1,0 +1,97 @@
+{
+  "project_info": {
+    "project_number": "705365946761",
+    "project_id": "ruby-314113",
+    "storage_bucket": "ruby-314113.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:705365946761:android:23f65ea0613c73bf86f158",
+        "android_client_info": {
+          "package_name": "com.ruby"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "705365946761-j806er7nndif1bqtlv9gflf622tgpbja.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdy1kBuW-fJcH0nRwBueW9LGqKQdp-Pig"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "705365946761-j806er7nndif1bqtlv9gflf622tgpbja.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:705365946761:android:f9b58b90a47b8d0686f158",
+        "android_client_info": {
+          "package_name": "com.ruby.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "705365946761-j806er7nndif1bqtlv9gflf622tgpbja.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdy1kBuW-fJcH0nRwBueW9LGqKQdp-Pig"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "705365946761-j806er7nndif1bqtlv9gflf622tgpbja.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:705365946761:android:b3e449725fa9e94586f158",
+        "android_client_info": {
+          "package_name": "com.rubyfood"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "705365946761-j806er7nndif1bqtlv9gflf622tgpbja.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdy1kBuW-fJcH0nRwBueW9LGqKQdp-Pig"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "705365946761-j806er7nndif1bqtlv9gflf622tgpbja.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
