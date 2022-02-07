@@ -51,6 +51,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 
+import com.rubyfood.CustomStatic;
 import com.rubyfood.R;
 import com.rubyfood.faceRec.env.ImageUtils;
 import com.rubyfood.faceRec.env.Logger;
