@@ -3,12 +3,12 @@ package com.rubyfood.features.micro_learning.presentation
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
-import android.support.design.widget.TextInputLayout
-import android.support.v4.app.DialogFragment
-import android.support.v7.widget.CardView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.RequiresApi
+import com.google.android.material.textfield.TextInputLayout
+import androidx.fragment.app.DialogFragment
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.*
 import android.widget.ImageView
@@ -84,8 +84,8 @@ class UpdateNoteDialog : DialogFragment(), View.OnClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.window!!.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
+        dialog?.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.window!!.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
         val v = inflater.inflate(R.layout.dialog_update_note, container, false)
         isCancelable = mIsCancelable
 

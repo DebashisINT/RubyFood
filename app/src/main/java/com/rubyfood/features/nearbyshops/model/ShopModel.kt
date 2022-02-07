@@ -1,5 +1,9 @@
 package com.rubyfood.features.nearbyshops.model
 
+import com.rubyfood.app.domain.ModelEntity
+import com.rubyfood.app.domain.ProductListEntity
+import com.rubyfood.app.domain.ProspectEntity
+import com.rubyfood.app.domain.QuestionEntity
 import com.rubyfood.base.BaseResponse
 import java.io.Serializable
 
@@ -14,14 +18,18 @@ data class ShopTypeDataModel(var shoptype_id: String = "",
 data class ShopTypeStockViewResponseModel(var Shoptype_list: ArrayList<ShopTypeStockViewDataModel>? = null) : BaseResponse(), Serializable
 
 data class ShopTypeStockViewDataModel(var shoptype_id: String = "",
-                             var shoptype_name: String = "",
-                              var CurrentStockEnable:Int,
-                                var CompetitorStockEnable:Int) : Serializable
+                                      var shoptype_name: String = "",
+                                      var CurrentStockEnable:Int,
+                                      var CompetitorStockEnable:Int) : Serializable
 
 data class ModelListResponseModel(var model_list: ArrayList<DataModel>? = null) : Serializable, BaseResponse()
+data class ModelListResponseModelNew(var model_list: ArrayList<ModelEntity>? = null) : Serializable, BaseResponse()
 
 data class DataModel(var id: String = "",
                      var name: String = "") : Serializable
+
+data class DataModelProspect(var pros_id:String = "",
+var pros_name:String = ""):Serializable
 
 data class PrimaryAppListResponseModel(var primary_application_list: ArrayList<DataModel>? = null) : Serializable, BaseResponse()
 
@@ -33,6 +41,15 @@ data class StageListResponseModel(var stage_list: ArrayList<DataModel>? = null) 
 
 data class FunnelStageListResponseModel(var funnel_stage_list: ArrayList<DataModel>? = null) : Serializable, BaseResponse()
 
+data class ProsListResponseModel(var Prospect_list: ArrayList<ProspectEntity>? = null) : Serializable, BaseResponse()
+
+data class QuesListResponseModel(var session_token: String = "",
+                                 var user_id: String = "",
+                                 var shop_id: String = "",
+                                 var Question_list: ArrayList<QuestionEntity>? = null) : Serializable, BaseResponse()
+
+
+
 data class StateCityResponseModel(var city_id: String = "",
                                   var city: String = "",
                                   var state_id: String = "",
@@ -42,4 +59,6 @@ data class StateCityResponseModel(var city_id: String = "",
 data class NewOrderModel(var amount: Double = 0.0,
                          var month: String = "",
                          var year: String = "") : Serializable
+
+
 

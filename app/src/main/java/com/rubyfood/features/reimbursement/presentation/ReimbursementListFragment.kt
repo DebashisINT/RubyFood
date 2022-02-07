@@ -3,12 +3,12 @@ package com.rubyfood.features.reimbursement.presentation
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.CardView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.RequiresApi
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.appcompat.app.AlertDialog
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.util.Log
 import android.view.Gravity
@@ -158,7 +158,7 @@ class ReimbursementListFragment : BaseFragment(), View.OnClickListener {
 
         rv_reimbursment_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 /*if (dy > 0 || dy < 0 && fab.isShown)
                     fab.hide()*/
 
@@ -168,11 +168,12 @@ class ReimbursementListFragment : BaseFragment(), View.OnClickListener {
                     fab.hide()
             }
 
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 /*if (newState == RecyclerView.SCROLL_STATE_IDLE)
                     fab.show()*/
 
-                super.onScrollStateChanged(recyclerView, newState)
+                super.onScrollStateChanged(recyclerView!!, newState)
             }
         })
 

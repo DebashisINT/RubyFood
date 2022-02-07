@@ -3,12 +3,15 @@ package com.rubyfood.features.location
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-
+import com.rubyfood.app.utils.AppUtils
+import com.elvishew.xlog.XLog
 
 
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
+
+        XLog.d("geofencePendingIntent : onReceive   " + " , " + " Time :" + AppUtils.getCurrentDateTime() + " , onReceive ")
 
         GeofenceTransitionsJobIntentService.enqueueWork(context, intent)
 

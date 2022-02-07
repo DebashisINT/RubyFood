@@ -1,8 +1,8 @@
 package com.rubyfood.features.stockCompetetorStock.adapter
 
 import android.content.Context
-import android.support.v7.view.menu.MenuView
-import android.support.v7.widget.RecyclerView
+import androidx.appcompat.view.menu.MenuView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,7 +36,7 @@ class AdapterCompetetorStock(val context: Context, val stockList: List<Ccompetet
         holder.iv_date.setOnClickListener{listner.stockListOnClickView(stockList.get(holder.adapterPosition).competitor_stock_id.toString())}
     }
 
-    inner class CompetetorStockViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
+    inner class CompetetorStockViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         val tv_date=itemView.stock_date_tv
         val tv_qty=itemView.stock_qty_tv
         val iv_date=itemView.tv_stock_view

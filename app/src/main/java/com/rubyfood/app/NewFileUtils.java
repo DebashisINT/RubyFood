@@ -13,7 +13,7 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
-import android.support.v4.content.CursorLoader;
+import androidx.loader.content.CursorLoader;
 import android.webkit.MimeTypeMap;
 
 import java.io.BufferedInputStream;
@@ -97,8 +97,12 @@ public class NewFileUtils {
                 if ("primary".equalsIgnoreCase(type)) {
                     if (split.length > 1) {
                         return Environment.getExternalStorageDirectory() + "/" + split[1];
+                        //27-09-2021
+                        //return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/" + split[1];
                     } else {
                         return Environment.getExternalStorageDirectory() + "/";
+                        //27-09-2021
+                        //return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/";
                     }
                     // This is for checking SD Card
                 } else {
@@ -111,6 +115,8 @@ public class NewFileUtils {
                 String fileName = getFilePath(context, uri);
                 if (fileName != null) {
                     return Environment.getExternalStorageDirectory().toString() + "/Download/" + fileName;
+                    //27-09-2021
+                    //return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/Download/" + fileName;
                 }
 
                 final String id = DocumentsContract.getDocumentId(uri);
@@ -199,7 +205,9 @@ public class NewFileUtils {
     }
 
     public static File makeEmptyFileIntoExternalStorageWithTitle(String title) {
-        String root = Environment.getExternalStorageDirectory().getAbsolutePath();
+        //String root = Environment.getExternalStorageDirectory().getAbsolutePath();
+        //27-09-2021
+        String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
         return new File(root, title);
     }
 

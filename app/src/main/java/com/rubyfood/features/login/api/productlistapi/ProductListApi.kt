@@ -1,7 +1,9 @@
 package com.rubyfood.features.login.api.productlistapi
 
 import com.rubyfood.app.NetworkConstant
+import com.rubyfood.app.domain.ProductListEntity
 import com.rubyfood.features.login.model.productlistmodel.ProductListOfflineResponseModel
+import com.rubyfood.features.login.model.productlistmodel.ProductListOfflineResponseModelNew
 import com.rubyfood.features.login.model.productlistmodel.ProductListResponseModel
 import com.rubyfood.features.login.model.productlistmodel.ProductRateListResponseModel
 import io.reactivex.Observable
@@ -20,6 +22,7 @@ interface ProductListApi {
     @POST("ProductList/List")
     fun getProductList(@Field("session_token") session_token: String, @Field("user_id") user_id: String, @Field("last_update_date") last_update_date: String): Observable<ProductListResponseModel>
 
+
     @FormUrlEncoded
     @POST("ProductList/ProductRate")
     fun getProductRateList(@Field("session_token") session_token: String, @Field("user_id") user_id: String, @Field("shop_id") shop_id: String): Observable<ProductRateListResponseModel>
@@ -27,6 +30,10 @@ interface ProductListApi {
     @FormUrlEncoded
     @POST("ProductList/OfflineProductRate")
     fun getOfflineProductRateList(@Field("session_token") session_token: String, @Field("user_id") user_id: String): Observable<ProductListOfflineResponseModel>
+
+    @FormUrlEncoded
+    @POST("ProductList/OfflineProductRate")
+    fun getOfflineProductRateListNew(@Field("session_token") session_token: String, @Field("user_id") user_id: String): Observable<ProductListOfflineResponseModelNew>
 
 
     /**

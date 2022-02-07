@@ -3,15 +3,13 @@ package cafe.adriel.androidaudiorecorder;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
-import android.media.AudioAttributes;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +21,6 @@ import android.widget.TextView;
 import com.cleveroad.audiovisualization.DbmHandler;
 import com.cleveroad.audiovisualization.GLAudioVisualizationView;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -32,9 +29,7 @@ import cafe.adriel.androidaudiorecorder.model.AudioChannel;
 import cafe.adriel.androidaudiorecorder.model.AudioSampleRate;
 import cafe.adriel.androidaudiorecorder.model.AudioSource;
 import omrecorder.AudioChunk;
-import omrecorder.OmRecorder;
 import omrecorder.PullTransport;
-import omrecorder.Recorder;
 
 public class AudioRecorderActivity extends AppCompatActivity
         implements PullTransport.OnAudioChunkPulledListener, MediaPlayer.OnCompletionListener {

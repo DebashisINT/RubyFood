@@ -4,9 +4,9 @@
     android:id="@+id/rl_chat_bot_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/color_silver">
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_chat_bot_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -49,7 +49,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/ic_attendance"
@@ -80,7 +80,7 @@
                         android:orientation="vertical"
                         android:layout_marginLeft="@dimen/_10sdp">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/ic_visit"
@@ -111,7 +111,7 @@
                         android:orientation="vertical"
                         android:layout_marginLeft="@dimen/_10sdp">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/ic_help2"
@@ -142,7 +142,7 @@
                         android:orientation="vertical"
                         android:layout_marginLeft="@dimen/_10sdp">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/ic_tips"
@@ -172,7 +172,7 @@
                         android:orientation="vertical"
                         android:layout_marginLeft="@dimen/_10sdp">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/ic_analytics"
@@ -202,7 +202,7 @@
                         android:orientation="vertical"
                         android:layout_marginLeft="@dimen/_10sdp">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/ic_reports"
@@ -232,7 +232,7 @@
                         android:orientation="vertical"
                         android:layout_marginLeft="@dimen/_10sdp">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/ic_weather"
@@ -262,7 +262,7 @@
                         android:orientation="vertical"
                         android:layout_marginLeft="@dimen/_10sdp">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/ic_exit_black"
@@ -299,7 +299,7 @@
                 android:orientation="vertical"
                 android:layout_marginLeft="@dimen/_10sdp">
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/ic_yes"
@@ -329,7 +329,7 @@
                 android:orientation="vertical"
                 android:layout_marginLeft="@dimen/_10sdp">
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/ic_no"
@@ -372,7 +372,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/ic_visit"
@@ -402,7 +402,7 @@
                         android:orientation="vertical"
                         android:layout_marginLeft="@dimen/_10sdp">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/ic_timeline"
@@ -432,7 +432,7 @@
                         android:orientation="vertical"
                         android:layout_marginLeft="@dimen/_10sdp">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/ic_visit"
@@ -462,7 +462,7 @@
                         android:orientation="vertical"
                         android:layout_marginLeft="@dimen/_10sdp">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/ic_visit"
@@ -509,7 +509,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/ic_sharelog"
@@ -539,7 +539,7 @@
                         android:orientation="vertical"
                         android:layout_marginLeft="@dimen/_10sdp">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/ic_data_clear"
@@ -569,7 +569,7 @@
                         android:orientation="vertical"
                         android:layout_marginLeft="@dimen/_10sdp">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/ic_data_sync"
@@ -599,7 +599,7 @@
                         android:orientation="vertical"
                         android:layout_marginLeft="@dimen/_10sdp">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/ic_reach_us"
@@ -646,7 +646,7 @@
                         android:orientation="vertical"
                         android:layout_marginLeft="@dimen/_10sdp">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/ic_login"
@@ -676,7 +676,7 @@
                         android:orientation="vertical"
                         android:layout_marginLeft="@dimen/_10sdp">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/ic_attendance"
@@ -706,7 +706,7 @@
                         android:orientation="vertical"
                         android:layout_marginLeft="@dimen/_10sdp">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/ic_visit"
@@ -737,7 +737,7 @@
                         android:orientation="vertical"
                         android:layout_marginLeft="@dimen/_10sdp">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/ic_sales"
@@ -783,7 +783,7 @@
                         android:orientation="vertical"
                         android:layout_marginLeft="@dimen/_10sdp">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/ic_visit"
@@ -813,7 +813,7 @@
                         android:orientation="vertical"
                         android:layout_marginLeft="@dimen/_10sdp">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/ic_analytics"

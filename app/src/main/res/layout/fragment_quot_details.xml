@@ -39,7 +39,7 @@
                     android:textSize="@dimen/_15sdp"
                     android:visibility="gone" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/quot_no_TL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
                         android:textColor="@color/black"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -97,7 +97,7 @@
                     android:textSize="@dimen/_15sdp"
                     android:visibility="gone" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/date_TL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -124,7 +124,7 @@
                         android:textColor="@color/black"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -154,7 +154,7 @@
                     android:textSize="@dimen/_15sdp"
                     android:visibility="gone" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/hyp_TL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -181,7 +181,7 @@
                         android:textColor="@color/black"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -211,7 +211,7 @@
                     android:textSize="@dimen/_15sdp"
                     android:visibility="gone" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/account_TL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -238,7 +238,7 @@
                         android:textColor="@color/black"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -281,7 +281,7 @@
                     android:textSize="@dimen/_15sdp"
                     android:visibility="gone" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/model_TL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -308,7 +308,7 @@
                         android:textColor="@color/black"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -329,7 +329,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/bs_TL"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -356,7 +356,7 @@
                             android:textColor="@color/black"
                             android:textSize="@dimen/_13sdp"
                             app:theme="@style/EvoEditTextTheme" />
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <ImageView
                         android:id="@+id/iv_bs_dropdown"
@@ -708,7 +708,7 @@
                     android:textSize="@dimen/_15sdp"
                     android:visibility="gone" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/amount_TL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -734,7 +734,7 @@
                         android:textColor="@color/black"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -763,7 +763,7 @@
                     android:textSize="@dimen/_15sdp"
                     android:visibility="gone" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/less_dis_TL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -788,7 +788,7 @@
                         android:textColor="@color/black"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -828,7 +828,7 @@
                     android:text="14%"
                     android:textSize="@dimen/_13sdp" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/cgst_TL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -854,7 +854,7 @@
                         android:textColor="@color/black"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -894,7 +894,7 @@
                     android:text="14%"
                     android:textSize="@dimen/_13sdp" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/sgst_TL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -920,7 +920,7 @@
                         android:textColor="@color/black"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -960,7 +960,7 @@
                     android:text=".75%"
                     android:textSize="@dimen/_13sdp" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tcs_TL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -986,7 +986,7 @@
                         android:textColor="@color/black"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -1015,7 +1015,7 @@
                     android:textSize="@dimen/_15sdp"
                     android:visibility="gone" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/insurance_TL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -1041,7 +1041,7 @@
                         android:textColor="@color/black"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -1070,7 +1070,7 @@
                     android:textSize="@dimen/_15sdp"
                     android:visibility="gone" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/net_amount_TL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -1095,7 +1095,7 @@
                         android:textColor="@color/black"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -1124,7 +1124,7 @@
                     android:textSize="@dimen/_15sdp"
                     android:visibility="gone" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/remarks_TL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -1151,7 +1151,7 @@
                         android:textColor="@color/black"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <View
                     android:layout_width="match_parent"

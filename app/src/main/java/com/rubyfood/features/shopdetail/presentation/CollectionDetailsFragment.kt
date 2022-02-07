@@ -3,9 +3,9 @@ package com.rubyfood.features.shopdetail.presentation
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -248,7 +248,7 @@ class CollectionDetailsFragment : BaseFragment(), View.OnClickListener {
                                     progress_wheel.stopSpinning()
                                     //no_shop_tv.visibility = View.VISIBLE
                                     setData()
-                                } else
+                                } else{}
                                     saveToDatabase(collection.collection_list!!)
 
                             } else if (collection.status == NetworkConstant.NO_DATA) {
@@ -277,7 +277,8 @@ class CollectionDetailsFragment : BaseFragment(), View.OnClickListener {
 
     }
 
-    private fun saveToDatabase(collection_details_list: ArrayList<CollectionListDataModel>) {
+    //private fun saveToDatabase(collection_details_list: ArrayList<CollectionListDataModel>) {
+    private fun saveToDatabase(collection_details_list: ArrayList<CollectionDetailsEntity>) {
         /*doAsync {
 
             for (i in collection_details_list.indices) {
@@ -319,9 +320,9 @@ class CollectionDetailsFragment : BaseFragment(), View.OnClickListener {
 
         doAsync {
 
-            for (i in collection_details_list.indices) {
+    /*        for (i in collection_details_list.indices) {
                 val collectionList = CollectionDetailsEntity()
-                collectionList.date = AppUtils.convertDateTimeToCommonFormat(collection_details_list[i].collection_date!!) /*AppUtils.convertToCommonFormat(collection_details_list[i].collection_date!!)*/
+                collectionList.date = AppUtils.convertDateTimeToCommonFormat(collection_details_list[i].collection_date!!) *//*AppUtils.convertToCommonFormat(collection_details_list[i].collection_date!!)*//*
                 collectionList.shop_id = collection_details_list[i].shop_id
                 collectionList.isUploaded = true
                 collectionList.collection_id = collection_details_list[i].collection_id
@@ -331,7 +332,9 @@ class CollectionDetailsFragment : BaseFragment(), View.OnClickListener {
                 collectionList.patient_name = collection_details_list[i].patient_name
                 collectionList.patient_address = collection_details_list[i].patient_address
                 AppDatabase.getDBInstance()!!.collectionDetailsDao().insert(collectionList)
-            }
+            }*/
+
+            AppDatabase.getDBInstance()!!.collectionDetailsDao().insertAll(collection_details_list!!)
 
             uiThread {
                 progress_wheel.stopSpinning()
@@ -548,8 +551,10 @@ class CollectionDetailsFragment : BaseFragment(), View.OnClickListener {
         addShopData.assigned_to_shop_id = mAddShopDBModelEntity.assigned_to_shop_id
         addShopData.actual_address = mAddShopDBModelEntity.actual_address
 
-        var uniqKeyObj=AppDatabase.getDBInstance()!!.shopActivityDao().getNewShopActivityKey(mAddShopDBModelEntity.shop_id,false)
-        addShopData.shop_revisit_uniqKey=uniqKeyObj?.shop_revisit_uniqKey!!
+
+        addShopData.project_name = mAddShopDBModelEntity.project_name
+        addShopData.landline_number = mAddShopDBModelEntity.landline_number
+        addShopData.agency_name = mAddShopDBModelEntity.agency_name
 
         callAddShopApi(addShopData, mAddShopDBModelEntity.shopImageLocalPath, shop_id, order_id, amount, collection, currentDateForShopActi, desc, mAddShopDBModelEntity.doc_degree)
     }
@@ -832,7 +837,31 @@ class CollectionDetailsFragment : BaseFragment(), View.OnClickListener {
             shopDurationData.in_location = shopActivity.in_loc
             shopDurationData.out_location = shopActivity.out_loc
 
-            shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
+            shopDurationData.shop_revisit_uniqKey=shopActivity.shop_revisit_uniqKey!!
+
+
+            /*10-12-2021*/
+            shopDurationData.updated_by = Pref.user_id
+            try {
+                shopDurationData.updated_on = shopActivity.updated_on!!
+            }catch (ex:Exception){
+                shopDurationData.updated_on = ""
+            }
+
+            if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                shopDurationData.pros_id = shopActivity.pros_id!!
+            else
+                shopDurationData.pros_id = ""
+
+            if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                shopDurationData.agency_name =shopActivity.agency_name!!
+            else
+                shopDurationData.agency_name = ""
+
+            if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+            else
+                shopDurationData.approximate_1st_billing_value = ""
 
             shopDataList.add(shopDurationData)
         }
@@ -890,7 +919,33 @@ class CollectionDetailsFragment : BaseFragment(), View.OnClickListener {
                 shopDurationData.in_location = shopActivity.in_loc
                 shopDurationData.out_location = shopActivity.out_loc
 
-                shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
+                shopDurationData.shop_revisit_uniqKey=shopActivity.shop_revisit_uniqKey!!
+
+
+                /*10-12-2021*/
+                shopDurationData.updated_by = Pref.user_id
+                try{
+                    shopDurationData.updated_on = shopActivity.updated_on!!
+                }
+                catch (ex:Exception){
+                    shopDurationData.updated_on =""
+                }
+
+
+                if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                    shopDurationData.pros_id = shopActivity.pros_id!!
+                else
+                    shopDurationData.pros_id = ""
+
+                if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                    shopDurationData.agency_name =shopActivity.agency_name!!
+                else
+                    shopDurationData.agency_name = ""
+
+                if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                    shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+                else
+                    shopDurationData.approximate_1st_billing_value = ""
 
                 shopDataList.add(shopDurationData)
             }
@@ -1024,7 +1079,8 @@ class CollectionDetailsFragment : BaseFragment(), View.OnClickListener {
 
                     override fun onViewClick(position: Int) {
                         AddCollectionDialog.getInstance(viewAllOrderList?.get(position), false, shopName, "", "", "", object : AddCollectionDialog.AddCollectionClickLisneter {
-                            override fun onClick(collection: String, date: String, paymentId: String, instrument: String, bank: String, filePath: String, feedback: String, patientName: String, patientAddress: String, patinetNo: String) {
+                            override fun onClick(collection: String, date: String, paymentId: String, instrument: String, bank: String, filePath: String, feedback: String, patientName: String, patientAddress: String, patinetNo: String
+                            , hospital:String,emailAddress:String) {
                             }
                         }).show((mContext as DashboardActivity).supportFragmentManager, "AddOrderDialog")
                     }
@@ -1108,8 +1164,10 @@ class CollectionDetailsFragment : BaseFragment(), View.OnClickListener {
         addShopData.assigned_to_shop_id = mAddShopDBModelEntity.assigned_to_shop_id
         addShopData.actual_address = mAddShopDBModelEntity.actual_address
 
-        var uniqKeyObj=AppDatabase.getDBInstance()!!.shopActivityDao().getNewShopActivityKey(mAddShopDBModelEntity.shop_id,false)
-        addShopData.shop_revisit_uniqKey=uniqKeyObj?.shop_revisit_uniqKey!!
+
+        addShopData.project_name = mAddShopDBModelEntity.project_name
+        addShopData.landline_number = mAddShopDBModelEntity.landline_number
+        addShopData.agency_name = mAddShopDBModelEntity.agency_name
 
         callAddShopApiForSync(addShopData, mAddShopDBModelEntity.shopImageLocalPath, shop_id, collection_id, amount, collection,
                 currentDateForShopActi, desc, mAddShopDBModelEntity.doc_degree, billId, orderId, collectionDetailsEntity)
@@ -1350,6 +1408,9 @@ class CollectionDetailsFragment : BaseFragment(), View.OnClickListener {
         addCollection.patient_name = if (TextUtils.isEmpty(collectionDetailsEntity.patient_name)) "" else collectionDetailsEntity.patient_name!!
         addCollection.patient_address = if (TextUtils.isEmpty(collectionDetailsEntity.patient_address)) "" else collectionDetailsEntity.patient_address!!
         addCollection.patient_no = if (TextUtils.isEmpty(collectionDetailsEntity.patient_no)) "" else collectionDetailsEntity.patient_no!!
+
+        addCollection.Hospital = if (TextUtils.isEmpty(collectionDetailsEntity.Hospital)) "" else collectionDetailsEntity.Hospital!!
+        addCollection.Email_Address = if (TextUtils.isEmpty(collectionDetailsEntity.Email_Address)) "" else collectionDetailsEntity.Email_Address!!
 
         progress_wheel.spin()
 

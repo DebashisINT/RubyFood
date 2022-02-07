@@ -6,27 +6,31 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.speech.tts.TextToSpeech
-import android.support.annotation.RequiresApi
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.AppCompatTextView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
+import com.rubyfood.CustomStatic
 import com.rubyfood.R
 import com.rubyfood.app.AppDatabase
 import com.rubyfood.app.NetworkConstant
@@ -39,6 +43,7 @@ import com.rubyfood.app.utils.AppUtils
 import com.rubyfood.app.utils.AppUtils.Companion.changeAttendanceDateFormatToCurrent
 import com.rubyfood.app.utils.FTStorageUtils
 import com.rubyfood.app.utils.NotificationUtils
+import com.rubyfood.app.utils.Toaster
 import com.rubyfood.base.BaseResponse
 import com.rubyfood.base.presentation.BaseActivity
 import com.rubyfood.base.presentation.BaseFragment
@@ -49,9 +54,12 @@ import com.rubyfood.features.addshop.api.typeList.TypeListRepoProvider
 import com.rubyfood.features.addshop.model.AddShopRequestData
 import com.rubyfood.features.addshop.model.AddShopResponse
 import com.rubyfood.features.addshop.model.AssignedToShopListResponseModel
+import com.rubyfood.features.addshop.model.QuestionSubmit
 import com.rubyfood.features.addshop.model.assigntoddlist.AssignToDDListResponseModel
 import com.rubyfood.features.addshop.model.assigntopplist.AssignToPPListResponseModel
 import com.rubyfood.features.addshop.presentation.AccuracyIssueDialog
+import com.rubyfood.features.addshop.presentation.AdapterQuestionList
+import com.rubyfood.features.addshop.presentation.AddShopFragment
 import com.rubyfood.features.addshop.presentation.StageListDialog
 import com.rubyfood.features.dashboard.presentation.DashboardActivity
 import com.rubyfood.features.location.LocationWizard
@@ -72,10 +80,12 @@ import com.rubyfood.features.shopdetail.presentation.AddCollectionDialog
 import com.rubyfood.features.shopdetail.presentation.api.EditShopRepoProvider
 import com.rubyfood.features.shopdetail.presentation.api.addcollection.AddCollectionRepoProvider
 import com.rubyfood.features.shopdetail.presentation.model.addcollection.AddCollectionInputParamsModel
+import com.rubyfood.features.viewAllOrder.interf.QaOnCLick
 import com.rubyfood.widgets.AppCustomTextView
 import com.elvishew.xlog.XLog
 import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu
+import com.google.android.gms.common.api.internal.LifecycleCallback.getFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
@@ -114,6 +124,11 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
     private var i = 0
     private var collectionDialog: AddCollectionDialog?= null
     private var beatId = ""
+
+    var rv_qaList: ArrayList<QuestionEntity> = ArrayList()
+    var quesAnsList:ArrayList<AddShopFragment.QuestionAns> = ArrayList()
+    var quesAnsListTemp:ArrayList<QuestionSubmit> = ArrayList()
+    private var adapterqaList: AdapterQuestionList? = null
 
 //    /*Interface to update Shoplist Frag on search event*/
 //    private lateinit var searchListener:SearchListener
@@ -725,7 +740,8 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                                             val fileUrl = Uri.parse(path)
 
                                             val file = File(fileUrl.path)
-                                            val uri = Uri.fromFile(file)
+//                                            val uri = Uri.fromFile(file)
+                                            val uri:Uri= FileProvider.getUriForFile(mContext, context!!.applicationContext.packageName.toString() + ".provider", file)
                                             shareIntent.type = "image/png"
                                             shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
                                             startActivity(Intent.createChooser(shareIntent, "Share pdf using"));
@@ -747,7 +763,8 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                             val fileUrl = Uri.parse(path)
 
                             val file = File(fileUrl.path)
-                            val uri = Uri.fromFile(file)
+//                            val uri = Uri.fromFile(file)
+                            val uri:Uri= FileProvider.getUriForFile(mContext, context!!.applicationContext.packageName.toString() + ".provider", file)
                             shareIntent.type = "image/png"
                             shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
                             startActivity(Intent.createChooser(shareIntent, "Share pdf using"));
@@ -767,7 +784,8 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                         (mContext as DashboardActivity).checkToShowAddAttendanceAlert()
                     else {
                         collectionDialog = AddCollectionDialog.getInstance(list[position], true, list[position].shopName!!, "", "", "", object : AddCollectionDialog.AddCollectionClickLisneter {
-                            override fun onClick(collection: String, date: String, paymentId: String, instrument: String, bank: String, filePath: String, feedback: String, patientName: String, patientAddress: String, patinetNo: String) {
+                            override fun onClick(collection: String, date: String, paymentId: String, instrument: String, bank: String, filePath: String, feedback: String, patientName: String, patientAddress: String, patinetNo: String,
+                            hospital:String,emailAddress:String) {
 
 
                                 val addShop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(list[position].shop_id)
@@ -798,6 +816,10 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                                         collectionDetails.patient_name = patientName
                                         collectionDetails.patient_address = patientAddress
                                         collectionDetails.patient_no = patinetNo
+
+                                        /*06-01-2022*/
+                                        collectionDetails.Hospital = hospital
+                                        collectionDetails.Email_Address = emailAddress
                                         AppDatabase.getDBInstance()!!.collectionDetailsDao().insert(collectionDetails)
 
                                         val collectionDate = AppUtils.getCurrentDateForShopActi() + "T" + collectionDetails.only_time
@@ -886,7 +908,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
             override fun onUpdatePartyStatusClick(position: Int) {
                 floating_fab.close(true)
-                UpdatePartyStatusDialog.getInstance(AppUtils.hiFirstNameText(), getString(R.string.cancel),
+                UpdatePartyStatusDialog.getInstance(AppUtils.hiFirstNameText()+"!", getString(R.string.cancel),
                         getString(R.string.confirm), false, true, false, list[position].party_status_id, object : UpdatePartyStatusDialog.OnButtonClickListener {
                     override fun onLeftClick() {
                     }
@@ -902,7 +924,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
             override fun onUpdateBankDetailsClick(position: Int) {
                 floating_fab.close(true)
-                UpdateBankDetailsDialog.getInstance(AppUtils.hiFirstNameText(), getString(R.string.cancel),
+                UpdateBankDetailsDialog.getInstance(AppUtils.hiFirstNameText()+"!", getString(R.string.cancel),
                         getString(R.string.confirm), false, true, false, list[position], object : UpdateBankDetailsDialog.OnButtonClickListener {
                     override fun onLeftClick() {
                     }
@@ -915,6 +937,16 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                     }
                 }).show((mContext as DashboardActivity).supportFragmentManager, "")
 
+            }
+
+
+            /*10-12-2021*/
+            override fun onQuestionnarieClick(shopId: String) {
+                dialogOpenQa(shopId)
+            }
+            /*17-12-2021*/
+            override fun onReturnClick(position: Int) {
+                (mContext as DashboardActivity).loadFragment(FragType.ViewAllReturnListFragment, true, list[position])
             }
 
             override fun onStockClick(position: Int) {
@@ -1019,6 +1051,11 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
                     var uniqKeyObj=AppDatabase.getDBInstance()!!.shopActivityDao().getNewShopActivityKey(mAddShopDBModelEntity.shop_id,false)
                     addShopData.shop_revisit_uniqKey=uniqKeyObj?.shop_revisit_uniqKey!!
+
+                    addShopData.project_name = mAddShopDBModelEntity.project_name
+                    addShopData.landline_number = mAddShopDBModelEntity.landline_number
+                    addShopData.agency_name = mAddShopDBModelEntity.agency_name
+
 
                     callAddShopApi(addShopData, mAddShopDBModelEntity.shopImageLocalPath, null, true,
                             mAddShopDBModelEntity.doc_degree)
@@ -1151,7 +1188,16 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
             override fun orderClick(position: Int) {
                 floating_fab.close(true)
                 //(mContext as DashboardActivity).showSnackMessage(getString(R.string.functionality_disabled))
-                (mContext as DashboardActivity).loadFragment(FragType.ViewAllOrderListFragment, true, list[position])
+
+
+
+                if(Pref.IsActivateNewOrderScreenwithSize){
+                    (mContext as DashboardActivity).loadFragment(FragType.NewOrderScrOrderDetailsFragment, true, list.get(position).shop_id)
+                }else{
+                    (mContext as DashboardActivity).loadFragment(FragType.ViewAllOrderListFragment, true, list[position])
+                }
+
+
             }
 
             @SuppressLint("NewApi")
@@ -1320,6 +1366,11 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
         var uniqKeyObj=AppDatabase.getDBInstance()!!.shopActivityDao().getNewShopActivityKey(mAddShopDBModelEntity.shop_id,false)
         addShopData.shop_revisit_uniqKey=uniqKeyObj?.shop_revisit_uniqKey!!
+
+        addShopData.project_name = mAddShopDBModelEntity.project_name
+        addShopData.landline_number = mAddShopDBModelEntity.landline_number
+        addShopData.agency_name = mAddShopDBModelEntity.agency_name
+
 
         callAddShopApi(addShopData, mAddShopDBModelEntity.shopImageLocalPath, shop_id, order_id, amount, collection,
                 currentDateForShopActi, desc, billId, mAddShopDBModelEntity.doc_degree, collectionDetails)
@@ -1599,6 +1650,30 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
             shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
 
+            /*10-12-2021*/
+            shopDurationData.updated_by = Pref.user_id
+            try {
+                shopDurationData.updated_on = shopActivity.updated_on!!
+            }
+            catch(ex:Exception){
+                shopDurationData.updated_on = ""
+            }
+
+            if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                shopDurationData.pros_id = shopActivity.pros_id!!
+            else
+                shopDurationData.pros_id = ""
+
+            if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                shopDurationData.agency_name =shopActivity.agency_name!!
+            else
+                shopDurationData.agency_name = ""
+
+            if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+            else
+                shopDurationData.approximate_1st_billing_value = ""
+
             shopDataList.add(shopDurationData)
         }
         else {
@@ -1657,6 +1732,29 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
                 shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
 
+                /*10-12-2021*/
+                shopDurationData.updated_by = Pref.user_id
+                try {
+                    shopDurationData.updated_on = shopActivity.updated_on!!
+                }
+                catch(ex:Exception){
+                    shopDurationData.updated_on = ""
+                }
+
+                if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                    shopDurationData.pros_id = shopActivity.pros_id!!
+                else
+                    shopDurationData.pros_id = ""
+
+                if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                    shopDurationData.agency_name =shopActivity.agency_name!!
+                else
+                    shopDurationData.agency_name = ""
+
+                if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                    shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+                else
+                    shopDurationData.approximate_1st_billing_value = ""
 
                 shopDataList.add(shopDurationData)
             }
@@ -1726,6 +1824,12 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
         if (collectionDetails.patient_no != null)
             addCollection.patient_no = collectionDetails.patient_no!!
+        /*06-01-2022*/
+        if (collectionDetails.Hospital != null)
+            addCollection.Hospital = collectionDetails.Hospital!!
+
+        if (collectionDetails.Email_Address != null)
+            addCollection.Email_Address = collectionDetails.Email_Address!!
 
         progress_wheel.spin()
 
@@ -2360,9 +2464,6 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
         isShopRegistrationInProcess = true
 
-        var uniqKeyObj=AppDatabase.getDBInstance()!!.shopActivityDao().getNewShopActivityKey(addShop.shop_id!!,false)
-        addShop.shop_revisit_uniqKey=uniqKeyObj.shop_revisit_uniqKey
-
         XLog.d("=============SyncShop Input Params=================")
         XLog.d("shop id=======> " + addShop.shop_id)
         val index = addShop.shop_id!!.indexOf("_")
@@ -2755,6 +2856,8 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                                             assignToDD.dd_phn_no = list[i].phn_no
                                             assignToDD.pp_id = list[i].assigned_to_pp_id
                                             assignToDD.type_id = list[i].type_id
+                                            assignToDD.dd_latitude = list[i].dd_latitude
+                                            assignToDD.dd_longitude = list[i].dd_longitude
                                             AppDatabase.getDBInstance()?.ddListDao()?.insert(assignToDD)
                                         }
 
@@ -3078,6 +3181,11 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
         var uniqKeyObj=AppDatabase.getDBInstance()!!.shopActivityDao().getNewShopActivityKey(mAddShopDBModelEntity.shop_id,false)
         addShopData.shop_revisit_uniqKey=uniqKeyObj?.shop_revisit_uniqKey!!
 
+        addShopData.project_name = mAddShopDBModelEntity.project_name
+        addShopData.landline_number = mAddShopDBModelEntity.landline_number
+        addShopData.agency_name = mAddShopDBModelEntity.agency_name
+
+
         callAddShopApi(addShopData, mAddShopDBModelEntity.shopImageLocalPath, shopList, true,
                 mAddShopDBModelEntity.doc_degree)
         //callAddShopApi(addShopData, "")
@@ -3093,8 +3201,12 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
         val bytes = ByteArrayOutputStream()
         bm!!.compress(Bitmap.CompressFormat.JPEG, 90, bytes)
 
-        var destination = File(Environment.getExternalStorageDirectory(),
+        /*var destination = File(Environment.getExternalStorageDirectory(),
+                System.currentTimeMillis().toString() + ".jpg")*/
+
+        var destination = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
                 System.currentTimeMillis().toString() + ".jpg")
+
         val camera_image_path = destination?.absolutePath
         val fo: FileOutputStream
         try {
@@ -3208,6 +3320,11 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
             var uniqKeyObj=AppDatabase.getDBInstance()!!.shopActivityDao().getNewShopActivityKey(mAddShopDBModelEntity.shop_id,false)
             addShopData.shop_revisit_uniqKey=uniqKeyObj?.shop_revisit_uniqKey!!
 
+            addShopData.project_name = mAddShopDBModelEntity.project_name
+            addShopData.landline_number = mAddShopDBModelEntity.landline_number
+            addShopData.agency_name = mAddShopDBModelEntity.agency_name
+
+
             addShopData
         }.let {
             callAddShopApi(it, mAddShopDBModelEntity.shopImageLocalPath, shopList, false, mAddShopDBModelEntity.doc_degree)
@@ -3220,5 +3337,82 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
     fun setImage(file: File) {
         collectionDialog?.setImage(file)
+    }
+
+    fun dialogOpenQa(shopId:String) {
+        var qsAnsByShopIDList=AppDatabase.getDBInstance()?.questionSubmitDao()?.getQsAnsByShopIDToInt(shopId!!) as ArrayList<QuestionSubmit>
+
+        if(qsAnsByShopIDList==null || qsAnsByShopIDList.isEmpty()) {
+            Toaster.msgShort(mContext, "No List Found")
+            return
+        }
+        quesAnsList.clear()
+        quesAnsListTemp.clear()
+
+        for(l in 0..qsAnsByShopIDList.size-1){
+            if(qsAnsByShopIDList.get(l).answer!!){
+                quesAnsList.add(AddShopFragment.QuestionAns(qsAnsByShopIDList.get(l).question_id!!, "1"))
+            }else{
+                quesAnsList.add(AddShopFragment.QuestionAns(qsAnsByShopIDList.get(l).question_id!!, "0"))
+            }
+        }
+        rv_qaList = AppDatabase.getDBInstance()?.questionMasterDao()?.getAll() as ArrayList<QuestionEntity>
+        if(rv_qaList==null || rv_qaList.isEmpty()) {
+            Toaster.msgShort(mContext, "No List Found")
+            return
+        }
+
+        val simpleDialog = Dialog(mContext)
+        simpleDialog.setCancelable(true)
+        simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        simpleDialog.setContentView(R.layout.dialog_qa)
+        val dialogHeader = simpleDialog.findViewById(R.id.dialog_qa_headerTV) as AppCustomTextView
+        val  rv_QAList = simpleDialog.findViewById(R.id.rv_qa_list) as RecyclerView
+        rv_QAList.layoutManager = LinearLayoutManager(mContext)
+
+        for(i in 0..rv_qaList.size-1){
+            try{
+                var obj=AppDatabase.getDBInstance()?.questionSubmitDao()?.getQsAnsByShopID(shopId!!,rv_qaList.get(i).question_id!!) as QuestionSubmit
+                quesAnsListTemp.add(obj)
+            }catch (ex:Exception){
+
+            }
+
+        }
+
+        if(quesAnsListTemp.size!=rv_qaList.size){
+            (mContext as DashboardActivity).showSnackMessage("Invalid Question-Ans")
+            return
+        }
+
+        quesAnsList.clear()
+        for(l in 0..quesAnsListTemp.size-1){
+            if(quesAnsListTemp.get(l).answer!!){
+                quesAnsList.add(AddShopFragment.QuestionAns(quesAnsListTemp.get(l).question_id!!, "1"))
+            }else{
+                quesAnsList.add(AddShopFragment.QuestionAns(quesAnsListTemp.get(l).question_id!!, "0"))
+            }
+        }
+
+        adapterqaList = AdapterQuestionList(mContext,quesAnsList,rv_qaList,false,object : QaOnCLick {
+            override fun getQaID(qaID: String, ans: String) {
+                AppDatabase.getDBInstance()?.questionSubmitDao()?.updateAnswerByQueAndShopIdNew(ans,qaID,shopId,false)
+            }
+        })
+        rv_QAList.adapter = adapterqaList
+        dialogHeader.text = "Hi " + Pref.user_name!! + "!"
+        val dialogYes = simpleDialog.findViewById(R.id.dialog_qa_ok) as AppCustomTextView
+        dialogYes.setOnClickListener({ view ->
+            simpleDialog.cancel()
+        })
+        simpleDialog.show()
+    }
+
+    private fun voiceAttendanceMsg(msg: String) {
+        if (Pref.isVoiceEnabledForAttendanceSubmit) {
+            val speechStatus = (mContext as DashboardActivity).textToSpeech.speak(msg, TextToSpeech.QUEUE_FLUSH, null)
+            if (speechStatus == TextToSpeech.ERROR)
+                Log.e("Add Day Start", "TTS error in converting Text to Speech!");
+        }
     }
 }

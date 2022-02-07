@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:wheel="http://schemas.android.com/tools"
@@ -9,6 +9,10 @@
     android:background="@android:color/transparent"
     app:cardCornerRadius="@dimen/_5sdp"
     android:layout_margin="@dimen/_10sdp">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -102,7 +106,7 @@
                         android:layout_alignParentRight="true"
                         android:visibility="gone"/>
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tl_patient"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -123,7 +127,7 @@
                             android:inputType="text"
                             android:maxLength="50"
                             app:theme="@style/EvoEditTextTheme"/>
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <View
                         android:layout_width="match_parent"
@@ -153,7 +157,7 @@
                         android:layout_alignParentRight="true"
                         android:visibility="gone"/>
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tl_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -174,7 +178,7 @@
                             android:inputType="text"
                             android:maxLength="50"
                             app:theme="@style/EvoEditTextTheme"/>
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <View
                         android:layout_width="match_parent"
@@ -204,7 +208,7 @@
                         android:layout_alignParentRight="true"
                         android:visibility="gone"/>
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tl_phone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -225,13 +229,117 @@
                             android:inputType="number"
                             android:maxLength="10"
                             app:theme="@style/EvoEditTextTheme"/>
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_1sdp"
                         android:layout_alignLeft="@+id/tl_phone"
                         android:layout_below="@id/tl_phone"
+                        android:layout_marginRight="@dimen/_2sdp"
+                        android:background="@color/light_gray" />
+                </RelativeLayout>
+
+                <!--06-01-2022-->
+
+                <RelativeLayout
+                    android:id="@+id/rl_lab"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp">
+
+                    <com.rubyfood.widgets.AppCustomTextView
+                        android:id="@+id/tv_lab_asterisk_mark"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/_3sdp"
+                        android:paddingTop="@dimen/_7sdp"
+                        android:text="@string/mandatory_mark"
+                        android:textColor="@color/red"
+                        android:textSize="@dimen/_15sdp"
+                        android:layout_alignParentRight="true"
+                        android:visibility="gone"/>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tl_lab"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
+                        android:layout_toLeftOf="@+id/tv_lab_asterisk_mark"
+                        android:textColorHint="@color/light_gray"
+                        app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+
+                        <com.rubyfood.widgets.AppCustomEditText
+                            android:id="@+id/et_lab"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:hint="Hospital/Lab"
+                            android:textSize="@dimen/_13sdp"
+                            android:imeOptions="actionNext"
+                            android:inputType="text"
+                            android:maxLength="50"
+                            app:theme="@style/EvoEditTextTheme"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_1sdp"
+                        android:layout_alignLeft="@+id/tl_lab"
+                        android:layout_below="@id/tl_lab"
+                        android:layout_marginRight="@dimen/_2sdp"
+                        android:background="@color/light_gray" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_emailaddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp">
+
+                    <com.rubyfood.widgets.AppCustomTextView
+                        android:id="@+id/tv_emailaddress_asterisk_mark"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/_3sdp"
+                        android:paddingTop="@dimen/_7sdp"
+                        android:text="@string/mandatory_mark"
+                        android:textColor="@color/red"
+                        android:textSize="@dimen/_15sdp"
+                        android:layout_alignParentRight="true"
+                        android:visibility="gone"/>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tl_emailaddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
+                        android:layout_toLeftOf="@+id/tv_emailaddress_asterisk_mark"
+                        android:textColorHint="@color/light_gray"
+                        app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+
+                        <com.rubyfood.widgets.AppCustomEditText
+                            android:id="@+id/et_emailaddress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:hint="Email Address"
+                            android:textSize="@dimen/_13sdp"
+                            android:imeOptions="actionNext"
+                            android:inputType="text"
+                            android:maxLength="50"
+                            app:theme="@style/EvoEditTextTheme"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_1sdp"
+                        android:layout_alignLeft="@+id/tl_emailaddress"
+                        android:layout_below="@id/tl_emailaddress"
                         android:layout_marginRight="@dimen/_2sdp"
                         android:background="@color/light_gray" />
                 </RelativeLayout>
@@ -308,7 +416,7 @@
                         android:layout_toLeftOf="@+id/iv_dropdown_icon"
                         android:visibility="gone"/>
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tl_payment"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -328,7 +436,7 @@
                             android:hint="@string/payment_mode"
                             android:textSize="@dimen/_13sdp"
                             app:theme="@style/EvoEditTextTheme"  />
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <View
                         android:layout_width="match_parent"
@@ -358,7 +466,7 @@
                         android:layout_alignParentRight="true"
                         android:visibility="gone"/>
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tl_instrument"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -379,7 +487,7 @@
                             android:inputType="number"
                             android:maxLength="30"
                             app:theme="@style/EvoEditTextTheme"/>
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <View
                         android:layout_width="match_parent"
@@ -409,7 +517,7 @@
                         android:layout_alignParentRight="true"
                         android:visibility="gone"/>
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tl_bank"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -430,7 +538,7 @@
                             android:inputType="text"
                             android:maxLength="50"
                             app:theme="@style/EvoEditTextTheme"/>
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <View
                         android:layout_width="match_parent"
@@ -470,7 +578,7 @@
                         android:layout_toLeftOf="@+id/iv_calendar_icon"
                         android:visibility="gone"/>
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/visit_date_TL"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -487,7 +595,7 @@
                             android:background="@android:color/transparent"
                             android:textSize="@dimen/_13sdp"
                             app:theme="@style/EvoEditTextTheme"  />
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <View
                         android:layout_width="match_parent"
@@ -536,7 +644,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_10sdp">
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/_5sdp"
@@ -555,7 +663,7 @@
                             android:maxLines="4"
                             android:scrollbars="vertical"
                             app:theme="@style/EvoEditTextTheme"/>
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
                 </RelativeLayout>
 
             </LinearLayout>
@@ -564,7 +672,7 @@
                 android:id="@+id/add_TV"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_35sdp"
-                android:background="@drawable/selector_order_history_bg"
+                android:background="@drawable/deselected_new_order_history"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
@@ -583,7 +691,9 @@
             wheel:matProg_progressIndeterminate="true" />
 
     </RelativeLayout>
-</android.support.v7.widget.CardView>
+
+    </ScrollView>
+</androidx.cardview.widget.CardView>
 
 
 

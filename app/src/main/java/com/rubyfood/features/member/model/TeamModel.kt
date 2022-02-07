@@ -15,7 +15,9 @@ data class TeamListDataModel(var user_id: String = "",
                              var user_name: String = "",
                              var contact_no: String = "",
                              var super_id: String = "",
-                             var super_name: String = "") : Serializable
+                             var super_name: String = "",
+                             var isLeavePending: Boolean = false,
+                             var isLeaveApplied: Boolean = false) : Serializable
 
 
 data class TeamShopListResponseModel(var team_struct: String? = null,

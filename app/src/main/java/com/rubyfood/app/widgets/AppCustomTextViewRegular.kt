@@ -5,7 +5,7 @@ import android.graphics.Typeface
 import android.util.AttributeSet
 import com.rubyfood.R
 
-class AppCustomTextViewRegular : android.support.v7.widget.AppCompatTextView {
+class AppCustomTextViewRegular : androidx.appcompat.widget.AppCompatTextView {
 
     constructor(context: Context) : super(context) {
         init()

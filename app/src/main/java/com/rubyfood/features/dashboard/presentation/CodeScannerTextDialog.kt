@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v7.widget.AppCompatImageView
+import androidx.fragment.app.DialogFragment
+import androidx.appcompat.widget.AppCompatImageView
 import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
@@ -54,8 +54,8 @@ class CodeScannerTextDialog : DialogFragment(), View.OnClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCanceledOnTouchOutside(true)
+        dialog?.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.setCanceledOnTouchOutside(true)
 
         val v = inflater.inflate(R.layout.dialog_scan_details, container, false)
 

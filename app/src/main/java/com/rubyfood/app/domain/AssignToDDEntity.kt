@@ -1,8 +1,8 @@
 package com.rubyfood.app.domain
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.rubyfood.app.AppConstant
 
 /**
@@ -29,4 +29,12 @@ class AssignToDDEntity {
 
     @ColumnInfo(name = "type_id")
     var type_id: String? = null
+
+
+    @ColumnInfo(name = "dd_latitude")
+    var dd_latitude: String? = null
+
+    @ColumnInfo(name = "dd_longitude")
+    var dd_longitude: String? = null
+
 }

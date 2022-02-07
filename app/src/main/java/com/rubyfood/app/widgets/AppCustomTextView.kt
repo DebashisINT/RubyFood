@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import com.rubyfood.R
 
 
-class AppCustomTextView : android.support.v7.widget.AppCompatTextView {
+class AppCustomTextView : androidx.appcompat.widget.AppCompatTextView {
 
     constructor(context: Context) : super(context) {
         init()

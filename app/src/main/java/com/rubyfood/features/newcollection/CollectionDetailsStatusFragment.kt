@@ -5,15 +5,16 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
-import android.support.v7.widget.AppCompatImageView
-import android.support.v7.widget.CardView
+import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.cardview.widget.CardView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
+import androidx.core.content.FileProvider
 import com.rubyfood.R
 import com.rubyfood.app.AppDatabase
 import com.rubyfood.app.NetworkConstant
@@ -165,7 +166,8 @@ class CollectionDetailsStatusFragment : BaseFragment(), View.OnClickListener {
                         val fileUrl = Uri.parse(path)
 
                         val file = File(fileUrl.path)
-                        val uri = Uri.fromFile(file)
+//                        val uri = Uri.fromFile(file)
+                        val uri:Uri= FileProvider.getUriForFile(mContext, context!!.applicationContext.packageName.toString() + ".provider", file)
                         shareIntent.type = "image/png"
                         shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
                         startActivity(Intent.createChooser(shareIntent, "Share pdf using"));

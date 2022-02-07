@@ -2,9 +2,9 @@ package com.rubyfood.features.stock
 
 import android.content.Context
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -483,6 +483,10 @@ class StockListFragment : BaseFragment(), View.OnClickListener {
         addShopData.shop_revisit_uniqKey=uniqKeyObj?.shop_revisit_uniqKey!!
 
 
+        addShopData.project_name = mAddShopDBModelEntity.project_name
+        addShopData.landline_number = mAddShopDBModelEntity.landline_number
+        addShopData.agency_name = mAddShopDBModelEntity.agency_name
+
         callAddShopApiForSync(addShopData, mAddShopDBModelEntity.shopImageLocalPath, shop_id, stock_id, amount,
                 currentDateForShopActi, stock_lat, stock_long, mAddShopDBModelEntity.doc_degree)
         //callAddShopApi(addShopData, "")
@@ -768,6 +772,30 @@ class StockListFragment : BaseFragment(), View.OnClickListener {
 
             shopDurationData.shop_revisit_uniqKey=shopActivity.shop_revisit_uniqKey!!
 
+
+            /*10-12-2021*/
+            shopDurationData.updated_by = Pref.user_id
+            try {
+                shopDurationData.updated_on = shopActivity.updated_on!!
+            }catch(ex:Exception){
+                shopDurationData.updated_on = ""
+            }
+
+            if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                shopDurationData.pros_id = shopActivity.pros_id!!
+            else
+                shopDurationData.pros_id = ""
+
+            if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                shopDurationData.agency_name =shopActivity.agency_name!!
+            else
+                shopDurationData.agency_name = ""
+
+            if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+            else
+                shopDurationData.approximate_1st_billing_value = ""
+
             shopDataList.add(shopDurationData)
         }
         else {
@@ -825,6 +853,29 @@ class StockListFragment : BaseFragment(), View.OnClickListener {
                 shopDurationData.out_location = shopActivity.out_loc
 
                 shopDurationData.shop_revisit_uniqKey=shopActivity.shop_revisit_uniqKey!!
+
+                /*10-12-2021*/
+                shopDurationData.updated_by = Pref.user_id
+                try {
+                    shopDurationData.updated_on = shopActivity.updated_on!!
+                }catch (ex:Exception){
+                    shopDurationData.updated_on = ""
+                }
+
+                if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                    shopDurationData.pros_id = shopActivity.pros_id!!
+                else
+                    shopDurationData.pros_id = ""
+
+                if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                    shopDurationData.agency_name =shopActivity.agency_name!!
+                else
+                    shopDurationData.agency_name = ""
+
+                if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                    shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+                else
+                    shopDurationData.approximate_1st_billing_value = ""
 
                 shopDataList.add(shopDurationData)
             }

@@ -8,10 +8,10 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.AppCompatTextView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.core.content.ContextCompat
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
@@ -21,6 +21,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
+import androidx.core.content.FileProvider
 import com.elvishew.xlog.XLog
 import com.github.jhonnyx2012.horizontalpicker.DatePickerListener
 import com.github.jhonnyx2012.horizontalpicker.HorizontalPicker
@@ -362,6 +363,31 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
         shopDurationData.in_location = shopActivity.in_loc
         shopDurationData.out_location = shopActivity.out_loc
 
+        shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
+
+        /*10-12-2021*/
+        shopDurationData.updated_by = Pref.user_id
+        try {
+            shopDurationData.updated_on = shopActivity.updated_on!!
+        }catch(ex:Exception){
+            shopDurationData.updated_on =""
+        }
+
+        if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+            shopDurationData.pros_id = shopActivity.pros_id!!
+        else
+            shopDurationData.pros_id = ""
+
+        if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+            shopDurationData.agency_name =shopActivity.agency_name!!
+        else
+            shopDurationData.agency_name = ""
+
+        if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+            shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+        else
+            shopDurationData.approximate_1st_billing_value = ""
+
         shopDataList.add(shopDurationData)
 
         if (shopDataList.isEmpty()) {
@@ -595,6 +621,9 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
                                             orderDetailList.patient_name = order_details_list[i].patient_name
                                             orderDetailList.patient_address = order_details_list[i].patient_address
 
+                                            orderDetailList.Hospital = order_details_list[i].Hospital
+                                            orderDetailList.Email_Address = order_details_list[i].Email_Address
+
                                             if (order_details_list[i].product_list != null && order_details_list[i].product_list?.size!! > 0) {
                                                 for (j in order_details_list[i].product_list?.indices!!) {
                                                     val productOrderList = OrderProductListEntity()
@@ -607,6 +636,12 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
                                                     productOrderList.category = order_details_list[i].product_list?.get(j)?.category
                                                     productOrderList.order_id = order_details_list[i].order_id
                                                     productOrderList.product_name = order_details_list[i].product_list?.get(j)?.product_name
+
+                                                    /*06-01-2022*/
+                                                    if (!TextUtils.isEmpty(order_details_list[i].product_list?.get(j)?.MRP)) {
+                                                        val finalMRP = String.format("%.2f", order_details_list[i].product_list?.get(j)?.MRP?.toFloat())
+                                                        productOrderList.MRP = finalMRP
+                                                    }
 
                                                     /*if (order_details_list[i].product_list?.get(j)?.rate?.contains(".")!!)
                                                         productOrderList.rate = order_details_list[i].product_list?.get(j)?.rate?.toDouble()?.toInt().toString()
@@ -803,6 +838,14 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
             override fun OnMenuClick(position: Int, view: View) {
                 initiatePopupWindow(view, position)
             }
+
+            override fun onQuestionnarieClick(shopId: String) {
+
+            }
+
+            override fun onReturnClick(position: Int) {
+
+            }
         }, { shopId: String, orderId: String ->
             val shopType = AppDatabase.getDBInstance()?.addShopEntryDao()?.getShopType(shopId)
             senOrderEmail(shopId, orderId, shopType)
@@ -842,7 +885,8 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
                     val fileUrl = Uri.parse(path)
 
                     val file = File(fileUrl.path)
-                    val uri = Uri.fromFile(file)
+//                    val uri = Uri.fromFile(file)
+                    val uri:Uri= FileProvider.getUriForFile(mContext, context!!.applicationContext.packageName.toString() + ".provider", file)
                     shareIntent.type = "image/png"
                     shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
                     startActivity(Intent.createChooser(shareIntent, "Share pdf using"));
@@ -863,7 +907,8 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
 
                     collectionDialog = AddCollectionDialog.getInstance(it, true, addShop?.shopName!!, AppUtils.getCurrentDateFormatInTa(it.only_date!!),
                             it.amount!!, it.order_id!!, object : AddCollectionDialog.AddCollectionClickLisneter {
-                        override fun onClick(collection: String, date: String, paymentId: String, instrument: String, bank: String, filePath: String, feedback: String, patientName: String, patientAddress: String, patinetNo: String) {
+                        override fun onClick(collection: String, date: String, paymentId: String, instrument: String, bank: String, filePath: String, feedback: String, patientName: String, patientAddress: String, patinetNo: String,
+                                             hospital:String,emailAddress:String) {
 
                             //val addShop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(it.shop_id)
                             if (addShop != null) {
@@ -893,6 +938,9 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
                                     collectionDetails.patient_name = patientName
                                     collectionDetails.patient_address = patientAddress
                                     collectionDetails.patient_no = patinetNo
+                                    /*06-01-2022*/
+                                    collectionDetails.Hospital = hospital
+                                    collectionDetails.Email_Address = emailAddress
                                     AppDatabase.getDBInstance()!!.collectionDetailsDao().insert(collectionDetails)
 
                                     val collectionDate = AppUtils.getCurrentDateForShopActi() + "T" + collectionDetails.only_time
@@ -982,6 +1030,11 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
         addOrder.latitude = order.order_lat
         addOrder.longitude = order.order_long
 
+        if ( order.scheme_amount != null)
+            addOrder.scheme_amount = order.scheme_amount
+        else
+            addOrder.scheme_amount = ""
+
         if (order.remarks != null)
             addOrder.remarks = order.remarks
         else
@@ -1024,6 +1077,17 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
                 addOrder.address = ""
         }
 
+        /*06-01-2022*/
+        if (order.Hospital != null)
+            addOrder.Hospital = order.Hospital
+        else
+            addOrder.Hospital = ""
+
+        if (order.Email_Address != null)
+            addOrder.Email_Address = order.Email_Address
+        else
+            addOrder.Email_Address = ""
+
         val list = AppDatabase.getDBInstance()!!.orderProductListDao().getDataAccordingToShopAndOrderId(order.order_id!!, shop_id!!)
         val productList = java.util.ArrayList<AddOrderInputProductList>()
 
@@ -1034,6 +1098,11 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
             product.rate = list[i].rate
             product.total_price = list[i].total_price
             product.product_name = list[i].product_name
+            product.scheme_qty = list[i].scheme_qty
+            product.scheme_rate = list[i].scheme_rate
+            product.total_scheme_price = list[i].total_scheme_price
+
+            product.MRP = list[i].MRP
             productList.add(product)
         }
 
@@ -1179,6 +1248,11 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
 
         var uniqKeyObj=AppDatabase.getDBInstance()!!.shopActivityDao().getNewShopActivityKey(mAddShopDBModelEntity.shop_id!!,false)
         addShopData.shop_revisit_uniqKey=uniqKeyObj?.shop_revisit_uniqKey!!
+
+        addShopData.project_name = mAddShopDBModelEntity.project_name
+        addShopData.landline_number = mAddShopDBModelEntity.landline_number
+        addShopData.agency_name = mAddShopDBModelEntity.agency_name
+
 
         callAddShopApi(addShopData, mAddShopDBModelEntity.shopImageLocalPath, shop_id, collection_id, amount, collection,
                 currentDateForShopActi, desc, billId, mAddShopDBModelEntity.doc_degree, orderId, collectionDetails)
@@ -1439,6 +1513,12 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
 
         if (collectionDetails.patient_no != null)
             addCollection.patient_no = collectionDetails.patient_no!!
+            /*06-01-2022*/
+        if (collectionDetails.Hospital != null)
+            addCollection.Hospital = collectionDetails.Hospital!!
+
+        if (collectionDetails.Email_Address != null)
+            addCollection.Email_Address = collectionDetails.Email_Address!!
 
         progress_wheel.spin()
         if (TextUtils.isEmpty(collectionDetails.file_path)) {
@@ -1541,6 +1621,16 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
         addOrder.latitude = order_lat
         addOrder.longitude = order_long
 
+        if (orderListDetails!!.scheme_amount != null)
+            addOrder.scheme_amount = orderListDetails!!.scheme_amount
+        else
+            addOrder.scheme_amount = ""
+
+        if (orderListDetails!!.scheme_amount != null)
+            addOrder.scheme_amount = orderListDetails!!.scheme_amount
+        else
+            addOrder.scheme_amount = ""
+
         if (remarks != null)
             addOrder.remarks = remarks
         else
@@ -1584,6 +1674,17 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
                 addOrder.address = ""
         }
 
+        /*06-01-2022*/
+        if (orderListDetails.Hospital != null)
+            addOrder.Hospital = orderListDetails.Hospital
+        else
+            addOrder.Hospital = ""
+
+        if (orderListDetails.Email_Address != null)
+            addOrder.Email_Address = orderListDetails.Email_Address
+        else
+            addOrder.Email_Address = ""
+
         val list = AppDatabase.getDBInstance()!!.orderProductListDao().getDataAccordingToShopAndOrderId(order_id!!, shop_id!!)
         val productList = ArrayList<AddOrderInputProductList>()
 
@@ -1594,6 +1695,11 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
             product.rate = list[i].rate
             product.total_price = list[i].total_price
             product.product_name = list[i].product_name
+            product.scheme_qty = list[i].scheme_qty
+            product.scheme_rate = list[i].scheme_rate
+            product.total_scheme_price = list[i].total_scheme_price
+
+            product.MRP = list[i].MRP
             productList.add(product)
         }
 
@@ -1755,9 +1861,13 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
         addShopData.assigned_to_shop_id = shop.assigned_to_shop_id
         addShopData.actual_address = shop.actual_address
 
-
-        var uniqKeyObj=AppDatabase.getDBInstance()!!.shopActivityDao().getNewShopActivityKey(shop.shop_id,false)
+        var uniqKeyObj=AppDatabase.getDBInstance()!!.shopActivityDao().getNewShopActivityKey(shop.shop_id!!,false)
         addShopData.shop_revisit_uniqKey=uniqKeyObj?.shop_revisit_uniqKey!!
+
+        addShopData.project_name = shop.project_name
+        addShopData.landline_number = shop.landline_number
+        addShopData.agency_name = shop.agency_name
+
 
         callAddShopApi(addShopData, shop.shopImageLocalPath, position, list, shop.doc_degree)
         //}
@@ -2043,6 +2153,30 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
 
             shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
 
+            /*10-12-2021*/
+            shopDurationData.updated_by = Pref.user_id
+            try {
+                shopDurationData.updated_on = shopActivity.updated_on!!
+            }
+            catch(ex:Exception){
+                shopDurationData.updated_on = ""
+            }
+
+            if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                shopDurationData.pros_id = shopActivity.pros_id!!
+            else
+                shopDurationData.pros_id = ""
+
+            if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                shopDurationData.agency_name =shopActivity.agency_name!!
+            else
+                shopDurationData.agency_name = ""
+
+            if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+            else
+                shopDurationData.approximate_1st_billing_value = ""
+
             shopDataList.add(shopDurationData)
         }
         else {
@@ -2101,6 +2235,29 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
 
                 shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
 
+                /*10-12-2021*/
+                shopDurationData.updated_by = Pref.user_id
+                try {
+                    shopDurationData.updated_on = shopActivity.updated_on!!
+                }
+                catch(ex:Exception){
+                    shopDurationData.updated_on = ""
+                }
+
+                if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                    shopDurationData.pros_id = shopActivity.pros_id!!
+                else
+                    shopDurationData.pros_id = ""
+
+                if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                    shopDurationData.agency_name =shopActivity.agency_name!!
+                else
+                    shopDurationData.agency_name = ""
+
+                if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                    shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+                else
+                    shopDurationData.approximate_1st_billing_value = ""
 
                 shopDataList.add(shopDurationData)
             }
@@ -2228,6 +2385,8 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
                                             assignToDD.dd_phn_no = list[i].phn_no
                                             assignToDD.pp_id = list[i].assigned_to_pp_id
                                             assignToDD.type_id = list[i].type_id
+                                            assignToDD.dd_latitude = list[i].dd_latitude
+                                            assignToDD.dd_longitude = list[i].dd_longitude
                                             AppDatabase.getDBInstance()?.ddListDao()?.insert(assignToDD)
                                         }
 
@@ -2447,6 +2606,16 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
             else
                 addOrder.address = ""
         }
+        /*06-01-2022*/
+        if (order_list[i].Hospital != null)
+            addOrder.Hospital = order_list[i].Hospital
+        else
+            addOrder.Hospital = ""
+
+        if (order_list[i].Email_Address != null)
+            addOrder.Email_Address = order_list[i].Email_Address
+        else
+            addOrder.Email_Address = ""
 
         val list = AppDatabase.getDBInstance()!!.orderProductListDao().getDataAccordingToShopAndOrderId(order_list[i].order_id!!, order_list[i].shop_id!!)
         val productList = java.util.ArrayList<AddOrderInputProductList>()
@@ -2458,6 +2627,7 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
             product.rate = list[j].rate
             product.total_price = list[j].total_price
             product.product_name = list[j].product_name
+            product.MRP = list[j].MRP
             productList.add(product)
         }
 

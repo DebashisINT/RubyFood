@@ -3,8 +3,8 @@ package com.rubyfood.features.member.presentation
 import android.content.Context
 import android.location.Location
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -300,7 +300,11 @@ class OfflineShopListFragment : BaseFragment() {
                 (mContext as DashboardActivity).checkToShowAddAttendanceAlert()
             else {
                 val addShopData = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(teamShop.shop_id)
-                (mContext as DashboardActivity).loadFragment(FragType.ViewAllOrderListFragment, true, addShopData)
+                if(Pref.IsActivateNewOrderScreenwithSize){//13-09-2021
+                    (context as DashboardActivity).loadFragment(FragType.NewOrderScrOrderDetailsFragment, true, addShopData!!.shop_id)
+                }else {
+                    (mContext as DashboardActivity).loadFragment(FragType.ViewAllOrderListFragment, true, addShopData)
+                }
             }
         }, { size: Int ->
             tv_shop_count.text = "Total " + Pref.shopText + "(s): " + size

@@ -2,8 +2,8 @@ package com.rubyfood.features.marketing.presentation
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +18,7 @@ import com.rubyfood.features.marketing.model.MarketingDetailData
  */
 class MarketingDetailFragment:BaseFragment() {
     lateinit var marketing_item_list: ArrayList<MarketingDetailData>
-    private lateinit var marketing_detail_RCV:RecyclerView
+    private lateinit var marketing_detail_RCV: RecyclerView
     private lateinit var adapter:MarketingDetailAdapter
     private lateinit var mContext:Context
     private lateinit var layoutManager: RecyclerView.LayoutManager

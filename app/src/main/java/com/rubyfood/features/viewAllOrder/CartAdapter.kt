@@ -1,7 +1,6 @@
 package com.rubyfood.features.viewAllOrder
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -9,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.RelativeLayout
+import androidx.recyclerview.widget.RecyclerView
 import com.rubyfood.R
 import com.rubyfood.app.AppDatabase
 import com.rubyfood.app.Pref
@@ -17,7 +18,7 @@ import com.rubyfood.app.domain.ProductRateEntity
 import com.rubyfood.app.utils.AppUtils
 import com.rubyfood.app.utils.CustomSpecialTextWatcher
 import com.rubyfood.features.dashboard.presentation.DashboardActivity
-import kotlinx.android.synthetic.main.cart_adapter_body_layout.view.*
+import kotlinx.android.synthetic.main.cart_adapter_body_layout_newchange.view.*
 import kotlinx.android.synthetic.main.item_right_menu.view.*
 
 
@@ -51,6 +52,38 @@ class CartAdapter(private val context: Context, private val selectedProductList:
 
             var previousQty = ""
             var previousRate = ""
+            var previousSchemeQty = ""
+            var previousSchemeRate = ""
+            var previousMRP = ""
+
+//            Pref.MRPInOrderGlobal= true
+//            Pref.MRPInOrder = true
+            if(Pref.MRPInOrderGlobal && Pref.MRPInOrder){
+                itemView.rl_mrp.visibility = View.VISIBLE
+            }
+            else{
+                itemView.rl_mrp.visibility = View.GONE
+            }
+
+
+            if (Pref.IsnewleadtypeforRuby && AppUtils.stockStatus == 0) {
+//                itemView.time_RL.layoutParams.height = R.dimen._52sdp
+//                itemView.time_RL.layoutParams.width =R.dimen._34sdp
+//                val rel_btn: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(
+//                        R.dimen._52sdp, R.dimen._34sdp)
+//                itemView.time_RL.setLayoutParams(rel_btn)
+                itemView.scheme_RL.visibility = View.VISIBLE
+                itemView.schemeqty_RL.visibility = View.VISIBLE
+            }
+            else{
+//                itemView.time_RL.layoutParams.height = R.dimen._52sdp
+//                itemView.time_RL.layoutParams.width =R.dimen._54sdp
+//                val rel_btn: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(
+//                        R.dimen._52sdp, R.dimen._54sdp)
+//                itemView.time_RL.setLayoutParams(rel_btn)
+                itemView.scheme_RL.visibility = View.GONE
+                itemView.schemeqty_RL.visibility = View.GONE
+            }
 
             /*if (adapterPosition % 2 == 0)
                 itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.report_screen_bg))
@@ -101,22 +134,39 @@ class CartAdapter(private val context: Context, private val selectedProductList:
                     if (AppUtils.stockStatus == 0) {
                         if (Pref.isRateNotEditable && list != null && list.size > 0) {
                             itemView.et_rate.isEnabled = false
+//                            itemView.scheme_et_rate.isEnabled = false
                             itemView.et_rate.setText(((context as DashboardActivity).rateList[adapterPosition]))
+//                            itemView.scheme_et_rate.setText(((context as DashboardActivity).schemarateList[adapterPosition]))
                         } else {
                             itemView.et_rate.isEnabled = true
-
-                            if ((context as DashboardActivity).rateList[adapterPosition] > "0.00")
+//                            itemView.scheme_et_rate.isEnabled = true
+                            if ((context as DashboardActivity).rateList[adapterPosition] > "0.00") {
                                 itemView.et_rate.setText(((context as DashboardActivity).rateList[adapterPosition]/*.toFloat().toInt()*/).toString())
-                            else
+                            }
+                            else {
                                 itemView.et_rate.setText("")
+                            }
+                          /*  if ((context as DashboardActivity).schemarateList[adapterPosition] > "0.00"){
+                                itemView.scheme_et_rate.setText(((context as DashboardActivity).schemarateList[adapterPosition]))
+                            }
+                            else {
+                                itemView.scheme_et_rate.setText("")
+                            }*/
                         }
                     } else if (AppUtils.stockStatus == 1) {
                         itemView.et_rate.isEnabled = true
-
+//                        itemView.scheme_et_rate.isEnabled = true
                         if ((context as DashboardActivity).rateList[adapterPosition] > "0.00")
                             itemView.et_rate.setText(((context as DashboardActivity).rateList[adapterPosition]/*.toFloat().toInt()*/).toString())
                         else
                             itemView.et_rate.setText("")
+
+                  /* if ((context as DashboardActivity).schemarateList[adapterPosition] > "0.00"){
+                            itemView.scheme_et_rate.setText(((context as DashboardActivity).schemarateList[adapterPosition]))
+                        }
+                        else {
+                            itemView.scheme_et_rate.setText("")
+                        }*/
                     }
                 }
                 else {
@@ -125,22 +175,40 @@ class CartAdapter(private val context: Context, private val selectedProductList:
                     if (AppUtils.stockStatus == 0) {
                         if (Pref.isRateNotEditable && list != null && list.size > 0) {
                             itemView.et_rate.isEnabled = false
+//                            itemView.scheme_et_rate.isEnabled = false
                             itemView.et_rate.setText(((context as DashboardActivity).rateList[adapterPosition]))
+//                            itemView.scheme_et_rate.setText(((context as DashboardActivity).schemarateList[adapterPosition]))
                         } else {
                             itemView.et_rate.isEnabled = true
-
+//                            itemView.scheme_et_rate.isEnabled = true
                             if ((context as DashboardActivity).rateList[adapterPosition] > "0.00")
                                 itemView.et_rate.setText(((context as DashboardActivity).rateList[adapterPosition]/*.toFloat().toInt()*/).toString())
                             else
                                 itemView.et_rate.setText("")
+
+
+                         /* if ((context as DashboardActivity).schemarateList[adapterPosition] > "0.00"){
+                                itemView.scheme_et_rate.setText(((context as DashboardActivity).schemarateList[adapterPosition]))
+                            }
+                            else {
+                                itemView.scheme_et_rate.setText("")
+                            }*/
                         }
                     } else if (AppUtils.stockStatus == 1) {
                         itemView.et_rate.isEnabled = true
-
+//                        itemView.scheme_et_rate.isEnabled = true
                         if ((context as DashboardActivity).rateList[adapterPosition] > "0.00")
                             itemView.et_rate.setText(((context as DashboardActivity).rateList[adapterPosition]/*.toFloat().toInt()*/).toString())
                         else
                             itemView.et_rate.setText("")
+
+
+                     /* if ((context as DashboardActivity).schemarateList[adapterPosition] > "0.00"){
+                            itemView.scheme_et_rate.setText(((context as DashboardActivity).schemarateList[adapterPosition]))
+                        }
+                        else {
+                            itemView.scheme_et_rate.setText("")
+                        }*/
                     }
                 }
 
@@ -250,6 +318,12 @@ class CartAdapter(private val context: Context, private val selectedProductList:
                 else
                     itemView.et_qty.setText("")
 
+
+          /*     if ((context as DashboardActivity).schemaqtyList[adapterPosition] >= "1")
+                    itemView.schemeqty_et_qty.setText((context as DashboardActivity).schemaqtyList[adapterPosition])
+                else
+                    itemView.schemeqty_et_qty.setText("")*/
+
                 itemView.et_qty.addTextChangedListener(object : TextWatcher {
                     override fun afterTextChanged(p0: Editable?) {
                         val qty = itemView.et_qty.text.toString().trim()
@@ -316,6 +390,141 @@ class CartAdapter(private val context: Context, private val selectedProductList:
                     itemView.et_qty.imeOptions = EditorInfo.IME_ACTION_DONE
 
 
+
+                /*scheme related working 28-12-2021*/
+
+
+                itemView.scheme_et_rate.addTextChangedListener(CustomSpecialTextWatcher(itemView.scheme_et_rate, 5, 2, object : CustomSpecialTextWatcher.GetCustomTextChangeListener {
+                    override fun beforeTextChange(text: String) {
+                        previousSchemeRate = text
+                    }
+
+                    override fun customTextChange(text: String) {
+                        val rate = text
+                        if (!Pref.isShowAllProduct && AppUtils.stockStatus == 0) {
+                            (context as DashboardActivity).schemarateList[adapterPosition] = rate
+                            listener.onEditSchema(adapterPosition)
+                        } else {
+                            if (!TextUtils.isEmpty(rate)) {
+                                try {
+                                    (context as DashboardActivity).schemarateList[adapterPosition] = rate
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                }
+                                listener.onEditSchema(adapterPosition)
+                            } else {
+                                try {
+                                    if (!TextUtils.isEmpty((context as DashboardActivity).schemarateList[adapterPosition])) {
+                                        (context as DashboardActivity).schemarateList[adapterPosition] = "0.00"
+                                        listener.onEditSchema(adapterPosition)
+                                    }
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+
+                                    for (i in (context as DashboardActivity).schemarateList.indices) {
+                                        if ((context as DashboardActivity).schemarateList[i] == previousSchemeRate) {
+                                            (context as DashboardActivity).schemarateList[i] = "0.00"
+                                            listener.onEditSchema(i)
+                                            break
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }))
+
+
+                itemView.schemeqty_et_qty.addTextChangedListener(object : TextWatcher {
+                    override fun afterTextChanged(p0: Editable?) {
+                        val schemeqty = itemView.schemeqty_et_qty.text.toString().trim()
+                        if (!Pref.isShowAllProduct && AppUtils.stockStatus == 0) {
+                            (context as DashboardActivity).schemaqtyList[adapterPosition] = schemeqty
+                            listener.onEditSchema(adapterPosition)
+                        } else {
+                            if (!TextUtils.isEmpty(schemeqty)) {
+                                try {
+                                    (context as DashboardActivity).schemaqtyList[adapterPosition] = schemeqty
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                }
+                                listener.onEditSchema(adapterPosition)
+                            } else {
+                                try {
+                                    if (!TextUtils.isEmpty((context as DashboardActivity).schemaqtyList[adapterPosition])) {
+                                        (context as DashboardActivity).schemaqtyList[adapterPosition] = "0"
+                                        listener.onEditSchema(adapterPosition)
+                                    }
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                    for (i in (context as DashboardActivity).schemaqtyList.indices) {
+                                        if ((context as DashboardActivity).schemaqtyList[i] == previousSchemeQty) {
+                                            (context as DashboardActivity).schemaqtyList[i] = "0"
+                                            listener.onEditSchema(i)
+                                            break
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                        previousSchemeQty = p0.toString()
+                    }
+
+                    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    }
+                })
+
+
+                /*06-01-2022*/
+                itemView.et_mrp.addTextChangedListener(object : TextWatcher {
+                    override fun afterTextChanged(p0: Editable?) {
+                        val mrp = itemView.et_mrp.text.toString().trim()
+                        if (!Pref.isShowAllProduct && AppUtils.stockStatus == 0) {
+                            (context as DashboardActivity).mrpList[adapterPosition] = mrp
+                            listener.onEditSchema(adapterPosition)
+                        } else {
+                            if (!TextUtils.isEmpty(mrp)) {
+                                try {
+                                    (context as DashboardActivity).mrpList[adapterPosition] = mrp
+                                    println("mrp : "+mrp.toString());
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                    println("mrp : error "+(context as DashboardActivity).mrpList.size.toString());
+                                }
+                                listener.onEditSchema(adapterPosition)
+                            } else {
+                                try {
+                                    if (!TextUtils.isEmpty((context as DashboardActivity).mrpList[adapterPosition])) {
+                                        (context as DashboardActivity).mrpList[adapterPosition] = "0"
+                                        listener.onEditSchema(adapterPosition)
+                                    }
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                    for (i in (context as DashboardActivity).mrpList.indices) {
+                                        if ((context as DashboardActivity).mrpList[i] == previousMRP) {
+                                            (context as DashboardActivity).mrpList[i] = "0"
+                                            listener.onEditSchema(i)
+                                            break
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                        previousMRP = p0.toString()
+                    }
+
+                    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    }
+                })
+
+
+
                 /*itemView.et_rate.setOnEditorActionListener(object : TextView.OnEditorActionListener {
                     override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
 
@@ -362,6 +571,8 @@ class CartAdapter(private val context: Context, private val selectedProductList:
         fun onProductClick(brand: ProductListEntity?, adapterPosition: Int, isSelected: Boolean)
 
         fun onEdit(adapterPosition: Int)
+
+        fun onEditSchema(adapterPosition: Int)
 
         fun onDelete(adapterPosition: Int)
     }

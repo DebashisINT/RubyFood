@@ -8,7 +8,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedcsrollvire_dashboard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -232,7 +232,7 @@
             </RelativeLayout>
 
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/my_activity_list_RCV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -245,7 +245,7 @@
 
 
         </RelativeLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 
     <LinearLayout
@@ -435,7 +435,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/_11sdp" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/report_RCV"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -446,7 +446,7 @@
     </LinearLayout>
 
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

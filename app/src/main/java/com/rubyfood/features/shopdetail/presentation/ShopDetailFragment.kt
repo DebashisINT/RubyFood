@@ -15,18 +15,16 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.CardView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.InputFilter
 import android.text.TextUtils
 import android.util.Log
 import android.view.*
-import android.view.inputmethod.EditorInfo
 import android.widget.*
-import com.elvishew.xlog.XLog
+import androidx.appcompat.app.AlertDialog
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.rubyfood.R
 import com.rubyfood.app.AppDatabase
 import com.rubyfood.app.NetworkConstant
@@ -35,6 +33,7 @@ import com.rubyfood.app.domain.*
 import com.rubyfood.app.types.FragType
 import com.rubyfood.app.uiaction.IntentActionable
 import com.rubyfood.app.utils.AppUtils
+import com.rubyfood.app.utils.InputFilterDecimal
 import com.rubyfood.app.utils.PermissionUtils
 import com.rubyfood.base.BaseResponse
 import com.rubyfood.base.presentation.BaseActivity
@@ -42,6 +41,8 @@ import com.rubyfood.base.presentation.BaseFragment
 import com.rubyfood.features.addshop.api.areaList.AreaListRepoProvider
 import com.rubyfood.features.addshop.api.assignToPPList.AssignToPPListRepoProvider
 import com.rubyfood.features.addshop.api.assignedToDDList.AssignToDDListRepoProvider
+import com.rubyfood.features.addshop.api.typeList.TypeListRepoProvider
+import com.rubyfood.features.addshop.model.*
 import com.rubyfood.features.addshop.model.assigntoddlist.AssignToDDListResponseModel
 import com.rubyfood.features.addshop.model.assigntopplist.AssignToPPListResponseModel
 import com.rubyfood.features.addshop.presentation.*
@@ -53,29 +54,23 @@ import com.rubyfood.features.dashboard.presentation.DashboardActivity
 import com.rubyfood.features.dashboard.presentation.api.otpsentapi.OtpSentRepoProvider
 import com.rubyfood.features.dashboard.presentation.api.otpverifyapi.OtpVerificationRepoProvider
 import com.rubyfood.features.location.LocationWizard
+import com.rubyfood.features.login.model.productlistmodel.ModelListResponse
 import com.rubyfood.features.login.presentation.LoginActivity
 import com.rubyfood.features.nearbyshops.api.ShopListRepositoryProvider
+import com.rubyfood.features.nearbyshops.model.*
+import com.rubyfood.features.reimbursement.presentation.FullImageDialog
 import com.rubyfood.features.shopdetail.presentation.api.EditShopRepoProvider
 import com.rubyfood.widgets.AppCustomEditText
 import com.rubyfood.widgets.AppCustomTextView
+import com.elvishew.xlog.XLog
 import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu
 import com.hahnemann.features.commondialog.presentation.CommonDialogTripleBtn
 import com.hahnemann.features.commondialog.presentation.CommonTripleDialogClickListener
-import com.rubyfood.app.utils.InputFilterDecimal
-import com.rubyfood.features.addshop.api.typeList.TypeListRepoProvider
-import com.rubyfood.features.addshop.model.*
-import com.rubyfood.features.nearbyshops.model.*
-import com.rubyfood.features.reimbursement.presentation.FullImageDialog
 import com.squareup.picasso.Picasso
 import com.themechangeapp.pickimage.PermissionHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.customnotification.view.*
-import kotlinx.android.synthetic.main.dialog_scan_details.view.*
-import kotlinx.android.synthetic.main.fragment_add_shop.*
-import kotlinx.android.synthetic.main.fragment_shop_detail.view.*
-import kotlinx.android.synthetic.main.inflate_avg_shop_item.view.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.util.*
@@ -90,6 +85,10 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
 
     private lateinit var mContext: Context
     private lateinit var shopName: AppCustomEditText
+    private lateinit var agency_name_TV: AppCustomEditText
+
+    private lateinit var shop_name_label_TV: AppCustomTextView
+
     private lateinit var shopAddress: AppCustomEditText
     private lateinit var shopPin: AppCustomEditText
     private lateinit var shopOwnerName: AppCustomTextView
@@ -218,6 +217,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
 
     private lateinit var tv_shoptype_asterisk_mark: TextView
     private lateinit var tv_name_asterisk_mark: TextView
+    private lateinit var tv_agency_asterisk_mark: TextView
     private lateinit var tv_address_asterisk_mark: TextView
     private lateinit var tv_pincode_asterisk_mark: TextView
     private lateinit var tv_owner_name_asterisk_mark: TextView
@@ -287,6 +287,24 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
 
     private var programFab5: FloatingActionButton? = null
 
+    private lateinit var rl_agencyName: RelativeLayout
+
+    private lateinit var rl_prospect_main: RelativeLayout
+
+    private lateinit var prospect_name: AppCustomTextView
+
+    private lateinit var project_name_TV: AppCustomEditText
+
+    private lateinit var land_contact_no_TV : AppCustomEditText
+
+
+    private lateinit var rl_projectName : RelativeLayout
+    private lateinit var land_shop_RL : RelativeLayout
+
+
+
+
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         val view = inflater.inflate(R.layout.fragment_shop_detail, container, false)
@@ -350,6 +368,12 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
         tv_area = view.findViewById(R.id.tv_area)
         popup_image = view.findViewById(R.id.popup_image)
         shopName = view.findViewById(R.id.shop_name_TV)
+        rl_agencyName = view.findViewById(R.id.rl_agencyName)
+        agency_name_TV = view.findViewById(R.id.agency_name_TV)
+
+        shop_name_label_TV = view.findViewById(R.id.shop_name_label_TV)
+
+
         shopAddress = view.findViewById(R.id.address_TV)
         shopPin = view.findViewById(R.id.pincode_TV)
         shopContactNumber = view.findViewById(R.id.owner_contact_no_TV)
@@ -437,6 +461,8 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
         tv_party_asterisk_mark = view.findViewById(R.id.tv_party_asterisk_mark)
         tv_shoptype_asterisk_mark = view.findViewById(R.id.tv_shoptype_asterisk_mark)
         tv_name_asterisk_mark = view.findViewById(R.id.tv_name_asterisk_mark)
+
+        tv_agency_asterisk_mark = view.findViewById(R.id.tv_agency_asterisk_mark)
         tv_address_asterisk_mark = view.findViewById(R.id.tv_address_asterisk_mark)
         tv_pincode_asterisk_mark = view.findViewById(R.id.tv_pincode_asterisk_mark)
         tv_owner_name_asterisk_mark = view.findViewById(R.id.tv_owner_name_asterisk_mark)
@@ -465,8 +491,45 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
         tv_assign_to_shop_asterisk_mark = view.findViewById(R.id.tv_assign_to_shop_asterisk_mark)
         tv_retailer_asterisk_mark = view.findViewById(R.id.tv_retailer_asterisk_mark)
         tv_dealer_asterisk_mark = view.findViewById(R.id.tv_dealer_asterisk_mark)
+        rl_prospect_main = view.findViewById(R.id.rl_prospect_main)
+        prospect_name = view.findViewById(R.id.prospect_name)
+        project_name_TV = view.findViewById(R.id.project_name_TV)
+
+        land_contact_no_TV = view.findViewById(R.id.land_contact_no_TV)
 
         quot_amt_TV = view.findViewById(R.id.quot_amt_TV)
+
+        rl_projectName = view.findViewById(R.id.rl_frag_shop_dtl_project_name_root)
+        land_shop_RL = view.findViewById(R.id.land_shop_RL)
+
+        shop_name_label_TV.text = "Name"
+
+        /*14-12-2021*/
+        if(Pref.IsnewleadtypeforRuby && addShopData.type!!.toInt() == 16){
+            shop_name_label_TV.text = "Lead Name"
+            rl_agencyName.visibility = View.VISIBLE
+            (mContext as DashboardActivity).setTopBarTitle("Lead " + "Details")
+             rl_prospect_main.visibility = View.VISIBLE
+
+            try{
+                var prosNameByID=""
+                var shopActivityListToProsId = AppDatabase.getDBInstance()!!.shopActivityDao().getProsId(addShopData.shop_id) as String
+                if(shopActivityListToProsId!=null || !shopActivityListToProsId.equals("")){
+                    prosNameByID = AppDatabase.getDBInstance()!!.prosDao().getProsNameByProsId(shopActivityListToProsId)
+                }
+                prospect_name.text = prosNameByID // select pros name showing
+            }catch (ex:Exception){
+
+                prospect_name.text = ""
+            }
+
+
+        }
+        else{
+            (mContext as DashboardActivity).setTopBarTitle(Pref.shopText + " Details")
+        }
+
+
 
         //et_booking_amount.addTextChangedListener(CustomTextWatcher(et_booking_amount, 6, 2))
         et_booking_amount.filters = arrayOf<InputFilter>(InputFilterDecimal(10, 2))
@@ -590,8 +653,16 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
         (mContext as DashboardActivity).shop_type = addShopData.type
 
         if (Pref.isShopAddEditAvailable) {
-            if (Pref.isShopEditEnable)
-                getFloatingVal.add("Update " + Pref.shopText + " Details")
+            if (Pref.isShopEditEnable){
+                if(Pref.IsnewleadtypeforRuby && addShopData.type!!.toInt() == 16){
+                    getFloatingVal.add("Update " + "Lead" + " Details")
+                }
+                else{
+                    getFloatingVal.add("Update " + Pref.shopText + " Details")
+                }
+            }
+            else {
+            }
         }
 
 
@@ -623,11 +694,10 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
         }
         else {
             //if (Pref.willActivityShow)
-            getFloatingVal.add("View / Create Activity")
+                getFloatingVal.add("View / Create Activity")
         }
 
         ////////////////
-
         var currentViewSt=AppDatabase.getDBInstance()?.shopTypeStockViewStatusDao()?.getShopCurrentStockViewStatus(addShopData?.type!!)
         var competitorViewSt=AppDatabase.getDBInstance()?.shopTypeStockViewStatusDao()?.getShopCompetitorStockViewStatus(addShopData?.type!!)
 
@@ -818,6 +888,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                             floating_fab.addMenuButton(it)
                             it.setOnClickListener(this)
                         }
+                        currentStockAdded=false
                     }
                 }
                 else if(competitorStockAdded){
@@ -834,6 +905,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                             floating_fab.addMenuButton(it)
                             it.setOnClickListener(this)
                         }
+                        competitorStockAdded=false
                     }
                 }
 
@@ -926,6 +998,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                             floating_fab.addMenuButton(it)
                             it.setOnClickListener(this)
                         }
+                        currentStockAdded=false
                     }
                 }
                 else if(competitorStockAdded){
@@ -942,6 +1015,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                             floating_fab.addMenuButton(it)
                             it.setOnClickListener(this)
                         }
+                        competitorStockAdded=false
                     }
                 }
 
@@ -1022,6 +1096,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                             floating_fab.addMenuButton(it)
                             it.setOnClickListener(this)
                         }
+                        currentStockAdded=false
                     }
 
                 }
@@ -1039,6 +1114,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                             floating_fab.addMenuButton(it)
                             it.setOnClickListener(this)
                         }
+                        competitorStockAdded=false
                     }
 
                 }
@@ -1094,6 +1170,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                         programFab4?.id = 701
                         floating_fab.addMenuButton(programFab4)
                         programFab4?.setOnClickListener(this)
+                        currentStockAdded=false
                     }
 
                 }
@@ -1109,6 +1186,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                         programFab4?.id = 702
                         floating_fab.addMenuButton(programFab4)
                         programFab4?.setOnClickListener(this)
+                        competitorStockAdded=false
                     }
 
                 }
@@ -1169,6 +1247,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                         }
                         floating_fab.addMenuButton(programFab5)
                         programFab5?.setOnClickListener(this)
+                        currentStockAdded=false
                     }
 
                 }
@@ -1189,6 +1268,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                         }
                         floating_fab.addMenuButton(programFab5)
                         programFab5?.setOnClickListener(this)
+                        competitorStockAdded=false
                     }
 
                 }
@@ -1256,30 +1336,6 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                     floating_fab.addMenuButton(programFab7)
                     programFab6?.setOnClickListener(this)
                 }
-
-
-
-
-
-               /* if (competitorStockAdded) {
-                    programFab7 = FloatingActionButton(activity)
-                    programFab7?.buttonSize = FloatingActionButton.SIZE_MINI
-                    programFab7?.id = preid + i
-                    programFab7?.colorNormal = mContext.resources.getColor(R.color.colorAccent)
-                    programFab7?.colorPressed = mContext.resources.getColor(R.color.delivery_status_green)
-                    programFab7?.colorRipple = mContext.resources.getColor(R.color.delivery_status_green)
-                    programFab7?.labelText = getFloatingVal[6]
-                    if(programFab7?.labelText.equals("Current Stock")){
-                        programFab7?.id=701
-                    }
-                    if(programFab7?.labelText.equals("Competitor Stock")){
-                        programFab7?.id=702
-                    }
-                    floating_fab.addMenuButton(programFab7)
-                    programFab7?.setOnClickListener(this)
-                }*/
-
-
 
 
                 /*if ((addShopData.type == "2" || addShopData.type == "4") && i == 4) {
@@ -1426,6 +1482,14 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                 }
             }
         }
+
+        if(!Pref.IsprojectforCustomer){
+            rl_projectName.visibility=View.GONE
+        }
+        if(!Pref.IslandlineforCustomer){
+            land_shop_RL.visibility=View.GONE
+        }
+
     }
 
     private fun showActionDialog(status: Int) {
@@ -1437,7 +1501,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                 else
                     "Order entry"
 
-                CommonDialogTripleBtn.getInstance(AppUtils.hiFirstNameText(), "Select what would you like to do?", orderText, "Opening stock",
+                CommonDialogTripleBtn.getInstance(AppUtils.hiFirstNameText()+"!", "Select what would you like to do?", orderText, "Opening stock",
                         false, "Collection entry", object : CommonTripleDialogClickListener {
                     override fun onLeftClick() {
                         if (Pref.isQuotationPopupShow)
@@ -1446,7 +1510,11 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                             AddShopFragment.isOrderEntryPressed=true
                             ShopDetailFragment.isOrderEntryPressed=true
                             AddShopFragment.newShopID=addShopData?.shop_id
-                            (mContext as DashboardActivity).loadFragment(FragType.ViewAllOrderListFragment, true, addShopData)
+                            if(Pref.IsActivateNewOrderScreenwithSize){//13-09-2021
+                                (mContext as DashboardActivity).loadFragment(FragType.NewOrderScrOrderDetailsFragment, true, addShopData!!.shop_id)
+                            }else {
+                                (mContext as DashboardActivity).loadFragment(FragType.ViewAllOrderListFragment, true, addShopData)
+                            }
                         }
 
                         //(mContext as DashboardActivity).showSnackMessage(getString(R.string.functionality_disabled))
@@ -1476,7 +1544,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                             val submitRemarks = dialog.findViewById(R.id.tv_cancel_order_submit_remarks) as AppCustomTextView
 
                             order_status.text="Failure"
-                            user_name.text="Hi! "+Pref.user_name
+                            user_name.text="Hi "+Pref.user_name+"!"
 
                             submitRemarks.setOnClickListener(View.OnClickListener { view ->
                                 if(!TextUtils.isEmpty(cancel_remarks.text.toString().trim())){
@@ -1493,10 +1561,10 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                                     var shopAll=AppDatabase.getDBInstance()!!.shopActivityDao().getShopActivityAll()
                                     if(shopAll.size == 1){
                                         obj.shop_revisit_uniqKey=shopAll.get(0).shop_revisit_uniqKey
-                                    }else{
+                                    }else if(shopAll.size!=0){
                                         obj.shop_revisit_uniqKey=shopAll.get(shopAll.size-1).shop_revisit_uniqKey
                                     }
-
+                                    if(shopAll.size!=0)
                                     AppDatabase.getDBInstance()?.shopVisitOrderStatusRemarksDao()!!.insert(obj)
                                     dialog.dismiss()
                                 }else{
@@ -1518,7 +1586,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                 else
                     "Order entry"
 
-                CommonDialog.getInstanceNew(AppUtils.hiFirstNameText(), "Select what would you like to do?", orderText, "Opening stock", false, object : CommonDialogClickListener {
+                CommonDialog.getInstanceNew(AppUtils.hiFirstNameText()+"!", "Select what would you like to do?", orderText, "Opening stock", false, object : CommonDialogClickListener {
                     override fun onLeftClick() {
                         if (Pref.isQuotationPopupShow)
                             (mContext as DashboardActivity).loadFragment(FragType.QuotationListFragment, true, addShopData.shop_id)
@@ -1526,7 +1594,11 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                             AddShopFragment.isOrderEntryPressed=true
                             ShopDetailFragment.isOrderEntryPressed=true
                             AddShopFragment.newShopID=addShopData?.shop_id
-                            (mContext as DashboardActivity).loadFragment(FragType.ViewAllOrderListFragment, true, addShopData)
+                            if(Pref.IsActivateNewOrderScreenwithSize){//13-09-2021
+                                (mContext as DashboardActivity).loadFragment(FragType.NewOrderScrOrderDetailsFragment, true, addShopData!!.shop_id)
+                            }else {
+                                (mContext as DashboardActivity).loadFragment(FragType.ViewAllOrderListFragment, true, addShopData)
+                            }
                         }
 
                         //(mContext as DashboardActivity).showSnackMessage(getString(R.string.functionality_disabled))
@@ -1553,7 +1625,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                             val submitRemarks = dialog.findViewById(R.id.tv_cancel_order_submit_remarks) as AppCustomTextView
 
                             order_status.text="Failure"
-                            user_name.text="Hi! "+Pref.user_name
+                            user_name.text="Hi "+Pref.user_name+"!"
 
                             submitRemarks.setOnClickListener(View.OnClickListener { view ->
                                 if(!TextUtils.isEmpty(cancel_remarks.text.toString().trim())){
@@ -1570,10 +1642,10 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                                     var shopAll=AppDatabase.getDBInstance()!!.shopActivityDao().getShopActivityAll()
                                     if(shopAll.size == 1){
                                         obj.shop_revisit_uniqKey=shopAll.get(0).shop_revisit_uniqKey
-                                    }else{
+                                    }else if(shopAll.size!=0){
                                         obj.shop_revisit_uniqKey=shopAll.get(shopAll.size-1).shop_revisit_uniqKey
                                     }
-
+                                    if(shopAll.size!=0)
                                     AppDatabase.getDBInstance()?.shopVisitOrderStatusRemarksDao()!!.insert(obj)
                                     dialog.dismiss()
                                 }else{
@@ -1588,7 +1660,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                 }).show((mContext as DashboardActivity).supportFragmentManager, "")
             }
 
-            2 -> CommonDialog.getInstanceNew(AppUtils.hiFirstNameText(), "Select what would you like to do?", "Collection entry", "Opening stock", false, object : CommonDialogClickListener {
+            2 -> CommonDialog.getInstanceNew(AppUtils.hiFirstNameText()+"!", "Select what would you like to do?", "Collection entry", "Opening stock", false, object : CommonDialogClickListener {
                 override fun onLeftClick() {
                     (mContext as DashboardActivity).loadFragment(FragType.CollectionDetailsFragment, true, addShopData)
                     //(mContext as DashboardActivity).showSnackMessage(getString(R.string.functionality_disabled))
@@ -1614,7 +1686,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                         val submitRemarks = dialog.findViewById(R.id.tv_cancel_order_submit_remarks) as AppCustomTextView
 
                         order_status.text="Failure"
-                        user_name.text="Hi! "+Pref.user_name
+                        user_name.text="Hi "+Pref.user_name+"!"
 
                         submitRemarks.setOnClickListener(View.OnClickListener { view ->
                             if(!TextUtils.isEmpty(cancel_remarks.text.toString().trim())){
@@ -1631,10 +1703,10 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                                 var shopAll=AppDatabase.getDBInstance()!!.shopActivityDao().getShopActivityAll()
                                 if(shopAll.size == 1){
                                     obj.shop_revisit_uniqKey=shopAll.get(0).shop_revisit_uniqKey
-                                }else{
+                                }else if(shopAll.size!=0){
                                     obj.shop_revisit_uniqKey=shopAll.get(shopAll.size-1).shop_revisit_uniqKey
                                 }
-
+                                if(shopAll.size!=0)
                                 AppDatabase.getDBInstance()?.shopVisitOrderStatusRemarksDao()!!.insert(obj)
                                 dialog.dismiss()
                             }else{
@@ -1648,7 +1720,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                 }
             }).show((mContext as DashboardActivity).supportFragmentManager, "")
 
-            3 -> CommonDialogSingleBtn.getInstanceNew(AppUtils.hiFirstNameText(), "Select what would you like to do?", "Opening stock", object : OnDialogClickListener {
+            3 -> CommonDialogSingleBtn.getInstanceNew(AppUtils.hiFirstNameText()+"!", "Select what would you like to do?", "Opening stock", object : OnDialogClickListener {
                 override fun onOkClick() {
                     (mContext as DashboardActivity).loadFragment(FragType.StockListFragment, true, addShopData)
                     //(mContext as DashboardActivity).showSnackMessage(getString(R.string.functionality_disabled))
@@ -1668,7 +1740,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                         val submitRemarks = dialog.findViewById(R.id.tv_cancel_order_submit_remarks) as AppCustomTextView
 
                         order_status.text="Failure"
-                        user_name.text="Hi! "+Pref.user_name
+                        user_name.text="Hi "+Pref.user_name+"!"
 
                         submitRemarks.setOnClickListener(View.OnClickListener { view ->
                             if(!TextUtils.isEmpty(cancel_remarks.text.toString().trim())){
@@ -1685,9 +1757,10 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                                 var shopAll=AppDatabase.getDBInstance()!!.shopActivityDao().getShopActivityAll()
                                 if(shopAll.size == 1){
                                     obj.shop_revisit_uniqKey=shopAll.get(0).shop_revisit_uniqKey
-                                }else{
+                                }else if(shopAll.size!=0){
                                     obj.shop_revisit_uniqKey=shopAll.get(shopAll.size-1).shop_revisit_uniqKey
                                 }
+                                if(shopAll.size!=0)
                                 AppDatabase.getDBInstance()?.shopVisitOrderStatusRemarksDao()!!.insert(obj)
                                 dialog.dismiss()
                             }else{
@@ -1710,7 +1783,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                 else
                     "Order entry"
 
-                CommonDialog.getInstanceNew(AppUtils.hiFirstNameText(), "Select what would you like to do?", orderText, "Collection entry", false, object : CommonDialogClickListener {
+                CommonDialog.getInstanceNew(AppUtils.hiFirstNameText()+"!", "Select what would you like to do?", orderText, "Collection entry", false, object : CommonDialogClickListener {
                     override fun onLeftClick() {
                         if (Pref.isQuotationPopupShow)
                             (mContext as DashboardActivity).loadFragment(FragType.QuotationListFragment, true, addShopData.shop_id)
@@ -1718,7 +1791,11 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                             AddShopFragment.isOrderEntryPressed=true
                             ShopDetailFragment.isOrderEntryPressed=true
                             AddShopFragment.newShopID=addShopData?.shop_id
-                            (mContext as DashboardActivity).loadFragment(FragType.ViewAllOrderListFragment, true, addShopData)
+                            if(Pref.IsActivateNewOrderScreenwithSize){//13-09-2021
+                                (mContext as DashboardActivity).loadFragment(FragType.NewOrderScrOrderDetailsFragment, true, addShopData!!.shop_id)
+                            }else {
+                                (mContext as DashboardActivity).loadFragment(FragType.ViewAllOrderListFragment, true, addShopData)
+                            }
                         }
                         //(mContext as DashboardActivity).showSnackMessage(getString(R.string.functionality_disabled))
                     }
@@ -1743,7 +1820,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                             val submitRemarks = dialog.findViewById(R.id.tv_cancel_order_submit_remarks) as AppCustomTextView
 
                             order_status.text="Failure"
-                            user_name.text="Hi! "+Pref.user_name
+                            user_name.text="Hi "+Pref.user_name+"!"
 
                             submitRemarks.setOnClickListener(View.OnClickListener { view ->
                                 if(!TextUtils.isEmpty(cancel_remarks.text.toString().trim())){
@@ -1760,10 +1837,10 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                                     var shopAll=AppDatabase.getDBInstance()!!.shopActivityDao().getShopActivityAll()
                                     if(shopAll.size == 1){
                                         obj.shop_revisit_uniqKey=shopAll.get(0).shop_revisit_uniqKey
-                                    }else{
+                                    }else if(shopAll.size!=0){
                                         obj.shop_revisit_uniqKey=shopAll.get(shopAll.size-1).shop_revisit_uniqKey
                                     }
-
+                                    if(shopAll.size!=0)
                                     AppDatabase.getDBInstance()?.shopVisitOrderStatusRemarksDao()!!.insert(obj)
                                     dialog.dismiss()
                                 }else{
@@ -1786,7 +1863,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                 else
                     "Order entry"
 
-                CommonDialogSingleBtn.getInstanceNew(AppUtils.hiFirstNameText(), "Select what would you like to do?", orderText, object : OnDialogClickListener {
+                CommonDialogSingleBtn.getInstanceNew(AppUtils.hiFirstNameText()+"!", "Select what would you like to do?", orderText, object : OnDialogClickListener {
                     override fun onOkClick() {
                         if (Pref.isQuotationPopupShow)
                             (mContext as DashboardActivity).loadFragment(FragType.QuotationListFragment, true, addShopData.shop_id)
@@ -1794,7 +1871,11 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                             AddShopFragment.isOrderEntryPressed=true
                             ShopDetailFragment.isOrderEntryPressed=true
                             AddShopFragment.newShopID=addShopData?.shop_id
-                            (mContext as DashboardActivity).loadFragment(FragType.ViewAllOrderListFragment, true, addShopData)
+                            if(Pref.IsActivateNewOrderScreenwithSize){//13-09-2021
+                                (mContext as DashboardActivity).loadFragment(FragType.NewOrderScrOrderDetailsFragment, true, addShopData!!.shop_id)
+                            }else {
+                                (mContext as DashboardActivity).loadFragment(FragType.ViewAllOrderListFragment, true, addShopData)
+                            }
                         }
                         //(mContext as DashboardActivity).showSnackMessage(getString(R.string.functionality_disabled))
                     }
@@ -1813,7 +1894,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                             val submitRemarks = dialog.findViewById(R.id.tv_cancel_order_submit_remarks) as AppCustomTextView
 
                             order_status.text="Failure"
-                            user_name.text="Hi! "+Pref.user_name
+                            user_name.text="Hi "+Pref.user_name+"!"
 
                             submitRemarks.setOnClickListener(View.OnClickListener { view ->
                                 if(!TextUtils.isEmpty(cancel_remarks.text.toString().trim())){
@@ -1830,9 +1911,10 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                                     var shopAll=AppDatabase.getDBInstance()!!.shopActivityDao().getShopActivityAll()
                                     if(shopAll.size == 1){
                                         obj.shop_revisit_uniqKey=shopAll.get(0).shop_revisit_uniqKey
-                                    }else{
+                                    }else if(shopAll.size!=0){
                                         obj.shop_revisit_uniqKey=shopAll.get(shopAll.size-1).shop_revisit_uniqKey
                                     }
+                                    if(shopAll.size!=0)
                                     AppDatabase.getDBInstance()?.shopVisitOrderStatusRemarksDao()!!.insert(obj)
                                     dialog.dismiss()
                                 }else{
@@ -1848,7 +1930,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                 }).show((mContext as DashboardActivity).supportFragmentManager, "CommonDialogSingleBtn")
             }
 
-            6 -> CommonDialogSingleBtn.getInstanceNew(AppUtils.hiFirstNameText(), "Select what would you like to do?", "Collection entry", object : OnDialogClickListener {
+            6 -> CommonDialogSingleBtn.getInstanceNew(AppUtils.hiFirstNameText()+"!", "Select what would you like to do?", "Collection entry", object : OnDialogClickListener {
                 override fun onOkClick() {
                     (mContext as DashboardActivity).loadFragment(FragType.CollectionDetailsFragment, true, addShopData)
                     //(mContext as DashboardActivity).showSnackMessage(getString(R.string.functionality_disabled))
@@ -1868,7 +1950,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                         val submitRemarks = dialog.findViewById(R.id.tv_cancel_order_submit_remarks) as AppCustomTextView
 
                         order_status.text="Failure"
-                        user_name.text="Hi! "+Pref.user_name
+                        user_name.text="Hi "+Pref.user_name+"!"
 
                         submitRemarks.setOnClickListener(View.OnClickListener { view ->
                             if(!TextUtils.isEmpty(cancel_remarks.text.toString().trim())){
@@ -1885,9 +1967,10 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                                 var shopAll=AppDatabase.getDBInstance()!!.shopActivityDao().getShopActivityAll()
                                 if(shopAll.size == 1){
                                     obj.shop_revisit_uniqKey=shopAll.get(0).shop_revisit_uniqKey
-                                }else{
+                                }else if(shopAll.size!=0){
                                     obj.shop_revisit_uniqKey=shopAll.get(shopAll.size-1).shop_revisit_uniqKey
                                 }
+                                if(shopAll.size!=0)
                                 AppDatabase.getDBInstance()?.shopVisitOrderStatusRemarksDao()!!.insert(obj)
                                 dialog.dismiss()
                             }else{
@@ -2041,6 +2124,12 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
          ownwr_ani_TV.text = addShopData.dateOfAniversary
          shop_type_TV.text = AppUtils.getCategoryNameFromId(addShopData.type, mContext)*/
 
+            if(Pref.IsprojectforCustomer && !TextUtils.isEmpty(addShopData.project_name))
+                project_name_TV.setText(addShopData.project_name)
+
+            if(Pref.IslandlineforCustomer && !TextUtils.isEmpty(addShopData.landline_number))
+                land_contact_no_TV.setText(addShopData.landline_number)
+
             if (!TextUtils.isEmpty(addShopData.shopName))
                 shopName.setText(addShopData.shopName)
 
@@ -2076,6 +2165,8 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
 
             if (!TextUtils.isEmpty(addShopData.ownerEmailId))
                 shopOwnerEmail.setText(addShopData.ownerEmailId)
+
+
 
             if (!TextUtils.isEmpty(addShopData.ownerName))
                 ownwr_name_TV.setText(addShopData.ownerName)
@@ -2360,6 +2451,13 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                         view_on_map_label_TV.text = getString(R.string.owner_name)
                         owner_contact_no_label_TV.text = getString(R.string.owner_contact_number)
                         owner_email_label_TV.text = getString(R.string.owner_email)
+
+                        /*10-12-2021*/
+                        if (Pref.IsnewleadtypeforRuby && addShopData.type!!.toInt() == 16){
+                            owner_name_RL.visibility = View.GONE
+//                            view_on_map_label_TV.text = "Agency Name"
+                            owner_contact_no_label_TV.text = "Contact Number"
+                        }
                     }
                 }
 
@@ -2488,6 +2586,12 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                     tv_assistant_family_dob.text = AppUtils.changeAttendanceDateFormat(addShopData.assistant_family_dob)
 
 
+                /*14-12-2021*/
+                if (!TextUtils.isEmpty(addShopData.agency_name))
+                    agency_name_TV.setText(addShopData.agency_name)
+
+
+
                 val params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
                 if (addShopData.type == "8") {
                     shopImage.visibility = View.GONE
@@ -2502,6 +2606,20 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                     params.setMargins(0, mContext.resources.getDimensionPixelOffset(R.dimen._minus12sdp), 0, 0)
                 }
                 shops_detail_CV.layoutParams = params
+
+                if (Pref.IsprojectforCustomer) {
+                    view_on_map_label_TV.text="Contact Name"
+                }
+                else {
+                    view_on_map_label_TV.text = getString(R.string.owner_name)
+                }
+
+                if (Pref.IslandlineforCustomer) {
+                    owner_contact_no_label_TV.text = "Contact Number"
+                }
+                else {
+                    owner_contact_no_label_TV.text = getString(R.string.owner_contact_number)
+                }
 
             }
         } catch (e: Exception) {
@@ -2971,7 +3089,12 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                     if (Pref.isShopAddEditAvailable && Pref.isShopEditEnable)
                         enabledEntry(false)
                     else if (Pref.isOrderShow)
-                        (mContext as DashboardActivity).loadFragment(FragType.ViewAllOrderListFragment, true, addShopData)
+                        if(Pref.IsActivateNewOrderScreenwithSize){//13-09-2021
+                            (mContext as DashboardActivity).loadFragment(FragType.NewOrderScrOrderDetailsFragment, true, addShopData!!.shop_id)
+                        }else{
+                            (mContext as DashboardActivity).loadFragment(FragType.ViewAllOrderListFragment, true, addShopData)
+                        }
+
                     else if (Pref.isCollectioninMenuShow)
                         (mContext as DashboardActivity).loadFragment(FragType.ShopBillingListFragment, true, addShopData)
                     else if (Pref.isQuotationShow) {
@@ -3034,7 +3157,11 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                 if (addShopData.type != "8") {
                     if (Pref.isShopAddEditAvailable && Pref.isShopEditEnable) {
                         if (Pref.isOrderShow)
-                            (mContext as DashboardActivity).loadFragment(FragType.ViewAllOrderListFragment, true, addShopData)
+                            if(Pref.IsActivateNewOrderScreenwithSize){//13-09-2021
+                                (mContext as DashboardActivity).loadFragment(FragType.NewOrderScrOrderDetailsFragment, true, addShopData!!.shop_id)
+                            }else {
+                                (mContext as DashboardActivity).loadFragment(FragType.ViewAllOrderListFragment, true, addShopData)
+                            }
                         else if (Pref.isCollectioninMenuShow)
                             (mContext as DashboardActivity).loadFragment(FragType.ShopBillingListFragment, true, addShopData)
                         else if (Pref.isQuotationShow) {
@@ -3078,7 +3205,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                     if (Pref.isShopAddEditAvailable && Pref.isShopEditEnable)  {
                         //if (Pref.willActivityShow)
                         (mContext as DashboardActivity).isFromShop = true
-                        (mContext as DashboardActivity).loadFragment(FragType.DoctorActivityListFragment, true, addShopData)
+                            (mContext as DashboardActivity).loadFragment(FragType.DoctorActivityListFragment, true, addShopData)
                     }
                 }
 
@@ -3404,11 +3531,13 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
         progress_wheel.spin()
         val repository = ShopListRepositoryProvider.provideShopListRepository()
         BaseActivity.compositeDisposable.add(
-                repository.getModelList()
+                //repository.getModelList()
+                repository.getModelListNew()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
-                            val response = result as ModelListResponseModel
+                            //val response = result as ModelListResponseModel
+                            val response = result as ModelListResponse
                             XLog.d("GET MODEL DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             if (response.status == NetworkConstant.SUCCESS) {
 
@@ -3416,13 +3545,15 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
 
                                     doAsync {
 
-                                        response.model_list?.forEach {
+                                        AppDatabase.getDBInstance()?.modelListDao()?.insertAllLarge(response.model_list!!)
+
+                                   /*     response.model_list?.forEach {
                                             val modelEntity = ModelEntity()
                                             AppDatabase.getDBInstance()?.modelListDao()?.insertAll(modelEntity.apply {
                                                 model_id = it.id
                                                 model_name = it.name
                                             })
-                                        }
+                                        }*/
 
                                         uiThread {
                                             progress_wheel.stopSpinning()
@@ -3909,7 +4040,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
             tv_area.text = area.area_name
             areaId = area.area_id!!
             clearFocus()
-        }.show(fragmentManager, "")
+        }.show(fragmentManager!!, "")
     }
 
     private fun getTypeListApi(isFromRefresh: Boolean) {
@@ -4828,6 +4959,8 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
             else
                 AppDatabase.getDBInstance()?.assignToShopDao()?.updateTypeId(addShopData.shop_id, addShopData.retailer_id)
         }
+        /*14-12-2021*/
+        addShopData.agency_name = agency_name_TV.text.toString().trim()
 
         AppDatabase.getDBInstance()?.addShopEntryDao()?.updateShopDao(addShopData)
 
@@ -4910,6 +5043,15 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                 return
 
             BaseActivity.isApiInitiated = true
+
+
+            /*14-12-2021*/
+//            addShopReqData.agency_name =addShopData.agency_name!!
+            if (addShopReqData.agency_name!=null && !addShopReqData.agency_name.equals(""))
+                addShopReqData.agency_name =addShopData.agency_name!!
+            else
+                addShopReqData.agency_name = ""
+
 
             callEditShopApi(addShopReqData, addShopData.shopImageLocalPath)
         } else {
@@ -4998,7 +5140,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                                     NetworkConstant.SUCCESS -> {
                                         AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsEditUploaded(1, addShopReqData.shop_id)
                                         progress_wheel.stopSpinning()
-                                        //                                (mContext as DashboardActivity).showSnackMessage("SUCCESS")
+                        //                                (mContext as DashboardActivity).showSnackMessage("SUCCESS")
 
                                         getAssignedPPListApi(true, addShopReqData.shop_id)
 
@@ -5041,7 +5183,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                                     NetworkConstant.SUCCESS -> {
                                         AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsEditUploaded(1, addShopReqData.shop_id)
                                         progress_wheel.stopSpinning()
-                                        //                                (mContext as DashboardActivity).showSnackMessage("SUCCESS")
+                        //                                (mContext as DashboardActivity).showSnackMessage("SUCCESS")
 
                                         getAssignedPPListApi(true, addShopReqData.shop_id)
 
@@ -5276,7 +5418,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                 assigned_to_pp_TV.text = pp?.pp_name + " (" + pp?.pp_phn_no + ")"
                 assignedToPPId = pp?.pp_id.toString()
             }
-        }).show(fragmentManager, "")
+        }).show(fragmentManager!!, "")
     }
 
     private fun getAssignedDDListApi(edited: Boolean, shop_id: String?) {
@@ -5306,6 +5448,8 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                                             assignToDD.dd_phn_no = list[i].phn_no
                                             assignToDD.pp_id = list[i].assigned_to_pp_id
                                             assignToDD.type_id = list[i].type_id
+                                            assignToDD.dd_latitude = list[i].dd_latitude
+                                            assignToDD.dd_longitude = list[i].dd_longitude
                                             AppDatabase.getDBInstance()?.ddListDao()?.insert(assignToDD)
                                         }
 
@@ -5369,7 +5513,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                 assigned_to_dd_TV.text = dd?.dd_name + " (" + dd?.dd_phn_no + ")"
                 assignedToDDId = dd?.dd_id.toString()
             }
-        }).show(fragmentManager, "")
+        }).show(fragmentManager!!, "")
     }
 
     private fun getAssignedToShopApi(edited: Boolean, shop_id: String?) {
@@ -5452,7 +5596,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
                 tv_assign_to_shop.text = shop?.name + " (" + shop?.phn_no + ")"
                 assignedToShopId = shop?.assigned_to_shop_id!!
             }
-        }).show(fragmentManager, "")
+        }).show(fragmentManager!!, "")
     }
 
     private fun initShopTypePopUp(view: View) {
@@ -5625,6 +5769,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
         shopImage.setOnClickListener(null)
         iv_category_dropdown_icon.visibility = View.GONE
         shopName.isEnabled = false
+        agency_name_TV.isEnabled = false
         shopAddress.isEnabled = false
         shopPin.isEnabled = false
         shopContactNumber.isEnabled = false
@@ -5635,10 +5780,10 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
         if (userId != Pref.user_id)
             floating_fab.visibility = View.GONE
         else {*/
-        if (!Pref.isShopAddEditAvailable && !Pref.isOrderShow && !Pref.isCollectioninMenuShow && (!Pref.willStockShow || (!Pref.isStockAvailableForAll && addShopData.type != "4")))
-            floating_fab.visibility = View.GONE
-        else
-            floating_fab.visibility = View.VISIBLE
+            if (!Pref.isShopAddEditAvailable && !Pref.isOrderShow && !Pref.isCollectioninMenuShow && (!Pref.willStockShow || (!Pref.isStockAvailableForAll && addShopData.type != "4")))
+                floating_fab.visibility = View.GONE
+            else
+                floating_fab.visibility = View.VISIBLE
         //}
 
         ownwr_name_TV.isEnabled = false
@@ -5700,6 +5845,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
 
         tv_shoptype_asterisk_mark.visibility = View.GONE
         tv_name_asterisk_mark.visibility = View.GONE
+        tv_agency_asterisk_mark.visibility = View.GONE
         tv_address_asterisk_mark.visibility = View.GONE
         tv_pincode_asterisk_mark.visibility = View.GONE
         tv_owner_name_asterisk_mark.visibility = View.GONE
@@ -5787,6 +5933,7 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
 
         tv_shoptype_asterisk_mark.visibility = View.VISIBLE
         tv_name_asterisk_mark.visibility = View.VISIBLE
+        tv_agency_asterisk_mark.visibility = View.VISIBLE
         tv_address_asterisk_mark.visibility = View.VISIBLE
         tv_pincode_asterisk_mark.visibility = View.VISIBLE
         tv_owner_name_asterisk_mark.visibility = View.VISIBLE
@@ -6102,4 +6249,3 @@ class ShopDetailFragment : BaseFragment(), View.OnClickListener {
         getShopTypeListApi(shop_type_TV, true)
     }
 }
-

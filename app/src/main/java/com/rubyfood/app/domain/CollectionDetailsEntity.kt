@@ -1,8 +1,8 @@
 package com.rubyfood.app.domain
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.rubyfood.app.AppConstant
 
 /**
@@ -62,4 +62,13 @@ class CollectionDetailsEntity {
 
     @ColumnInfo(name = "patient_address")
     var patient_address: String? = null
+
+    @ColumnInfo(name = "Hospital")
+    var Hospital: String? = null
+
+    @ColumnInfo(name = "Email_Address")
+    var Email_Address: String? = null
+
+
+
 }

@@ -1,8 +1,8 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion "26.0.3"
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
 
     defaultConfig {
         minSdkVersion 19
@@ -19,7 +19,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:27.1.1'
+    compile 'androidx.appcompat:appcompat:1.0.0'
     compile 'com.kailashdabhi:om-recorder:1.1.0'
     compile 'com.cleveroad:audiovisualization:1.0.0'
 }

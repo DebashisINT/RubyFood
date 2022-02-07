@@ -2,8 +2,8 @@ package com.rubyfood.features.attendance;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,10 +45,12 @@ public class AttendanceRecyclerViewAdapter extends RecyclerView.Adapter<Attendan
 
     @Override
     public void onBindViewHolder(AttendanceFragmentViewHolder attendanceFragmentViewHolder, int position) {
-        if (position % 2 == 0)
-            attendanceFragmentViewHolder.rcv_item_bg.setBackgroundColor(ContextCompat.getColor(context, R.color.report_screen_bg));
-        else
-            attendanceFragmentViewHolder.rcv_item_bg.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
+        if (position % 2 == 0) {
+           // attendanceFragmentViewHolder.rcv_item_bg.setBackgroundColor(ContextCompat.getColor(context, R.color.report_screen_bg));
+        }
+        else {
+           // attendanceFragmentViewHolder.rcv_item_bg.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
+        }
         if (position == mUserLoginDataEntityArray.size() - 1)
             onScrollEndListener.onScrollEnd();
 

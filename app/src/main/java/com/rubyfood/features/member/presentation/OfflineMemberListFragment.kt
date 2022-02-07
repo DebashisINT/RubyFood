@@ -2,8 +2,8 @@ package com.rubyfood.features.member.presentation
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -49,6 +49,8 @@ class OfflineMemberListFragment : BaseFragment() {
     private var isFirstScreen = false
     private var adapter: OfflineMemberAdapter?= null
     private var memberList: List<MemberEntity> ?= null
+
+    private var isApiCalledForTeam :Boolean = false
 
     companion object {
 
@@ -96,7 +98,12 @@ class OfflineMemberListFragment : BaseFragment() {
         rl_member_list_main.setOnClickListener(null)
 
         setHierarchyData()
-        getDataFromDb()
+        if(Pref.isOfflineTeam){
+            getDataFromDb()
+        }else{
+            refreshList()
+        }
+
     }
 
     private fun getDataFromDb() {
@@ -110,6 +117,11 @@ class OfflineMemberListFragment : BaseFragment() {
             val memberList = ArrayList<MemberEntity>()
 
             val list = AppDatabase.getDBInstance()?.memberDao()?.getSingleUserMember(userId)
+
+            if(isApiCalledForTeam == false && (list == null || list.size!! ==0)){
+                refreshList()
+            }
+
             list?.forEach {
                 memberList.add(it)
             }
@@ -232,6 +244,12 @@ class OfflineMemberListFragment : BaseFragment() {
                     loadFragment(FragType.OfflineMemberListFragment, true, member.user_id!!)
                 }
             }
+
+            override fun onJobClick(member: MemberEntity) {
+                Pref.IsMyJobFromTeam=true
+                (mContext as DashboardActivity).loadFragment(FragType.MyJobsFragment, true, member.user_id!!)
+            }
+
         })
         rv_member_list.adapter = adapter
     }
@@ -303,7 +321,6 @@ class OfflineMemberListFragment : BaseFragment() {
                         .subscribe({ result ->
                             val response = result as TeamListResponseModel
                             if (response.status == NetworkConstant.SUCCESS) {
-
                                 if (response.member_list != null && response.member_list!!.isNotEmpty()) {
 
                                     doAsync {
@@ -322,6 +339,7 @@ class OfflineMemberListFragment : BaseFragment() {
 
                                         uiThread {
                                             progress_wheel.stopSpinning()
+                                            isApiCalledForTeam=true
                                             getDataFromDb()
                                         }
                                     }

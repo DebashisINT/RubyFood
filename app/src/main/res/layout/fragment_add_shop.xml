@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="false">
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,7 +20,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/add_shop_bg_color"
+            android:background="@color/color_silver"
             android:clickable="true"
             android:orientation="vertical">
 
@@ -41,7 +41,7 @@
                     android:id="@+id/layer_image_vw_IMG"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_150sdp"
-                    android:background="#ffffff"
+                    android:background="@color/color_silver"
                     android:scaleType="fitXY" />
 
                 <LinearLayout
@@ -82,16 +82,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/shop_image_RL"
-                android:layout_marginBottom="@dimen/_10sdp"
                 android:layout_marginLeft="@dimen/_10sdp"
-                android:layout_marginRight="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_135sdp"
+                android:layout_marginRight="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
                 android:background="@drawable/nearby_shop_list_bg"
+                android:backgroundTint="@color/color_silver"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/_10sdp"
                 android:paddingLeft="@dimen/_10sdp"
+                android:paddingTop="@dimen/_10sdp"
                 android:paddingRight="@dimen/_10sdp"
-                android:paddingTop="@dimen/_10sdp">
+                android:paddingBottom="@dimen/_10sdp">
 
                 <RelativeLayout
                     android:id="@+id/shop_type_RL"
@@ -104,8 +105,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginRight="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
                         android:src="@drawable/ic_add_shop_category_icon" />
 
                     <RelativeLayout
@@ -142,6 +143,7 @@
                             android:src="@drawable/ic_gray_down_arrow_icon" />
 
                         <View
+                            android:id="@+id/type_VV1"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
                             android:layout_below="@id/type_TV"
@@ -149,7 +151,20 @@
                             android:layout_marginRight="@dimen/_2sdp"
                             android:background="@color/light_gray" />
 
+                        <com.rubyfood.widgets.AppCustomTextView
+                            android:id="@+id/hint_TV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/type_VV1"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:paddingStart="@dimen/_5sdp"
+                            android:text="@string/lead_name"
+                            android:textSize="@dimen/_8sdp"
+                            android:visibility="gone" />
+
+
                     </RelativeLayout>
+
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -165,8 +180,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginRight="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_assigned_pp_icon" />
 
@@ -228,8 +243,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginRight="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_assigned_dd_icon" />
 
@@ -292,8 +307,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginRight="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_assigned_dd_icon" />
 
@@ -355,8 +370,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginRight="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_assigned_dd_icon" />
 
@@ -419,8 +434,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginRight="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_assigned_pp_icon" />
 
@@ -482,8 +497,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginRight="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_assigned_dd_icon" />
 
@@ -522,7 +537,7 @@
                             android:text="@string/mandatory_mark"
                             android:textColor="@color/red"
                             android:textSize="@dimen/_15sdp"
-                            android:visibility="gone"/>
+                            android:visibility="gone" />
 
                         <View
                             android:layout_width="match_parent"
@@ -532,6 +547,7 @@
                             android:layout_marginRight="@dimen/_2sdp"
                             android:background="@color/light_gray" />
                     </RelativeLayout>
+
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -547,8 +563,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_20sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
                         android:src="@drawable/ic_add_shop_name_icon" />
 
                     <com.rubyfood.widgets.AppCustomTextView
@@ -563,13 +579,13 @@
                         android:textColor="@color/red"
                         android:textSize="@dimen/_15sdp" />
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/shop_name_TL"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginBottom="@dimen/_5sdp"
                         android:layout_marginLeft="@dimen/_5sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"
                         android:layout_toLeftOf="@+id/tv_shop_asterisk_mark"
                         android:layout_toRightOf="@+id/iv_name_icon"
                         android:gravity="center_vertical"
@@ -588,19 +604,230 @@
                             android:singleLine="true"
                             android:textSize="@dimen/_13sdp"
                             app:theme="@style/EvoEditTextTheme" />
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <View
+                        android:id="@+id/shop_name_EDT_VV2"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_1sdp"
-                        android:layout_alignLeft="@+id/shop_name_TL"
                         android:layout_below="@id/shop_name_TL"
+                        android:layout_alignLeft="@+id/shop_name_TL"
                         android:layout_marginRight="@dimen/_2sdp"
                         android:background="@color/light_gray" />
 
                 </RelativeLayout>
 
-                <android.support.v7.widget.RecyclerView
+                <!--Project Name Design-->
+
+                <RelativeLayout
+                    android:id="@+id/project_name_Rl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_7sdp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/iv_project_name_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
+                        android:src="@drawable/ic_project_name_euro" />
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/project_name_TL"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/_5sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"
+                        android:layout_toRightOf="@+id/iv_project_name_icon"
+                        android:gravity="center_vertical"
+                        android:paddingRight="@dimen/_5sdp"
+                        android:textColorHint="@color/light_gray"
+                        app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+
+                        <com.rubyfood.widgets.AppCustomEditText
+                            android:id="@+id/project_name_EDT"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:hint="@string/pro_name"
+                            android:imeOptions="actionNext"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            android:textSize="@dimen/_13sdp"
+                            app:theme="@style/EvoEditTextTheme" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <View
+                        android:id="@+id/project_name_EDT_VV2"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_1sdp"
+                        android:layout_below="@id/project_name_TL"
+                        android:layout_alignLeft="@+id/project_name_TL"
+                        android:layout_marginRight="@dimen/_2sdp"
+                        android:background="@color/light_gray" />
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/hint_TV1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_7sdp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/iv_agency_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
+                        android:src="@drawable/ic_agency_new_lead" />
+
+                    <com.rubyfood.widgets.AppCustomTextView
+                        android:id="@+id/tv_agency_asterisk_mark"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/_3sdp"
+                        android:paddingTop="@dimen/_2sdp"
+                        android:text="@string/mandatory_mark"
+                        android:textColor="@color/red"
+                        android:textSize="@dimen/_15sdp" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/agency_name_TL"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/_5sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"
+                        android:layout_toLeftOf="@+id/tv_agency_asterisk_mark"
+                        android:layout_toRightOf="@+id/iv_agency_icon"
+                        android:gravity="center_vertical"
+                        android:paddingRight="@dimen/_5sdp"
+                        android:textColorHint="@color/light_gray"
+                        app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+
+                        <com.rubyfood.widgets.AppCustomEditText
+                            android:id="@+id/agency_name_EDT"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:hint="@string/agency_name"
+                            android:imeOptions="actionNext"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            android:textSize="@dimen/_13sdp"
+                            app:theme="@style/EvoEditTextTheme" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <View
+                        android:id="@+id/agency_name_EDT_VV2"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_1sdp"
+                        android:layout_below="@id/agency_name_TL"
+                        android:layout_alignLeft="@+id/agency_name_TL"
+                        android:layout_marginRight="@dimen/_2sdp"
+                        android:background="@color/light_gray" />
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/lead_contact_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_7sdp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <ImageView
+                        android:id="@+id/iv_lead_contact_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
+                        android:src="@drawable/ic_contact_lead_new" />
+
+                    <com.rubyfood.widgets.AppCustomTextView
+                        android:id="@+id/tv_lead_contact_asterisk_mark"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/_3sdp"
+                        android:paddingTop="@dimen/_2sdp"
+                        android:text="@string/mandatory_mark"
+                        android:textColor="@color/red"
+                        android:textSize="@dimen/_15sdp" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/lead_contact_TL"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/_5sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"
+                        android:layout_toLeftOf="@+id/tv_lead_contact_asterisk_mark"
+                        android:layout_toRightOf="@+id/iv_lead_contact_icon"
+                        android:gravity="center_vertical"
+                        android:paddingRight="@dimen/_5sdp"
+                        android:textColorHint="@color/light_gray"
+                        app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+
+                        <com.rubyfood.widgets.AppCustomEditText
+                            android:id="@+id/lead_contact_EDT"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:hint="@string/lead_contact_name"
+                            android:imeOptions="actionNext"
+                            android:inputType="numberDecimal"
+                            android:maxLength="10"
+                            android:singleLine="true"
+                            android:textSize="@dimen/_13sdp"
+                            app:theme="@style/EvoEditTextTheme" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <View
+                        android:id="@+id/lead_contact_EDT_VV2"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_1sdp"
+                        android:layout_below="@id/lead_contact_TL"
+                        android:layout_alignLeft="@+id/lead_contact_TL"
+                        android:layout_marginRight="@dimen/_2sdp"
+                        android:background="@color/light_gray" />
+
+                    <com.rubyfood.widgets.AppCustomTextView
+                        android:id="@+id/hint_TV4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/lead_contact_EDT_VV2"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:paddingLeft="@dimen/_25sdp"
+                        android:text="@string/lead_contact_name"
+                        android:textSize="@dimen/_8sdp"
+                        android:visibility="gone" />
+
+                </RelativeLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_suggestion_shop_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -619,8 +846,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginRight="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_assigned_dd_icon" />
 
@@ -659,7 +886,7 @@
                             android:text="@string/mandatory_mark"
                             android:textColor="@color/red"
                             android:textSize="@dimen/_15sdp"
-                            android:visibility="gone"/>
+                            android:visibility="gone" />
 
                         <View
                             android:layout_width="match_parent"
@@ -680,8 +907,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginRight="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
                         android:src="@drawable/ic_add_shop_address_icon" />
 
                     <com.rubyfood.widgets.AppCustomTextView
@@ -696,12 +923,12 @@
                         android:textColor="@color/red"
                         android:textSize="@dimen/_15sdp" />
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_5sdp"
                         android:layout_marginLeft="@dimen/_5sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"
                         android:layout_toLeftOf="@+id/tv_address_asterisk_mark"
                         android:layout_toRightOf="@+id/iv_address_icon"
                         android:paddingRight="@dimen/_5sdp"
@@ -719,13 +946,13 @@
                             android:singleLine="true"
                             android:textSize="@dimen/_13sdp"
                             app:theme="@style/EvoEditTextTheme" />
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_1sdp"
-                        android:layout_alignLeft="@+id/til_address"
                         android:layout_below="@id/til_address"
+                        android:layout_alignLeft="@+id/til_address"
                         android:layout_marginRight="@dimen/_2sdp"
                         android:background="@color/light_gray" />
 
@@ -741,8 +968,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginRight="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_12sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
                         android:src="@drawable/ic_add_shop_pin_icon" />
 
                     <com.rubyfood.widgets.AppCustomTextView
@@ -757,13 +984,13 @@
                         android:textColor="@color/red"
                         android:textSize="@dimen/_15sdp" />
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_pincode"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_5sdp"
                         android:layout_marginLeft="@dimen/_5sdp"
                         android:layout_marginRight="@dimen/_5sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"
                         android:layout_toLeftOf="@+id/tv_pincode_asterisk_mark"
                         android:layout_toRightOf="@+id/iv_pincode_icon"
                         android:textColorHint="@color/light_gray"
@@ -780,13 +1007,13 @@
                             android:singleLine="true"
                             android:textSize="@dimen/_13sdp"
                             app:theme="@style/EvoEditTextTheme" />
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_1sdp"
-                        android:layout_alignLeft="@+id/til_pincode"
                         android:layout_below="@id/til_pincode"
+                        android:layout_alignLeft="@+id/til_pincode"
                         android:layout_marginRight="@dimen/_2sdp"
                         android:background="@color/light_gray" />
                 </RelativeLayout>
@@ -804,8 +1031,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="@dimen/_5sdp"
-                        android:layout_marginRight="@dimen/_7sdp"
                         android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_7sdp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_notification" />
 
@@ -851,8 +1078,8 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_1sdp"
-                        android:layout_alignLeft="@+id/rl_area"
                         android:layout_below="@+id/rl_area"
+                        android:layout_alignLeft="@+id/rl_area"
                         android:layout_marginLeft="@dimen/_2sdp"
                         android:background="@color/light_gray" />
                 </RelativeLayout>
@@ -864,14 +1091,14 @@
                     android:layout_marginTop="@dimen/_10sdp"
                     android:clickable="true">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_entity"
                         android:layout_width="@dimen/_13sdp"
                         android:layout_height="@dimen/_13sdp"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="@dimen/_5sdp"
-                        android:layout_marginRight="@dimen/_7sdp"
                         android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_7sdp"
                         android:contentDescription="@null"
                         app:srcCompat="@drawable/ic_entity_type" />
 
@@ -917,8 +1144,8 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_1sdp"
-                        android:layout_alignLeft="@+id/rl_entity"
                         android:layout_below="@+id/rl_entity"
+                        android:layout_alignLeft="@+id/rl_entity"
                         android:layout_marginLeft="@dimen/_2sdp"
                         android:background="@color/light_gray" />
                 </RelativeLayout>
@@ -930,14 +1157,14 @@
                     android:layout_marginTop="@dimen/_10sdp"
                     android:clickable="true">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_party"
                         android:layout_width="@dimen/_13sdp"
                         android:layout_height="@dimen/_13sdp"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="@dimen/_5sdp"
-                        android:layout_marginRight="@dimen/_7sdp"
                         android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_7sdp"
                         android:contentDescription="@null"
                         app:srcCompat="@drawable/ic_party_status" />
 
@@ -983,14 +1210,15 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_1sdp"
-                        android:layout_alignLeft="@+id/rl_party"
                         android:layout_below="@+id/rl_party"
+                        android:layout_alignLeft="@+id/rl_party"
                         android:layout_marginLeft="@dimen/_2sdp"
                         android:background="@color/light_gray" />
                 </RelativeLayout>
-                
-                
+
+
                 <com.rubyfood.widgets.AppCustomTextView
+                    android:id="@+id/contact_only"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_15sdp"
@@ -1011,8 +1239,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginRight="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_7sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
                         android:src="@drawable/ic_add_shop_owner_name" />
 
                     <com.rubyfood.widgets.AppCustomTextView
@@ -1027,13 +1255,13 @@
                         android:textColor="@color/red"
                         android:textSize="@dimen/_15sdp" />
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_5sdp"
                         android:layout_marginLeft="@dimen/_5sdp"
                         android:layout_marginRight="@dimen/_5sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"
                         android:layout_toLeftOf="@+id/tv_name_asterisk_mark"
                         android:layout_toRightOf="@+id/tv_name_icon"
                         android:textColorHint="@color/light_gray"
@@ -1050,18 +1278,19 @@
                             android:singleLine="true"
                             android:textSize="@dimen/_13sdp"
                             app:theme="@style/EvoEditTextTheme" />
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_1sdp"
-                        android:layout_alignLeft="@+id/til_name"
                         android:layout_below="@id/til_name"
+                        android:layout_alignLeft="@+id/til_name"
                         android:layout_marginRight="@dimen/_2sdp"
                         android:background="@color/light_gray" />
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/ownerNumberRL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_5sdp">
@@ -1071,8 +1300,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginRight="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
                         android:src="@drawable/ic_add_shop_owner_contact_number" />
 
                     <com.rubyfood.widgets.AppCustomTextView
@@ -1087,13 +1316,13 @@
                         android:textColor="@color/red"
                         android:textSize="@dimen/_15sdp" />
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_no"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_5sdp"
                         android:layout_marginLeft="@dimen/_5sdp"
                         android:layout_marginRight="@dimen/_5sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"
                         android:layout_toLeftOf="@+id/tv_no_asterisk_mark"
                         android:layout_toRightOf="@+id/iv_no_icon"
                         android:textColorHint="@color/light_gray"
@@ -1112,18 +1341,76 @@
                             android:textSize="@dimen/_13sdp"
                             app:theme="@style/EvoEditTextTheme" />
 
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_1sdp"
-                        android:layout_alignLeft="@+id/til_no"
                         android:layout_below="@id/til_no"
+                        android:layout_alignLeft="@+id/til_no"
                         android:layout_marginRight="@dimen/_2sdp"
                         android:background="@color/light_gray" />
+
+                </RelativeLayout>
+
+                <!--Landline Design-->
+
+
+                <RelativeLayout
+                    android:id="@+id/landLineNumberRL"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp">
+
+                    <ImageView
+                        android:id="@+id/iv_landLineNumberRL_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
+                        android:src="@drawable/ic_landline_euro" />
+
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_landLineNumberRL_no"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"
+                        android:layout_toRightOf="@+id/iv_landLineNumberRL_icon"
+                        android:textColorHint="@color/light_gray"
+                        app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+
+                        <com.rubyfood.widgets.AppCustomEditText
+                            android:id="@+id/landLineNumberRL_EDT"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:hint="@string/landline_contact_number"
+                            android:imeOptions="actionNext"
+                            android:inputType="number"
+                            android:maxLength="20"
+                            android:singleLine="true"
+                            android:textSize="@dimen/_13sdp"
+                            app:theme="@style/EvoEditTextTheme" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_1sdp"
+                        android:layout_below="@id/til_landLineNumberRL_no"
+                        android:layout_alignLeft="@+id/til_landLineNumberRL_no"
+                        android:layout_marginRight="@dimen/_2sdp"
+                        android:background="@color/light_gray" />
+
                 </RelativeLayout>
 
                 <LinearLayout
+                    android:id="@+id/owneremailLL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -1132,11 +1419,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginRight="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_8sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
                         android:src="@drawable/ic_add_shop_mail_icon" />
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_mail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -1154,7 +1441,9 @@
                             android:textSize="@dimen/_13sdp"
                             app:theme="@style/EvoEditTextTheme" />
 
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
                 </LinearLayout>
 
                 <RelativeLayout
@@ -1171,8 +1460,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="@dimen/_5sdp"
-                        android:layout_marginRight="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
                         android:src="@drawable/ic_rupee_icon" />
 
                     <com.rubyfood.widgets.AppCustomTextView
@@ -1187,13 +1476,13 @@
                         android:textColor="@color/red"
                         android:textSize="@dimen/_15sdp" />
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/amount_TL"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_5sdp"
                         android:layout_marginLeft="@dimen/_5sdp"
                         android:layout_marginRight="@dimen/_5sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"
                         android:layout_toLeftOf="@+id/tv_amount_asterisk_mark"
                         android:layout_toRightOf="@+id/iv_amount_icon"
                         android:textColorHint="@color/light_gray"
@@ -1212,13 +1501,13 @@
                             android:textSize="@dimen/_13sdp"
                             app:theme="@style/EvoEditTextTheme" />
 
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_1sdp"
-                        android:layout_alignLeft="@+id/amount_TL"
                         android:layout_below="@id/amount_TL"
+                        android:layout_alignLeft="@+id/amount_TL"
                         android:layout_marginRight="@dimen/_2sdp"
                         android:background="@color/light_gray" />
                 </RelativeLayout>
@@ -1241,8 +1530,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="@dimen/_5sdp"
-                            android:layout_marginRight="@dimen/_7sdp"
                             android:layout_marginTop="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_7sdp"
                             android:contentDescription="@null"
                             android:src="@drawable/ic_model" />
 
@@ -1288,8 +1577,8 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
-                            android:layout_alignLeft="@+id/rl_model"
                             android:layout_below="@+id/rl_model"
+                            android:layout_alignLeft="@+id/rl_model"
                             android:layout_marginLeft="@dimen/_2sdp"
                             android:background="@color/light_gray" />
                     </RelativeLayout>
@@ -1306,8 +1595,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="@dimen/_5sdp"
-                            android:layout_marginRight="@dimen/_7sdp"
                             android:layout_marginTop="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_7sdp"
                             android:contentDescription="@null"
                             android:src="@drawable/ic_primary_app" />
 
@@ -1354,8 +1643,8 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
-                            android:layout_alignLeft="@+id/rl_primary_app"
                             android:layout_below="@+id/rl_primary_app"
+                            android:layout_alignLeft="@+id/rl_primary_app"
                             android:layout_marginLeft="@dimen/_2sdp"
                             android:background="@color/light_gray" />
                     </RelativeLayout>
@@ -1372,8 +1661,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="@dimen/_5sdp"
-                            android:layout_marginRight="@dimen/_7sdp"
                             android:layout_marginTop="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_7sdp"
                             android:contentDescription="@null"
                             android:src="@drawable/ic_secondary_app" />
 
@@ -1420,8 +1709,8 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
-                            android:layout_alignLeft="@+id/rl_secondary_app"
                             android:layout_below="@+id/rl_secondary_app"
+                            android:layout_alignLeft="@+id/rl_secondary_app"
                             android:layout_marginLeft="@dimen/_2sdp"
                             android:background="@color/light_gray" />
                     </RelativeLayout>
@@ -1438,8 +1727,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginLeft="@dimen/_5sdp"
-                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_marginTop="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:src="@drawable/ic_rupee_icon" />
 
                         <com.rubyfood.widgets.AppCustomTextView
@@ -1455,13 +1744,13 @@
                             android:textSize="@dimen/_15sdp"
                             android:visibility="gone" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/booking_amount_TL"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_marginLeft="@dimen/_5sdp"
                             android:layout_marginRight="@dimen/_5sdp"
+                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_toLeftOf="@+id/tv_booking_amount_asterisk_mark"
                             android:layout_toRightOf="@+id/iv_booking_amount_icon"
                             android:textColorHint="@color/light_gray"
@@ -1479,13 +1768,13 @@
                                 android:textSize="@dimen/_13sdp"
                                 app:theme="@style/EvoEditTextTheme" />
 
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
-                            android:layout_alignLeft="@+id/booking_amount_TL"
                             android:layout_below="@id/booking_amount_TL"
+                            android:layout_alignLeft="@+id/booking_amount_TL"
                             android:layout_marginRight="@dimen/_2sdp"
                             android:background="@color/light_gray" />
                     </RelativeLayout>
@@ -1502,8 +1791,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="@dimen/_5sdp"
-                            android:layout_marginRight="@dimen/_7sdp"
                             android:layout_marginTop="@dimen/_7sdp"
+                            android:layout_marginRight="@dimen/_7sdp"
                             android:contentDescription="@null"
                             android:src="@drawable/ic_lead" />
 
@@ -1550,8 +1839,8 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
-                            android:layout_alignLeft="@+id/rl_lead_type"
                             android:layout_below="@+id/rl_lead_type"
+                            android:layout_alignLeft="@+id/rl_lead_type"
                             android:layout_marginLeft="@dimen/_2sdp"
                             android:background="@color/light_gray" />
                     </RelativeLayout>
@@ -1568,8 +1857,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="@dimen/_5sdp"
-                            android:layout_marginRight="@dimen/_7sdp"
                             android:layout_marginTop="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_7sdp"
                             android:contentDescription="@null"
                             android:src="@drawable/ic_stages" />
 
@@ -1615,8 +1904,8 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
-                            android:layout_alignLeft="@+id/rl_stage"
                             android:layout_below="@+id/rl_stage"
+                            android:layout_alignLeft="@+id/rl_stage"
                             android:layout_marginLeft="@dimen/_2sdp"
                             android:background="@color/light_gray" />
                     </RelativeLayout>
@@ -1633,8 +1922,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="@dimen/_5sdp"
-                            android:layout_marginRight="@dimen/_7sdp"
                             android:layout_marginTop="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_7sdp"
                             android:contentDescription="@null"
                             android:src="@drawable/ic_funnel" />
 
@@ -1681,12 +1970,90 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
-                            android:layout_alignLeft="@+id/rl_funnel_stage"
                             android:layout_below="@+id/rl_funnel_stage"
+                            android:layout_alignLeft="@+id/rl_funnel_stage"
                             android:layout_marginLeft="@dimen/_2sdp"
                             android:background="@color/light_gray" />
                     </RelativeLayout>
+
+
                 </LinearLayout>
+
+                <com.rubyfood.widgets.AppCustomTextView
+                    android:id="@+id/tv_header_prospect_lead"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:paddingStart="@dimen/_15sdp"
+                    android:text="@string/prospect_name"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_11sdp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_prospect_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/tv_prospect_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_7sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
+                        android:src="@drawable/ic_prospect_lead_new" />
+
+                    <com.rubyfood.widgets.AppCustomTextView
+                        android:id="@+id/tv_prospect_asterisk_mark"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/_3sdp"
+                        android:paddingTop="@dimen/_7sdp"
+                        android:text="@string/mandatory_mark"
+                        android:textColor="@color/red"
+                        android:textSize="@dimen/_15sdp"
+                        android:visibility="gone" />
+
+                    <com.rubyfood.widgets.AppCustomTextView
+                        android:id="@+id/prospect_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"
+                        android:layout_toLeftOf="@+id/tv_prospect_asterisk_mark"
+                        android:layout_toRightOf="@+id/tv_prospect_icon"
+                        android:hint="Pipeline"
+                        android:textColorHint="@color/light_gray"
+                        android:textSize="@dimen/_13sdp" />
+
+
+                    <ImageView
+                        android:id="@+id/iv_prospect_dropdown"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:contentDescription="@null"
+                        android:padding="@dimen/_2sdp"
+                        android:src="@drawable/ic_gray_down_arrow_icon" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_1sdp"
+                        android:layout_below="@id/prospect_name"
+                        android:layout_alignLeft="@+id/prospect_name"
+                        android:layout_marginRight="@dimen/_2sdp"
+                        android:background="@color/light_gray" />
+                </RelativeLayout>
+
 
                 <!--<LinearLayout
                     android:id="@+id/ll_amount"
@@ -1740,11 +2107,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginRight="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_8sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
                         android:src="@drawable/ic_add_shop_birthday_icon" />
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColorHint="@color/light_gray"
@@ -1763,7 +2130,7 @@
                             android:textSize="@dimen/_13sdp"
                             app:theme="@style/EvoEditTextTheme" />
 
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
 
@@ -1776,11 +2143,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginRight="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_8sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
                         android:src="@drawable/ic_add_shop_anniversary_icon" />
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColorHint="@color/light_gray"
@@ -1799,7 +2166,7 @@
                             android:textSize="@dimen/_13sdp"
                             app:theme="@style/EvoEditTextTheme" />
 
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
 
@@ -1828,8 +2195,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_marginTop="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:src="@drawable/ic_add_shop_owner_name" />
 
                         <com.rubyfood.widgets.AppCustomTextView
@@ -1844,12 +2211,12 @@
                             android:textColor="@color/red"
                             android:textSize="@dimen/_15sdp" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_director_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_toLeftOf="@+id/tv_director_name_asterisk_mark"
                             android:layout_toRightOf="@+id/iv_director_name_icon"
                             android:paddingRight="@dimen/_5sdp"
@@ -1867,13 +2234,13 @@
                                 android:singleLine="true"
                                 android:textSize="@dimen/_13sdp"
                                 app:theme="@style/EvoEditTextTheme" />
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
-                            android:layout_alignLeft="@+id/til_director_name"
                             android:layout_below="@id/til_director_name"
+                            android:layout_alignLeft="@+id/til_director_name"
                             android:layout_marginRight="@dimen/_2sdp"
                             android:background="@color/light_gray" />
                     </RelativeLayout>
@@ -1888,8 +2255,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_marginTop="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:src="@drawable/ic_add_shop_birthday_icon" />
 
                         <com.rubyfood.widgets.AppCustomTextView
@@ -1904,12 +2271,12 @@
                             android:textColor="@color/red"
                             android:textSize="@dimen/_15sdp" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_family_mem_dob"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_toLeftOf="@+id/tv_family_mem_dob_asterisk_mark"
                             android:layout_toRightOf="@+id/iv_family_mem_dob_icon"
                             android:paddingRight="@dimen/_5sdp"
@@ -1927,13 +2294,13 @@
                                 android:singleLine="true"
                                 android:textSize="@dimen/_13sdp"
                                 app:theme="@style/EvoEditTextTheme" />
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
-                            android:layout_alignLeft="@+id/til_family_mem_dob"
                             android:layout_below="@id/til_family_mem_dob"
+                            android:layout_alignLeft="@+id/til_family_mem_dob"
                             android:layout_marginRight="@dimen/_2sdp"
                             android:background="@color/light_gray" />
                     </RelativeLayout>
@@ -1957,8 +2324,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_marginTop="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:src="@drawable/ic_add_shop_owner_name" />
 
                         <com.rubyfood.widgets.AppCustomTextView
@@ -1973,12 +2340,12 @@
                             android:textColor="@color/red"
                             android:textSize="@dimen/_15sdp" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_key_person_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_toLeftOf="@+id/tv_key_person_name_asterisk_mark"
                             android:layout_toRightOf="@+id/iv_key_person_name_icon"
                             android:paddingRight="@dimen/_5sdp"
@@ -1995,13 +2362,13 @@
                                 android:inputType="text"
                                 android:textSize="@dimen/_13sdp"
                                 app:theme="@style/EvoEditTextTheme" />
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
-                            android:layout_alignLeft="@+id/til_key_person_name"
                             android:layout_below="@id/til_key_person_name"
+                            android:layout_alignLeft="@+id/til_key_person_name"
                             android:layout_marginRight="@dimen/_2sdp"
                             android:background="@color/light_gray" />
                     </RelativeLayout>
@@ -2016,8 +2383,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_marginTop="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:src="@drawable/ic_add_shop_owner_contact_number" />
 
                         <com.rubyfood.widgets.AppCustomTextView
@@ -2032,12 +2399,12 @@
                             android:textColor="@color/red"
                             android:textSize="@dimen/_15sdp" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_key_person_no"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_toLeftOf="@+id/tv_key_person_no_asterisk_mark"
                             android:layout_toRightOf="@+id/iv_key_person_no_icon"
                             android:paddingRight="@dimen/_5sdp"
@@ -2055,13 +2422,13 @@
                                 android:maxLength="10"
                                 android:textSize="@dimen/_13sdp"
                                 app:theme="@style/EvoEditTextTheme" />
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
-                            android:layout_alignLeft="@+id/til_key_person_no"
                             android:layout_below="@id/til_key_person_no"
+                            android:layout_alignLeft="@+id/til_key_person_no"
                             android:layout_marginRight="@dimen/_2sdp"
                             android:background="@color/light_gray" />
                     </RelativeLayout>
@@ -2075,11 +2442,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_marginTop="@dimen/_8sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:src="@drawable/ic_add_shop_birthday_icon" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColorHint="@color/light_gray"
@@ -2098,7 +2465,7 @@
                                 android:textSize="@dimen/_13sdp"
                                 app:theme="@style/EvoEditTextTheme" />
 
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                     </LinearLayout>
 
@@ -2111,11 +2478,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_marginTop="@dimen/_8sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:src="@drawable/ic_add_shop_anniversary_icon" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColorHint="@color/light_gray"
@@ -2134,7 +2501,7 @@
                                 android:textSize="@dimen/_13sdp"
                                 app:theme="@style/EvoEditTextTheme" />
 
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -2159,13 +2526,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_5sdp">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/iv_attachment_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_marginTop="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             app:srcCompat="@drawable/ic_gray_attachment" />
 
                         <com.rubyfood.widgets.AppCustomTextView
@@ -2180,12 +2547,12 @@
                             android:textColor="@color/red"
                             android:textSize="@dimen/_15sdp" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_attachment"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_toLeftOf="@+id/tv_attachment_asterisk_mark"
                             android:layout_toRightOf="@+id/iv_attachment_icon"
                             android:paddingRight="@dimen/_5sdp"
@@ -2203,13 +2570,13 @@
                                 android:singleLine="true"
                                 android:textSize="@dimen/_13sdp"
                                 app:theme="@style/EvoEditTextTheme" />
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
-                            android:layout_alignLeft="@+id/til_attachment"
                             android:layout_below="@id/til_attachment"
+                            android:layout_alignLeft="@+id/til_attachment"
                             android:layout_marginRight="@dimen/_2sdp"
                             android:background="@color/light_gray" />
                     </RelativeLayout>
@@ -2219,13 +2586,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_5sdp">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/iv_specalization_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_marginTop="@dimen/_7sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             app:srcCompat="@drawable/ic_specialization" />
 
                         <com.rubyfood.widgets.AppCustomTextView
@@ -2240,13 +2607,13 @@
                             android:textColor="@color/red"
                             android:textSize="@dimen/_15sdp" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_specalization"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_marginLeft="@dimen/_5sdp"
                             android:layout_marginRight="@dimen/_5sdp"
+                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_toLeftOf="@+id/tv_specalization_asterisk_mark"
                             android:layout_toRightOf="@+id/iv_specalization_icon"
                             android:textColorHint="@color/light_gray"
@@ -2263,13 +2630,13 @@
                                 android:maxLength="500"
                                 android:textSize="@dimen/_13sdp"
                                 app:theme="@style/EvoEditTextTheme" />
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
-                            android:layout_alignLeft="@+id/til_specalization"
                             android:layout_below="@id/til_specalization"
+                            android:layout_alignLeft="@+id/til_specalization"
                             android:layout_marginRight="@dimen/_2sdp"
                             android:background="@color/light_gray" />
                     </RelativeLayout>
@@ -2279,13 +2646,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_5sdp">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/iv_average_patient_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_marginTop="@dimen/_7sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             app:srcCompat="@drawable/ic_avarage_patient" />
 
                         <com.rubyfood.widgets.AppCustomTextView
@@ -2300,13 +2667,13 @@
                             android:textColor="@color/red"
                             android:textSize="@dimen/_15sdp" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_patient"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_marginLeft="@dimen/_5sdp"
                             android:layout_marginRight="@dimen/_5sdp"
+                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_toLeftOf="@+id/tv_patient_asterisk_mark"
                             android:layout_toRightOf="@+id/iv_average_patient_icon"
                             android:textColorHint="@color/light_gray"
@@ -2323,13 +2690,13 @@
                                 android:maxLength="3"
                                 android:textSize="@dimen/_13sdp"
                                 app:theme="@style/EvoEditTextTheme" />
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
-                            android:layout_alignLeft="@+id/til_patient"
                             android:layout_below="@id/til_patient"
+                            android:layout_alignLeft="@+id/til_patient"
                             android:layout_marginRight="@dimen/_2sdp"
                             android:background="@color/light_gray" />
                     </RelativeLayout>
@@ -2339,13 +2706,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_5sdp">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/iv_category_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_marginTop="@dimen/_7sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             app:srcCompat="@drawable/ic_category" />
 
                         <com.rubyfood.widgets.AppCustomTextView
@@ -2360,13 +2727,13 @@
                             android:textColor="@color/red"
                             android:textSize="@dimen/_15sdp" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_category"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_marginLeft="@dimen/_5sdp"
                             android:layout_marginRight="@dimen/_5sdp"
+                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_toLeftOf="@+id/tv_category_asterisk_mark"
                             android:layout_toRightOf="@+id/iv_category_icon"
                             android:textColorHint="@color/light_gray"
@@ -2383,13 +2750,13 @@
                                 android:maxLength="100"
                                 android:textSize="@dimen/_13sdp"
                                 app:theme="@style/EvoEditTextTheme" />
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
-                            android:layout_alignLeft="@+id/til_category"
                             android:layout_below="@id/til_category"
+                            android:layout_alignLeft="@+id/til_category"
                             android:layout_marginRight="@dimen/_2sdp"
                             android:background="@color/light_gray" />
                     </RelativeLayout>
@@ -2404,8 +2771,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_marginTop="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:src="@drawable/ic_add_shop_birthday_icon" />
 
                         <com.rubyfood.widgets.AppCustomTextView
@@ -2420,12 +2787,12 @@
                             android:textColor="@color/red"
                             android:textSize="@dimen/_15sdp" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_doc_family_mem_dob"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_toLeftOf="@+id/tv_doc_family_mem_dob_asterisk_mark"
                             android:layout_toRightOf="@+id/iv_doc_family_mem_dob_icon"
                             android:paddingRight="@dimen/_5sdp"
@@ -2443,13 +2810,13 @@
                                 android:singleLine="true"
                                 android:textSize="@dimen/_13sdp"
                                 app:theme="@style/EvoEditTextTheme" />
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
-                            android:layout_alignLeft="@+id/til_doc_family_mem_dob"
                             android:layout_below="@id/til_doc_family_mem_dob"
+                            android:layout_alignLeft="@+id/til_doc_family_mem_dob"
                             android:layout_marginRight="@dimen/_2sdp"
                             android:background="@color/light_gray" />
                     </RelativeLayout>
@@ -2463,8 +2830,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_marginTop="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:src="@drawable/ic_add_shop_address_icon" />
 
                         <com.rubyfood.widgets.AppCustomTextView
@@ -2479,12 +2846,12 @@
                             android:textColor="@color/red"
                             android:textSize="@dimen/_15sdp" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_doc_address"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_toLeftOf="@+id/tv_doc_address_asterisk_mark"
                             android:layout_toRightOf="@+id/iv_doc_address_icon"
                             android:paddingRight="@dimen/_5sdp"
@@ -2502,13 +2869,13 @@
                                 android:maxLength="500"
                                 android:textSize="@dimen/_13sdp"
                                 app:theme="@style/EvoEditTextTheme" />
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
-                            android:layout_alignLeft="@+id/til_doc_address"
                             android:layout_below="@id/til_doc_address"
+                            android:layout_alignLeft="@+id/til_doc_address"
                             android:layout_marginRight="@dimen/_2sdp"
                             android:background="@color/light_gray" />
 
@@ -2524,8 +2891,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_marginTop="@dimen/_12sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:src="@drawable/ic_add_shop_pin_icon" />
 
                         <com.rubyfood.widgets.AppCustomTextView
@@ -2540,13 +2907,13 @@
                             android:textColor="@color/red"
                             android:textSize="@dimen/_15sdp" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_doc_pincode"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_marginLeft="@dimen/_5sdp"
                             android:layout_marginRight="@dimen/_5sdp"
+                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_toLeftOf="@+id/tv_doc_pincode_asterisk_mark"
                             android:layout_toRightOf="@+id/iv_doc_pincode_icon"
                             android:textColorHint="@color/light_gray"
@@ -2563,13 +2930,13 @@
                                 android:maxLength="10"
                                 android:textSize="@dimen/_13sdp"
                                 app:theme="@style/EvoEditTextTheme" />
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
-                            android:layout_alignLeft="@+id/til_doc_pincode"
                             android:layout_below="@id/til_doc_pincode"
+                            android:layout_alignLeft="@+id/til_doc_pincode"
                             android:layout_marginRight="@dimen/_2sdp"
                             android:background="@color/light_gray" />
                     </RelativeLayout>
@@ -2588,13 +2955,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_5sdp">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/iv_chamber_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_marginTop="@dimen/_12sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             app:srcCompat="@drawable/ic_hospital" />
 
                         <com.rubyfood.widgets.AppCustomTextView
@@ -2603,26 +2970,26 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
                             android:layout_marginRight="@dimen/_3sdp"
+                            android:paddingTop="@dimen/_5sdp"
                             android:text="@string/mandatory_mark"
                             android:textColor="@color/red"
-                            android:textSize="@dimen/_15sdp"
-                            android:paddingTop="@dimen/_5sdp"/>
+                            android:textSize="@dimen/_15sdp" />
 
                         <com.rubyfood.widgets.AppCustomTextView
                             android:id="@+id/tv_chamber_header"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/chambeers_same_headquarter"
-                            android:textSize="@dimen/_11sdp"
                             android:layout_toLeftOf="@+id/tv_chamber_asterisk_mark"
-                            android:layout_toRightOf="@+id/iv_chamber_icon"/>
+                            android:layout_toRightOf="@+id/iv_chamber_icon"
+                            android:text="@string/chambeers_same_headquarter"
+                            android:textSize="@dimen/_11sdp" />
 
                         <LinearLayout
                             android:id="@+id/ll_radio_grp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/_10sdp"
                             android:layout_below="@+id/tv_chamber_header"
+                            android:layout_marginTop="@dimen/_10sdp"
                             android:layout_toRightOf="@+id/iv_chamber_icon">
 
                             <LinearLayout
@@ -2668,16 +3035,16 @@
                             </LinearLayout>
                         </LinearLayout>
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_remarks"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/_5sdp"
+                            android:layout_below="@+id/ll_radio_grp"
                             android:layout_marginLeft="@dimen/_5sdp"
                             android:layout_marginRight="@dimen/_5sdp"
-                            android:layout_below="@+id/ll_radio_grp"
-                            android:textColorHint="@color/light_gray"
+                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_toRightOf="@+id/iv_chamber_icon"
+                            android:textColorHint="@color/light_gray"
                             android:visibility="gone"
                             app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
@@ -2691,7 +3058,7 @@
                                 android:maxLength="100"
                                 android:textSize="@dimen/_13sdp"
                                 app:theme="@style/EvoEditTextTheme" />
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                     </RelativeLayout>
 
@@ -2706,8 +3073,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_marginTop="@dimen/_12sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:src="@drawable/ic_add_shop_owner_name" />
 
                         <com.rubyfood.widgets.AppCustomTextView
@@ -2722,13 +3089,13 @@
                             android:textColor="@color/red"
                             android:textSize="@dimen/_15sdp" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_chemist_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_marginLeft="@dimen/_5sdp"
                             android:layout_marginRight="@dimen/_5sdp"
+                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_toLeftOf="@+id/tv_chemist_name_asterisk_mark"
                             android:layout_toRightOf="@+id/iv_chemist_name_icon"
                             android:textColorHint="@color/light_gray"
@@ -2745,13 +3112,13 @@
                                 android:maxLength="100"
                                 android:textSize="@dimen/_13sdp"
                                 app:theme="@style/EvoEditTextTheme" />
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
-                            android:layout_alignLeft="@+id/til_chemist_name"
                             android:layout_below="@id/til_chemist_name"
+                            android:layout_alignLeft="@+id/til_chemist_name"
                             android:layout_marginRight="@dimen/_2sdp"
                             android:background="@color/light_gray" />
                     </RelativeLayout>
@@ -2765,8 +3132,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_marginTop="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:src="@drawable/ic_add_shop_address_icon" />
 
                         <com.rubyfood.widgets.AppCustomTextView
@@ -2781,12 +3148,12 @@
                             android:textColor="@color/red"
                             android:textSize="@dimen/_15sdp" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_chemist_address"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_toLeftOf="@+id/tv_chemist_address_asterisk_mark"
                             android:layout_toRightOf="@+id/iv_chemist_address_icon"
                             android:paddingRight="@dimen/_5sdp"
@@ -2804,13 +3171,13 @@
                                 android:maxLength="500"
                                 android:textSize="@dimen/_13sdp"
                                 app:theme="@style/EvoEditTextTheme" />
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
-                            android:layout_alignLeft="@+id/til_chemist_address"
                             android:layout_below="@id/til_chemist_address"
+                            android:layout_alignLeft="@+id/til_chemist_address"
                             android:layout_marginRight="@dimen/_2sdp"
                             android:background="@color/light_gray" />
 
@@ -2826,8 +3193,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_marginTop="@dimen/_12sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:src="@drawable/ic_add_shop_pin_icon" />
 
                         <com.rubyfood.widgets.AppCustomTextView
@@ -2842,13 +3209,13 @@
                             android:textColor="@color/red"
                             android:textSize="@dimen/_15sdp" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_chemist_pincode"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_marginLeft="@dimen/_5sdp"
                             android:layout_marginRight="@dimen/_5sdp"
+                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_toLeftOf="@+id/tv_chemist_pincode_asterisk_mark"
                             android:layout_toRightOf="@+id/iv_chemist_pincode_icon"
                             android:textColorHint="@color/light_gray"
@@ -2865,13 +3232,13 @@
                                 android:maxLength="10"
                                 android:textSize="@dimen/_13sdp"
                                 app:theme="@style/EvoEditTextTheme" />
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
-                            android:layout_alignLeft="@+id/til_chemist_pincode"
                             android:layout_below="@id/til_chemist_pincode"
+                            android:layout_alignLeft="@+id/til_chemist_pincode"
                             android:layout_marginRight="@dimen/_2sdp"
                             android:background="@color/light_gray" />
                     </RelativeLayout>
@@ -2879,11 +3246,11 @@
                     <com.rubyfood.widgets.AppCustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_10sdp"
                         android:text="@string/have_any_assistant"
                         android:textColor="@color/login_txt_color"
-                        android:textSize="@dimen/_12sdp"
-                        android:layout_marginLeft="@dimen/_5sdp"/>
+                        android:textSize="@dimen/_12sdp" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -2895,8 +3262,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_marginTop="@dimen/_7sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:src="@drawable/ic_add_shop_owner_name" />
 
                         <com.rubyfood.widgets.AppCustomTextView
@@ -2910,15 +3277,15 @@
                             android:text="@string/mandatory_mark"
                             android:textColor="@color/red"
                             android:textSize="@dimen/_15sdp"
-                            android:visibility="gone"/>
+                            android:visibility="gone" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_assistant_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_marginLeft="@dimen/_5sdp"
                             android:layout_marginRight="@dimen/_5sdp"
+                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_toLeftOf="@+id/tv_assistant_name_asterisk_mark"
                             android:layout_toRightOf="@+id/iv_assistant_name_icon"
                             android:textColorHint="@color/light_gray"
@@ -2935,13 +3302,13 @@
                                 android:singleLine="true"
                                 android:textSize="@dimen/_13sdp"
                                 app:theme="@style/EvoEditTextTheme" />
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
-                            android:layout_alignLeft="@+id/til_assistant_name"
                             android:layout_below="@id/til_assistant_name"
+                            android:layout_alignLeft="@+id/til_assistant_name"
                             android:layout_marginRight="@dimen/_2sdp"
                             android:background="@color/light_gray" />
                     </RelativeLayout>
@@ -2956,8 +3323,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_marginTop="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:src="@drawable/ic_add_shop_owner_contact_number" />
 
                         <com.rubyfood.widgets.AppCustomTextView
@@ -2971,15 +3338,15 @@
                             android:text="@string/mandatory_mark"
                             android:textColor="@color/red"
                             android:textSize="@dimen/_15sdp"
-                            android:visibility="gone"/>
+                            android:visibility="gone" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_assistant_no"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_marginLeft="@dimen/_5sdp"
                             android:layout_marginRight="@dimen/_5sdp"
+                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_toLeftOf="@+id/tv_assistant_no_asterisk_mark"
                             android:layout_toRightOf="@+id/iv_assistant_no_icon"
                             android:textColorHint="@color/light_gray"
@@ -2998,13 +3365,13 @@
                                 android:textSize="@dimen/_13sdp"
                                 app:theme="@style/EvoEditTextTheme" />
 
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
-                            android:layout_alignLeft="@+id/til_assistant_no"
                             android:layout_below="@id/til_assistant_no"
+                            android:layout_alignLeft="@+id/til_assistant_no"
                             android:layout_marginRight="@dimen/_2sdp"
                             android:background="@color/light_gray" />
                     </RelativeLayout>
@@ -3019,11 +3386,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_marginTop="@dimen/_8sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:src="@drawable/ic_add_shop_birthday_icon" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColorHint="@color/light_gray"
@@ -3040,7 +3407,7 @@
                                 android:textSize="@dimen/_13sdp"
                                 app:theme="@style/EvoEditTextTheme" />
 
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                     </LinearLayout>
 
@@ -3053,11 +3420,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_marginTop="@dimen/_8sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:src="@drawable/ic_add_shop_anniversary_icon" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColorHint="@color/light_gray"
@@ -3074,7 +3441,7 @@
                                 android:textSize="@dimen/_13sdp"
                                 app:theme="@style/EvoEditTextTheme" />
 
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
 
                     <RelativeLayout
@@ -3087,8 +3454,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_marginTop="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:src="@drawable/ic_add_shop_birthday_icon" />
 
                         <com.rubyfood.widgets.AppCustomTextView
@@ -3102,14 +3469,14 @@
                             android:text="@string/mandatory_mark"
                             android:textColor="@color/red"
                             android:textSize="@dimen/_15sdp"
-                            android:visibility="gone"/>
+                            android:visibility="gone" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_assistant_family_mem_dob"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginBottom="@dimen/_5sdp"
                             android:layout_toLeftOf="@+id/tv_assistant_family_mem_dob_asterisk_mark"
                             android:layout_toRightOf="@+id/iv_assistant_family_mem_dob_icon"
                             android:paddingRight="@dimen/_5sdp"
@@ -3127,19 +3494,18 @@
                                 android:singleLine="true"
                                 android:textSize="@dimen/_13sdp"
                                 app:theme="@style/EvoEditTextTheme" />
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_1sdp"
-                            android:layout_alignLeft="@+id/til_assistant_family_mem_dob"
                             android:layout_below="@id/til_assistant_family_mem_dob"
+                            android:layout_alignLeft="@+id/til_assistant_family_mem_dob"
                             android:layout_marginRight="@dimen/_2sdp"
                             android:background="@color/light_gray" />
                     </RelativeLayout>
                 </LinearLayout>
-                
-                
+
                 <LinearLayout
                     android:id="@+id/ll_feedback"
                     android:layout_width="match_parent"
@@ -3148,16 +3514,16 @@
                     android:gravity="center"
                     android:orientation="horizontal">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginRight="@dimen/_7sdp"
                         android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_7sdp"
                         android:contentDescription="@null"
                         app:srcCompat="@drawable/ic_feedback" />
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/feedback_TL"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -3177,7 +3543,7 @@
                             android:singleLine="true"
                             android:textSize="@dimen/_13sdp"
                             app:theme="@style/EvoEditTextTheme" />
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
                 <RelativeLayout
@@ -3191,8 +3557,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginRight="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
                         android:src="@drawable/ic_add_shop_anniversary_icon" />
 
                     <com.rubyfood.widgets.AppCustomTextView
@@ -3206,15 +3572,15 @@
                         android:text="@string/mandatory_mark"
                         android:textColor="@color/red"
                         android:textSize="@dimen/_15sdp"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/visit_date_TL"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_5sdp"
                         android:layout_marginLeft="@dimen/_5sdp"
                         android:layout_marginRight="@dimen/_5sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"
                         android:layout_toLeftOf="@+id/tv_visit_date_asterisk_mark"
                         android:layout_toRightOf="@+id/iv_visit_date_icon"
                         android:textColorHint="@color/light_gray"
@@ -3224,20 +3590,20 @@
                             android:id="@+id/next_visit_date_EDT"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
                             android:editable="false"
                             android:focusable="false"
-                            android:background="@android:color/transparent"
                             android:hint="@string/next_visit_date"
                             android:textSize="@dimen/_13sdp"
-                            app:theme="@style/EvoEditTextTheme"  />
+                            app:theme="@style/EvoEditTextTheme" />
 
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_1sdp"
-                        android:layout_alignLeft="@+id/visit_date_TL"
                         android:layout_below="@id/visit_date_TL"
+                        android:layout_alignLeft="@+id/visit_date_TL"
                         android:layout_marginRight="@dimen/_2sdp"
                         android:background="@color/light_gray" />
                 </RelativeLayout>
@@ -3248,13 +3614,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_5sdp">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_audio_record_date_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginRight="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
                         app:srcCompat="@drawable/ic_mic" />
 
                     <com.rubyfood.widgets.AppCustomTextView
@@ -3269,13 +3635,13 @@
                         android:textColor="@color/red"
                         android:textSize="@dimen/_15sdp" />
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/audio_record_TL"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_5sdp"
                         android:layout_marginLeft="@dimen/_5sdp"
                         android:layout_marginRight="@dimen/_5sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"
                         android:layout_toLeftOf="@+id/tv_audio_record_asterisk_mark"
                         android:layout_toRightOf="@+id/iv_audio_record_date_icon"
                         android:textColorHint="@color/light_gray"
@@ -3285,20 +3651,20 @@
                             android:id="@+id/audio_record_date_EDT"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
                             android:editable="false"
                             android:focusable="false"
-                            android:background="@android:color/transparent"
                             android:hint="@string/audio_record"
                             android:textSize="@dimen/_13sdp"
-                            app:theme="@style/EvoEditTextTheme"  />
+                            app:theme="@style/EvoEditTextTheme" />
 
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_1sdp"
-                        android:layout_alignLeft="@+id/audio_record_TL"
                         android:layout_below="@id/audio_record_TL"
+                        android:layout_alignLeft="@+id/audio_record_TL"
                         android:layout_marginRight="@dimen/_2sdp"
                         android:background="@color/light_gray" />
                 </RelativeLayout>
@@ -3308,19 +3674,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_40sdp"
                     android:layout_gravity="center"
-                    android:gravity="center"
                     android:layout_marginTop="@dimen/_5sdp"
+                    android:background="@drawable/shape_custom_border_blue_button"
+                    android:gravity="center"
                     android:orientation="horizontal"
-                    android:background="@drawable/selector_blue_botton_bg"
                     android:paddingLeft="@dimen/_10sdp">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_competitor_camera_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        app:srcCompat="@drawable/ic_camera_small"
-                        android:layout_marginRight="@dimen/_7sdp"/>
+                        android:layout_marginRight="@dimen/_7sdp"
+                        app:srcCompat="@drawable/ic_camera_small" />
 
 
                     <com.rubyfood.widgets.AppCustomTextView
@@ -3329,38 +3695,223 @@
                         android:layout_weight="1"
                         android:gravity="center|start"
                         android:text="@string/competitor_image"
-                        android:textSize="@dimen/_13sdp"
-                        android:textColor="@color/white"/>
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_13sdp" />
+
 
                     <ImageView
                         android:id="@+id/iv_competitor_image_view"
                         android:layout_width="@dimen/_80sdp"
                         android:layout_height="match_parent"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
 
                 </LinearLayout>
 
                 <com.rubyfood.widgets.AppCustomTextView
+                    android:id="@+id/tv_upload_images"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_28sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:text="Upload Image"
+                    android:visibility="gone"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_13sdp" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_28sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <RelativeLayout
+                            android:id="@+id/rl_upload"
+                            android:layout_width="@dimen/_50sdp"
+                            android:layout_height="@dimen/_50sdp">
+
+                            <ImageView
+                                android:id="@+id/iv_upload_image_view"
+                                android:layout_width="@dimen/_40sdp"
+                                android:layout_height="@dimen/_40sdp"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:contentDescription="@null"
+                                android:src="@drawable/ic_upload_icon" />
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/iv_image_cross_icon_1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_alignParentRight="true"
+                                android:contentDescription="@null"
+                                android:visibility="gone"
+                                app:srcCompat="@drawable/ic_cancel_red" />
+
+                        </RelativeLayout>
+
+
+                        <RelativeLayout
+                            android:id="@+id/rl_upload_image1"
+                            android:layout_width="@dimen/_50sdp"
+                            android:layout_height="@dimen/_50sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:visibility="gone">
+
+                            <ImageView
+                                android:id="@+id/iv_upload_image_view_image1"
+                                android:layout_width="@dimen/_40sdp"
+                                android:layout_height="@dimen/_40sdp"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:contentDescription="@null"
+                                android:src="@drawable/ic_upload_icon" />
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/iv_image_cross_icon_2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_alignParentRight="true"
+                                android:contentDescription="@null"
+                                android:visibility="gone"
+                                app:srcCompat="@drawable/ic_cancel_red" />
+                        </RelativeLayout>
+
+
+                    </LinearLayout>
+
+
+                </RelativeLayout>
+
+                <!--   <LinearLayout
+                       android:id="@+id/rl_upload"
+                       android:visibility="visible"
+                       android:layout_width="match_parent"
+                       android:layout_height="@dimen/_40sdp"
+                       android:layout_gravity="center"
+                       android:gravity="center"
+                       android:layout_marginTop="@dimen/_5sdp"
+                       android:orientation="horizontal"
+                       android:background="@drawable/shape_custom_border_blue_button"
+                       android:paddingLeft="@dimen/_10sdp">
+
+                       <androidx.appcompat.widget.AppCompatImageView
+                           android:id="@+id/iv_upload"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:layout_gravity="center"
+                           app:srcCompat="@drawable/ic_camera_small"
+                           android:layout_marginRight="@dimen/_7sdp"/>
+
+
+                       <com.rubyfood.widgets.AppCustomTextView
+                           android:layout_width="match_parent"
+                           android:layout_height="match_parent"
+                           android:layout_weight="1"
+                           android:gravity="center|start"
+                           android:text="Attach Image 1"
+                           android:textSize="@dimen/_13sdp"
+                           android:textColor="@color/white"
+                           />
+
+
+                       <ImageView
+                           android:id="@+id/iv_upload_image_view"
+                           android:layout_width="@dimen/_80sdp"
+                           android:layout_height="match_parent"
+                           android:visibility="gone"/>
+
+
+                   </LinearLayout>
+
+                   <LinearLayout
+                       android:id="@+id/rl_upload_image1"
+                       android:visibility="visible"
+                       android:layout_width="match_parent"
+                       android:layout_height="@dimen/_40sdp"
+                       android:layout_gravity="center"
+                       android:gravity="center"
+                       android:layout_marginTop="@dimen/_5sdp"
+                       android:orientation="horizontal"
+                       android:background="@drawable/shape_custom_border_blue_button"
+                       android:paddingLeft="@dimen/_10sdp">
+
+                       <androidx.appcompat.widget.AppCompatImageView
+                           android:id="@+id/iv_upload_image1"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:layout_gravity="center"
+                           app:srcCompat="@drawable/ic_camera_small"
+                           android:layout_marginRight="@dimen/_7sdp"/>
+
+
+                       <com.rubyfood.widgets.AppCustomTextView
+                           android:layout_width="match_parent"
+                           android:layout_height="match_parent"
+                           android:layout_weight="1"
+                           android:gravity="center|start"
+                           android:text="Attach Image 2"
+                           android:textSize="@dimen/_13sdp"
+                           android:textColor="@color/white"
+                           />
+
+
+                       <ImageView
+                           android:id="@+id/iv_upload_image_view_image1"
+                           android:layout_width="@dimen/_80sdp"
+                           android:layout_height="match_parent"
+                           android:visibility="gone"/>
+
+
+                   </LinearLayout>-->
+
+
+                <com.rubyfood.widgets.AppCustomTextView
+                    android:id="@+id/questionnaire_TV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_60sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:layout_marginRight="@dimen/_60sdp"
+                    android:background="@drawable/shape_cursor_button"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:padding="@dimen/_8sdp"
+                    android:text="@string/questionnaire"
+                    android:textColor="@color/login_txt_color"
+                    android:textSize="@dimen/_13sdp"
+                    android:visibility="gone" />
+                <!--Save Button changes 13-01-2022-->
+<!--                android:background="@drawable/shape_custom_border_blue_button"-->
+<!--                android:textColor="@android:color/white"-->
+                <com.rubyfood.widgets.AppCustomTextView
                     android:id="@+id/save_TV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_60sdp"
-                    android:layout_marginRight="@dimen/_60sdp"
                     android:layout_marginTop="@dimen/_20sdp"
-                    android:background="@drawable/selector_blue_botton_bg"
+                    android:layout_marginRight="@dimen/_60sdp"
+                    android:background="@drawable/shape_cursor_button"
+                    android:textColor="@color/login_txt_color"
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center"
                     android:padding="@dimen/_8sdp"
                     android:text="@string/save"
-                    android:textColor="@android:color/white"
                     android:textSize="@dimen/_13sdp"
                     android:visibility="visible" />
 
             </LinearLayout>
         </RelativeLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <com.pnikosis.materialishprogress.ProgressWheel
         android:id="@+id/progress_wheel"

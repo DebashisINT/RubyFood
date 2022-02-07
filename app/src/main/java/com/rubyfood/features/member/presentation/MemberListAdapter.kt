@@ -1,16 +1,23 @@
 package com.rubyfood.features.member.presentation
 
+import android.app.Dialog
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Handler
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import com.rubyfood.R
 import com.rubyfood.app.Pref
 import com.rubyfood.features.dashboard.presentation.DashboardActivity
 import com.rubyfood.features.member.model.TeamListDataModel
+import com.rubyfood.widgets.AppCustomTextView
 import kotlinx.android.synthetic.main.inflate_member_list_item.view.*
 
 
@@ -76,7 +83,56 @@ class MemberListAdapter(context: Context, val teamList: ArrayList<TeamListDataMo
             else
                 itemView.tv_team_details.visibility = View.VISIBLE
 
+            if(teamList[adapterPosition].isLeaveApplied){
+                if(teamList[adapterPosition].isLeavePending){
+                    DrawableCompat.setTint(
+                            DrawableCompat.wrap(itemView.iv_leave.getDrawable()),
+                            ContextCompat.getColor(context,R.color.color_custom_red)
+                    )
+                }
+                else{
+                    DrawableCompat.setTint(
+                            DrawableCompat.wrap(itemView.iv_leave.getDrawable()),
+                            ContextCompat.getColor(context,R.color.color_custom_green)
+                    )
+                }
+            }
+             else{
+                DrawableCompat.setTint(
+                        DrawableCompat.wrap(itemView.iv_leave.getDrawable()),
+                        ContextCompat.getColor(context,R.color.default_gray)
+                )
+            }
+//                itemView.iv_leave.setImageDrawable(context.getDrawable(R.drawable.ic_applyleave))
 
+            if(Pref.Leaveapprovalfromsupervisorinteam){
+                itemView.iv_leave.visibility = View.VISIBLE
+            }
+            else{
+                itemView.iv_leave.visibility = View.GONE
+            }
+
+            itemView.iv_leave.setOnClickListener({
+                if(teamList[adapterPosition].isLeaveApplied){
+                    listener.onLeaveClick(teamList[adapterPosition])
+                }else{
+                    val simpleDialog = Dialog(context)
+                    simpleDialog.setCancelable(false)
+                    simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                    simpleDialog.setContentView(R.layout.dialog_message)
+                    val dialogHeader = simpleDialog.findViewById(R.id.dialog_message_headerTV) as AppCustomTextView
+                    val dialogBody = simpleDialog.findViewById(R.id.dialog_message_header_TV) as AppCustomTextView
+                    val obBtn = simpleDialog.findViewById(R.id.tv_message_ok) as AppCustomTextView
+                    dialogHeader.text="Hi "+Pref.user_name+"!"
+                    dialogBody.text = "Nothing to show."
+                    obBtn.setOnClickListener({ view ->
+                        simpleDialog.cancel()
+
+                    })
+                    simpleDialog.show()
+                }
+
+            })
             itemView.tv_team_details.setOnClickListener({
                 listener.onTeamClick(teamList[adapterPosition])
             })
@@ -96,10 +152,14 @@ class MemberListAdapter(context: Context, val teamList: ArrayList<TeamListDataMo
             itemView.iv_map_icon.setOnClickListener {
                 listener.onLocClick(teamList[adapterPosition])
             }
+
+            itemView.iv_job.visibility=View.GONE
         }
     }
 
     interface OnClickListener {
+        fun onLeaveClick(team: TeamListDataModel)
+
         fun onTeamClick(team: TeamListDataModel)
 
         fun onShopClick(team: TeamListDataModel)

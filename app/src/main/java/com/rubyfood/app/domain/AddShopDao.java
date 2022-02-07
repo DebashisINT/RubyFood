@@ -1,10 +1,10 @@
 package com.rubyfood.app.domain;
 
-import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Delete;
-import android.arch.persistence.room.Insert;
-import android.arch.persistence.room.Query;
-import android.arch.persistence.room.Update;
+import androidx.room.Dao;
+import androidx.room.Delete;
+import androidx.room.Insert;
+import androidx.room.Query;
+import androidx.room.Update;
 
 import java.util.List;
 
@@ -176,8 +176,8 @@ public interface AddShopDao {
     @Query("Select owner_contact_number from shop_detail where shop_id=:shopId")
     String getContactNumber(String shopId);
 
-    @Query("Select type from shop_detail where shop_id=:shopId")
-    String getShopType(String shopId);
+    @Query("Select type from shop_detail where shop_id=:shop_id")
+    String getShopType(String shop_id);
 
     @Query("update shop_detail set party_status_id=:party_status_id where shop_id=:shopId")
     long updatePartyStatus(String party_status_id, String shopId);
@@ -190,6 +190,13 @@ public interface AddShopDao {
 
     @Query("update shop_detail set account_holder=:account_holder, account_no=:account_no, bank_name=:bank_name, ifsc_code=:ifsc_code, upi_id=:upi_id where shop_id=:shopId")
     long updateBankDetails(String account_holder, String account_no, String bank_name, String ifsc_code, String upi_id, String shopId);
+
+    @Query("Select project_name from shop_detail where shop_id=:shopId")
+    String getProjectName(String shopId);
+
+    @Query("Select landline_number from shop_detail where shop_id=:shopId")
+    String getLand(String shopId);
+
 
 //    @Query("INSERT OR REPLACE INTO SHOP_TABLE (shopId,shopName,address,pinCode,ownerName,isVisited) VALUES (:id, :title, :url, COALESCE((SELECT isSubscribed FROM articles WHERE id = :id), 0));")
 //    void insertOrUpdateShop(long id, String title, String url);

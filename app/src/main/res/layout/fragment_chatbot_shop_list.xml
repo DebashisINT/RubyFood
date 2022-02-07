@@ -4,7 +4,7 @@
     android:id="@+id/shop_list_parent_rl"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/add_shop_bg_color">
+    android:background="@color/color_silver">
 
     <com.rubyfood.widgets.AppCustomTextView
         android:id="@+id/tv_shop_count"
@@ -18,7 +18,7 @@
         android:layout_marginBottom="@dimen/_5sdp"
         android:layout_marginTop="@dimen/_10sdp" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_shop_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

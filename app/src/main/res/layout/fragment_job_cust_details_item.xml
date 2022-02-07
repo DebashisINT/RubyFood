@@ -5,7 +5,7 @@
     android:id="@+id/fl_job_cust_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/smoke_white">
+    android:background="@color/color_silver">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -51,7 +51,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/iv_sms"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
                             app:srcCompat="@drawable/ic_sms"
                             android:visibility="gone"/>
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/iv_whatsapp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
                             app:srcCompat="@drawable/ic_whatsapp"
                             android:visibility="gone"/>
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/share_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
                             android:visibility="gone"
                             app:srcCompat="@drawable/ic_share" />
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/history_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

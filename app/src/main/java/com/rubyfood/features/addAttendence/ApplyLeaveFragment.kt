@@ -1,11 +1,14 @@
 package com.rubyfood.features.addAttendence
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -14,13 +17,19 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import com.android.volley.AuthFailureError
+import com.android.volley.Response
+import com.android.volley.VolleyError
+import com.android.volley.toolbox.JsonObjectRequest
 import com.borax12.materialdaterangepicker.date.DatePickerDialog
+import com.rubyfood.MySingleton
 import com.rubyfood.R
 import com.rubyfood.app.AppDatabase
 import com.rubyfood.app.NetworkConstant
 import com.rubyfood.app.Pref
 import com.rubyfood.app.domain.LeaveTypeEntity
 import com.rubyfood.app.domain.RouteEntity
+import com.rubyfood.app.types.FragType
 import com.rubyfood.app.utils.AppUtils
 import com.rubyfood.app.utils.FTStorageUtils
 import com.rubyfood.base.BaseResponse
@@ -28,6 +37,8 @@ import com.rubyfood.base.presentation.BaseActivity
 import com.rubyfood.base.presentation.BaseFragment
 import com.rubyfood.features.addAttendence.api.addattendenceapi.AddAttendenceRepoProvider
 import com.rubyfood.features.addAttendence.api.leavetytpeapi.LeaveTypeRepoProvider
+import com.rubyfood.features.addAttendence.model.GetReportToFCMResponse
+import com.rubyfood.features.addAttendence.model.GetReportToResponse
 import com.rubyfood.features.addAttendence.model.LeaveTypeResponseModel
 import com.rubyfood.features.addAttendence.model.SendLeaveApprovalInputParams
 import com.rubyfood.features.dashboard.presentation.DashboardActivity
@@ -39,6 +50,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import org.json.JSONArray
+import org.json.JSONObject
 import java.util.*
 
 /**
@@ -226,8 +239,11 @@ class ApplyLeaveFragment : BaseFragment(), View.OnClickListener, DatePickerDialo
             (mContext as DashboardActivity).showSnackMessage("Please select date range")
         else if (Pref.willLeaveApprovalEnable && TextUtils.isEmpty(et_leave_reason_text.text.toString().trim()))
             (mContext as DashboardActivity).showSnackMessage("Please enter reason")
-        else
+        else{
             callLeaveApprovalApi()
+        }
+
+
     }
 
     private fun callLeaveApprovalApi() {
@@ -243,6 +259,8 @@ class ApplyLeaveFragment : BaseFragment(), View.OnClickListener, DatePickerDialo
         leaveApproval.leave_from_date = startDate
         leaveApproval.leave_to_date = endDate
         leaveApproval.leave_type = leaveId
+
+        var tt=AppUtils.getCurrentDateTime()
 
         if (TextUtils.isEmpty(Pref.current_latitude))
             leaveApproval.leave_lat = "0.0"
@@ -289,11 +307,10 @@ class ApplyLeaveFragment : BaseFragment(), View.OnClickListener, DatePickerDialo
                             BaseActivity.isApiInitiated = false
 
                             if (response.status == NetworkConstant.SUCCESS) {
-                                (mContext as DashboardActivity).showSnackMessage(response.message!!)
 
-                                Handler().postDelayed(Runnable {
-                                    (mContext as DashboardActivity).onBackPressed()
-                                }, 500)
+                                    openPopupshowMessage(response.message!!)
+//                                (mContext as DashboardActivity).showSnackMessage(response.message!!)
+                                //(mContext as DashboardActivity).onBackPressed()
 
                             } else {
                                 (mContext as DashboardActivity).showSnackMessage(response.message!!)
@@ -306,6 +323,32 @@ class ApplyLeaveFragment : BaseFragment(), View.OnClickListener, DatePickerDialo
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                         })
         )
+    }
+
+    private fun openPopupshowMessage(message:String) {
+        val simpleDialog = Dialog(mContext)
+        simpleDialog.setCancelable(false)
+        simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        simpleDialog.setContentView(R.layout.dialog_message)
+        val dialogHeader = simpleDialog.findViewById(R.id.dialog_message_headerTV) as AppCustomTextView
+        val dialogBody = simpleDialog.findViewById(R.id.dialog_message_header_TV) as AppCustomTextView
+        val obBtn = simpleDialog.findViewById(R.id.tv_message_ok) as AppCustomTextView
+        dialogHeader.text="Hi "+Pref.user_name+"!"
+        dialogBody.text = message
+        obBtn.setOnClickListener({ view ->
+            simpleDialog.cancel()
+            //(mContext as DashboardActivity).loadFragment(FragType.LeaveListFragment, false, "")
+            Handler().postDelayed(Runnable {
+                if(Pref.Leaveapprovalfromsupervisor){
+                    getSupervisorIDInfo()
+                }else{
+                    (mContext as DashboardActivity).onBackPressed()
+                }
+            }, 500)
+
+        })
+        simpleDialog.show()
+
     }
 
     override fun onDateSet(datePickerDialog: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int, yearEnd: Int, monthOfYearEnd: Int,
@@ -333,4 +376,109 @@ class ApplyLeaveFragment : BaseFragment(), View.OnClickListener, DatePickerDialo
         startDate = AppUtils.convertFromRightToReverseFormat(fronString)
         endDate = AppUtils.convertFromRightToReverseFormat(endString)
     }
+
+
+    private fun getSupervisorIDInfo(){
+        try{
+            val repository = AddAttendenceRepoProvider.addAttendenceRepo()
+            BaseActivity.compositeDisposable.add(
+                    repository.getReportToUserID(Pref.user_id.toString(),Pref.session_token.toString())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe({ result ->
+                                val response = result as GetReportToResponse
+
+                                if (response.status == NetworkConstant.SUCCESS) {
+                                    getSupervisorFCMInfo(response.report_to_user_id!!)
+                                }
+
+                            }, { error ->
+                                XLog.d("Apply Leave Response ERROR=========> " + error.message)
+                                BaseActivity.isApiInitiated = false
+                                progress_wheel.stopSpinning()
+                                (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                            })
+            )
+        }catch (ex:Exception){
+            ex.printStackTrace()
+        }
+
+    }
+
+    private fun getSupervisorFCMInfo(usrID:String){
+        try{
+            val repository = AddAttendenceRepoProvider.addAttendenceRepo()
+            BaseActivity.compositeDisposable.add(
+                    repository.getReportToFCMInfo(usrID,Pref.session_token.toString())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe({ result ->
+                                val response = result as GetReportToFCMResponse
+
+                                if (response.status == NetworkConstant.SUCCESS) {
+                                    sendFCMNotiSupervisor(response.device_token!!)
+                                }
+
+                            }, { error ->
+                                XLog.d("Apply Leave Response ERROR=========> " + error.message)
+                                BaseActivity.isApiInitiated = false
+                                progress_wheel.stopSpinning()
+                                (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                            })
+            )
+        }catch (ex:Exception){
+            ex.printStackTrace()
+        }
+
+    }
+
+    private fun sendFCMNotiSupervisor(superVisor_fcmToken:String){
+        if (superVisor_fcmToken != "") {
+            try {
+                val jsonObject = JSONObject()
+                val notificationBody = JSONObject()
+                notificationBody.put("body","Leave applied by : "+Pref.user_name!!)
+                notificationBody.put("flag", "flag")
+                notificationBody.put("applied_user_id",Pref.user_id)
+                notificationBody.put("leave_from_date",startDate)
+                notificationBody.put("leave_to_date",endDate)
+                notificationBody.put("leave_reason",et_leave_reason_text.text.toString().trim())
+                notificationBody.put("leave_type",tv_leave_type)
+                notificationBody.put("leave_type_id",leaveId)
+                jsonObject.put("data", notificationBody)
+                val jsonArray = JSONArray()
+                jsonArray.put(0,superVisor_fcmToken)
+                jsonObject.put("registration_ids", jsonArray)
+                sendCustomNotification(jsonObject)
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+        }
+
+    }
+
+    fun sendCustomNotification(notification: JSONObject) {
+        val jsonObjectRequest: JsonObjectRequest = object : JsonObjectRequest("https://fcm.googleapis.com/fcm/send", notification,
+                object : Response.Listener<JSONObject?> {
+                    override fun onResponse(response: JSONObject?) {
+                        (mContext as DashboardActivity).onBackPressed()
+                    }
+                },
+                object : Response.ErrorListener {
+                    override fun onErrorResponse(error: VolleyError?) {
+
+                    }
+                }) {
+            @Throws(AuthFailureError::class)
+            override fun getHeaders(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["Authorization"] = "key=AAAAIoWfCpc:APA91bEMOPyfjsyziPC1WYJiPHjzdmTQJmAOKP0fM24iXI9BgrmyhH4uLY6Jd-6Lpjp8mvSdpSp-zm20ApTOYQ3Ean4m6LicJ5CoECS_v5u2PUAwA8E6FLsu2ZC6_WxuSYnTTLzlUi4E"
+                params["Content-Type"] = "application/json"
+                return params
+            }
+        }
+
+        MySingleton.getInstance(mContext)!!.addToRequestQueue(jsonObjectRequest)
+    }
+
 }

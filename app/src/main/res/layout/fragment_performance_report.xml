@@ -5,7 +5,7 @@
     android:id="@+id/rl_performance_report_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/smoke_white">
+    android:background="@color/color_silver">
 
     <com.rubyfood.widgets.AppCustomTextView
         android:id="@+id/tv_pick_date_range"
@@ -20,7 +20,7 @@
         android:textSize="@dimen/_13sdp"
         android:layout_marginLeft="@dimen/_25sdp"/>
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
         app:srcCompat="@drawable/ic_share" />
 
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_performance_report_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

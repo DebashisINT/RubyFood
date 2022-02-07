@@ -2,9 +2,9 @@ package com.rubyfood.features.addshop.presentation
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.ImageView
 import com.rubyfood.R
+import com.rubyfood.app.Pref
 import com.rubyfood.app.domain.StageEntity
 import com.rubyfood.widgets.AppCustomEditText
 import com.rubyfood.widgets.AppCustomTextView
@@ -51,8 +52,8 @@ class StageListDialog: DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCanceledOnTouchOutside(true)
+        dialog?.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.setCanceledOnTouchOutside(true)
 
         val v = inflater.inflate(R.layout.dialog_list, container, false)
 
@@ -75,7 +76,15 @@ class StageListDialog: DialogFragment() {
 
         rv_common_dialog_list.adapter = adapter
 
-        dialog_header_TV.text = "Stage"
+        /*6-12-2021*/
+        if(Pref.IsnewleadtypeforRuby){
+            dialog_header_TV.text = "Prospect"
+        }
+        else{
+            dialog_header_TV.text = "Stage"
+        }
+
+//        dialog_header_TV.text = "Stage"
         et_search = v.findViewById(R.id.et_search)
         iv_close_icon = v.findViewById(R.id.iv_close_icon)
 

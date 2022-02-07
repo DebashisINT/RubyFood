@@ -1,22 +1,30 @@
 package com.rubyfood.features.document.presentation
 
 import android.content.Context
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.RecyclerView
+import android.text.SpannableString
 import android.text.TextUtils
+import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.rubyfood.CustomStatic
 import com.rubyfood.R
+import com.rubyfood.app.Pref
 import com.rubyfood.app.domain.DocumentListEntity
 import com.rubyfood.app.utils.AppUtils
-import com.rubyfood.features.billing.presentation.BillingDetailsFragment
 import kotlinx.android.synthetic.main.inflater_document_item.view.*
 import java.io.File
 
-class DocumentAdapter(private val mContext: Context, private val docList:  ArrayList<DocumentListEntity>,
+class DocumentAdapter(private val mContext: Context, private val docList: ArrayList<DocumentListEntity>,
                       private val onEditClick: (DocumentListEntity) -> Unit, private val onDeleteClick: (DocumentListEntity) -> Unit,
-                      private val onShareClick: (DocumentListEntity, String) -> Unit, private val onSyncClick: (DocumentListEntity) -> Unit/*,
+                      private val onShareClick: (DocumentListEntity, String) -> Unit, private val onSyncClick: (DocumentListEntity) -> Unit,
+                      private val onAttachmentClick: (DocumentListEntity) -> Unit,
+                      private val onViewClick: (DocumentListEntity) -> Unit,
+                      private val onOpenFileClick: (DocumentListEntity, String) -> Unit
+
+
+        /*,
                       private val onAttchmentClick: (DocumentListEntity, String) -> Unit*/) : RecyclerView.Adapter<DocumentAdapter.MyViewHolder>() {
 
     private val layoutInflater: LayoutInflater by lazy {
@@ -28,8 +36,9 @@ class DocumentAdapter(private val mContext: Context, private val docList:  Array
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val v = layoutInflater.inflate(R.layout.inflater_document_item, parent, false)
-        return MyViewHolder(v)
+           val v = layoutInflater.inflate(R.layout.inflater_document_item, parent, false)
+           return MyViewHolder(v)
+
     }
 
     override fun getItemCount(): Int {
@@ -53,18 +62,23 @@ class DocumentAdapter(private val mContext: Context, private val docList:  Array
                     tv_doc_date_time.text = "N.A."
 
                 if(!docList[adapterPosition].attachment?.startsWith("http")!!) {
-                    val strFileName = File(docList[adapterPosition].attachment!!).name
+                    val strFileName = SpannableString(File(docList[adapterPosition].attachment!!).name)
+                    strFileName.setSpan(UnderlineSpan(), 0, strFileName.length, 0)
                     tv_attachment.text = strFileName
                 }
                 else {
-                    val strFileName = docList[adapterPosition].attachment?.substring(docList[adapterPosition].attachment?.lastIndexOf("/")!! + 1)
+                    val strFileName = SpannableString(docList[adapterPosition].attachment?.substring(docList[adapterPosition].attachment?.lastIndexOf("/")!! + 1))
+                    strFileName.setSpan(UnderlineSpan(), 0, strFileName.length, 0)
                     tv_attachment.text = strFileName
                 }
 
-                if(docList[adapterPosition].isUploaded)
+                if(docList[adapterPosition].isUploaded) {
+                    sync_status_iv.visibility = View.VISIBLE
                     sync_status_iv.setImageResource(R.drawable.ic_registered_shop_sync)
+                }
                 else {
                     sync_status_iv.setImageResource(R.drawable.ic_registered_shop_not_sync)
+                    sync_status_iv.visibility = View.VISIBLE
                     sync_status_iv.setOnClickListener {
                         onSyncClick(docList[adapterPosition])
                     }
@@ -82,9 +96,57 @@ class DocumentAdapter(private val mContext: Context, private val docList:  Array
                     onShareClick(docList[adapterPosition], tv_attachment.text.toString().trim())
                 }
 
+                iv_download.setOnClickListener{
+                    onAttachmentClick(docList[adapterPosition])
+                }
+                tv_down_text.setOnClickListener{
+                    onViewClick(docList[adapterPosition])
+                }
+
+                if (!TextUtils.isEmpty(docList[adapterPosition].document_name))
+//                    tv_doc_file_name.text = AppUtils.convertToNotificationDateTime(docList[adapterPosition].document_name!!)
+                    tv_doc_file_name.text = docList[adapterPosition].document_name!!
+                else
+                    tv_doc_file_name.text = "N.A."
+
+                tv_attachment.setOnClickListener {
+                    onOpenFileClick(docList[adapterPosition], tv_attachment.text.toString().trim())
+                }
+
+
                 /*tv_attachment.setOnClickListener {
                     onAttchmentClick(docList[adapterPosition], tv_attachment.text.toString().trim())
                 }*/
+                if(CustomStatic.IsDocZero==true){
+                  if(Pref.IsDocRepShareDownloadAllowed){
+                      iv_share.visibility = View.VISIBLE
+                      iv_download.visibility =  View.VISIBLE
+                      tv_down_text.visibility =  View.VISIBLE
+                      iv_edit.visibility = View.INVISIBLE
+                      iv_delete.visibility = View.INVISIBLE
+                      sync_status_iv.visibility = View.GONE
+                      tv_doc_file_name.visibility = View.VISIBLE
+
+                  }
+                    else{
+                      iv_share.visibility = View.GONE
+                      iv_download.visibility =  View.GONE
+                      tv_down_text.visibility =  View.GONE
+                      iv_edit.visibility = View.INVISIBLE
+                      iv_delete.visibility = View.INVISIBLE
+                      sync_status_iv.visibility = View.GONE
+                      tv_doc_file_name.visibility = View.VISIBLE
+                  }
+                }
+                else{
+                    iv_share.visibility = View.VISIBLE
+                    iv_edit.visibility = View.VISIBLE
+                    iv_delete.visibility = View.VISIBLE
+                    sync_status_iv.visibility = View.VISIBLE
+                    tv_doc_file_name.visibility = View.GONE
+                }
+
+
             }
         }
     }

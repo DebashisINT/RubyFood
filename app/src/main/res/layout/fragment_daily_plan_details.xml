@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#fafafa">
+    android:background="@color/color_silver">
 
     <RelativeLayout
         android:id="@+id/rl_shop_details"
@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone"/>
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_plan_details_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />

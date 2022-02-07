@@ -1,7 +1,7 @@
 package com.rubyfood.features.newcollection
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -51,7 +51,7 @@ class NewCollectionAdapter(context: Context, private val userLocationDataEntity:
                 itemView.myshop_name_TV.text = shop?.shopName
                 itemView.myshop_address_TV.text = shop?.address
 
-                val totalPrice = String.format("%.2f", java.lang.Float.parseFloat(userLocationDataEntity[adapterPosition].collection))
+                val totalPrice = String.format("%.2f", java.lang.Float.parseFloat(userLocationDataEntity[adapterPosition].collection!!))
 
                 itemView.tv_collection_amount_value.text = context.getString(R.string.rupee_symbol) + " " + totalPrice
 

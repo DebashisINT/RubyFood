@@ -10,7 +10,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 import android.text.TextUtils
 import com.elvishew.xlog.XLog
 import com.rubyfood.app.Pref
@@ -38,6 +38,11 @@ class LocationJobService : JobService() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStartJob(p0: JobParameters?): Boolean {
+
+        if(Pref.IsLeavePressed== true && Pref.IsLeaveGPSTrack == false){
+            return true
+        }
+
         XLog.d("=============================Start Job " + AppUtils.getCurrentDateTime() + "==============================")
 
         val myIntent = Intent(this, LocationFuzedService::class.java)

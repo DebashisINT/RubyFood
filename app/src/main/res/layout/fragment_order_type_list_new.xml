@@ -5,19 +5,19 @@
     android:id="@+id/rl_order_type_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/color_silver">
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true">
 
-            <android.support.design.widget.CollapsingToolbarLayout
+            <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/toolbar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
                         android:textSize="@dimen/_13sdp"
                         android:visibility="gone" />
 
-                    <android.support.v7.widget.CardView
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/_5sdp"
@@ -113,15 +113,15 @@
                                     android:paddingRight="@dimen/_5sdp"
                                     android:paddingTop="@dimen/_5sdp" />
 
-                                <android.support.v7.widget.RecyclerView
+                                <androidx.recyclerview.widget.RecyclerView
                                     android:id="@+id/rv_brand_type_list"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content" />
                             </LinearLayout>
                         </LinearLayout>
-                    </android.support.v7.widget.CardView>
+                    </androidx.cardview.widget.CardView>
 
-                    <android.support.v7.widget.CardView
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/_5sdp"
@@ -192,15 +192,15 @@
                                     android:paddingRight="@dimen/_5sdp"
                                     android:paddingTop="@dimen/_5sdp" />
 
-                                <android.support.v7.widget.RecyclerView
+                                <androidx.recyclerview.widget.RecyclerView
                                     android:id="@+id/rv_category_type_list"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content" />
                             </LinearLayout>
                         </LinearLayout>
-                    </android.support.v7.widget.CardView>
+                    </androidx.cardview.widget.CardView>
 
-                    <android.support.v7.widget.CardView
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/_5sdp"
@@ -271,16 +271,16 @@
                                     android:paddingRight="@dimen/_5sdp"
                                     android:paddingTop="@dimen/_5sdp" />
 
-                                <android.support.v7.widget.RecyclerView
+                                <androidx.recyclerview.widget.RecyclerView
                                     android:id="@+id/rv_watt_type_list"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content" />
                             </LinearLayout>
                         </LinearLayout>
-                    </android.support.v7.widget.CardView>
+                    </androidx.cardview.widget.CardView>
                 </LinearLayout>
-            </android.support.design.widget.CollapsingToolbarLayout>
-        </android.support.design.widget.AppBarLayout>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -294,7 +294,7 @@
                 android:layout_marginLeft="@dimen/_5sdp"
                 android:layout_marginRight="@dimen/_5sdp"
                 android:layout_marginTop="@dimen/_5sdp"
-                android:background="@color/colorPrimary"
+                android:background="@drawable/shape_custom_border_blue_button"
                 android:paddingLeft="@dimen/_10sdp"
                 android:paddingRight="@dimen/_10sdp"
                 android:paddingTop="@dimen/_5sdp"
@@ -326,7 +326,7 @@
                     android:paddingBottom="@dimen/_5sdp"/>
             </RelativeLayout>
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_product_type_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -336,7 +336,7 @@
                 android:layout_marginTop="@dimen/_5sdp"
                 android:visibility="gone" />
 
-            <android.support.v4.widget.NestedScrollView
+            <androidx.core.widget.NestedScrollView
                 android:id="@+id/scroll"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -357,9 +357,9 @@
                         android:visibility="visible"/>
 
                 </RelativeLayout>
-            </android.support.v4.widget.NestedScrollView>
+            </androidx.core.widget.NestedScrollView>
         </RelativeLayout>
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.rubyfood.widgets.AppCustomTextView
         android:id="@+id/tv_no_data"

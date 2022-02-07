@@ -1,7 +1,7 @@
 package com.rubyfood.features.member.presentation
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -74,6 +74,10 @@ class OfflineMemberAdapter(context: Context, val teamList: List<MemberEntity>, v
                 listener.onTeamClick(teamList[adapterPosition])
             })
 
+            if(Pref.isServiceFeatureEnable){
+                itemView.tv_shop_details.visibility=View.GONE
+            }
+
             itemView.tv_shop_details.setOnClickListener({
                 listener.onShopClick(teamList[adapterPosition])
             })
@@ -89,6 +93,15 @@ class OfflineMemberAdapter(context: Context, val teamList: List<MemberEntity>, v
             itemView.iv_map_icon.setOnClickListener {
                 listener.onLocClick(teamList[adapterPosition])
             }
+
+            if(!Pref.IsShowActivitiesInTeam){
+                itemView.iv_job.visibility=View.GONE
+            }
+
+            itemView.iv_job.setOnClickListener{
+                listener.onJobClick(teamList[adapterPosition])
+            }
+
         }
     }
 
@@ -102,6 +115,9 @@ class OfflineMemberAdapter(context: Context, val teamList: List<MemberEntity>, v
         fun onPjpClick(member: MemberEntity)
 
         fun onLocClick(member: MemberEntity)
+
+        fun onJobClick(member: MemberEntity)
+
     }
 
     override fun getFilter(): Filter {

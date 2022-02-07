@@ -108,5 +108,27 @@ public interface AppConstant {
     /*Foreground service intent*/
     int FOREGROUND_SERVICE = 911;
 
+    //03-09-2021
+    String NEW_ORDER_GENDER = "new_order_gender";
+    String NEW_ORDER_PRODUCT = "new_order_product";
+    String NEW_ORDER_COLOR = "new_order_color";
+    String NEW_ORDER_SIZE = "new_order_size";
+    String NEW_ORDER_ENTRY = "new_order_entry";
+
+
     boolean isImageNotFound = false;
+
+    String PROSPECT_TABLE_MASTER = "prospect_list_master";
+    String QUESTION_TABLE_MASTER = "question_list_master";
+    String QUESTION_TABLE_SUBMIT = "question_list_submit";
+
+    String ADDSHOP_SECONDARY_IMG_TABLE = "tbl_addShop_Secondary_Img";
+
+
+
+    String RETURN_DETAILS_TABLE = "tbl_return_details";
+    String RETURN_PRODUCT_LIST_TABLE = "return_product_list";
+
+    String TBL_USER_WISE_LEAVE_LIST = "tbl_user_wise_leave_list";
+
 }

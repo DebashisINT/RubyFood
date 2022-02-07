@@ -1,9 +1,9 @@
 package com.rubyfood.app.domain
 
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.Query
-import android.arch.persistence.room.Update
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
+import androidx.room.Update
 import com.rubyfood.app.AppConstant
 
 @Dao
@@ -38,4 +38,5 @@ interface DocumentListDao {
 
     @Query("update " + AppConstant.DOCUMENT_LIST_TABLE + " set attachment=:attachment where list_id=:list_id")
     fun updateAttachment(attachment: String, list_id: String)
+
 }

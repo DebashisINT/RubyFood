@@ -78,14 +78,14 @@
                     android:layout_alignParentRight="true"
                     android:layout_below="@+id/tv_doc_asterisk_mark">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/ic_search_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:contentDescription="@null"
                         app:srcCompat="@drawable/places_ic_search" />
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/ic_close_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
                     android:background="@color/gray_50" />
             </RelativeLayout>
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_search_list"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_120sdp"
@@ -133,7 +133,7 @@
                 android:layout_marginRight="@dimen/_12sdp"
                 android:layout_marginTop="@dimen/_5sdp">
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_doc_remark"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -151,7 +151,7 @@
                         android:singleLine="true"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.rubyfood.widgets.AppCustomTextView
                     android:id="@+id/tv_doc_remark_asterisk_mark"
@@ -368,7 +368,7 @@
                 android:layout_marginTop="@dimen/_5sdp"
                 android:visibility="gone">
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_qty_vol_txt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -386,7 +386,7 @@
                         android:singleLine="true"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.rubyfood.widgets.AppCustomTextView
                     android:id="@+id/tv_qty_vol_txt_asterisk_mark"
@@ -482,14 +482,14 @@
                         android:layout_alignParentRight="true"
                         android:layout_below="@+id/tv_qty_vol_product_asterisk_mark">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/ic_qty_search_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:contentDescription="@null"
                             app:srcCompat="@drawable/places_ic_search" />
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/ic_perscriber_close_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -521,7 +521,7 @@
                         android:background="@color/gray_50" />
                 </RelativeLayout>
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_qty_search_list"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_120sdp"
@@ -667,14 +667,14 @@
                         android:layout_alignParentRight="true"
                         android:layout_below="@+id/tv_sample_asterisk_mark">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/ic_sample_search_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:contentDescription="@null"
                             app:srcCompat="@drawable/places_ic_search" />
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/ic_sample_close_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -705,7 +705,7 @@
                         android:background="@color/gray_50" />
                 </RelativeLayout>
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_sample_search_list"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_120sdp"
@@ -897,7 +897,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:visibility="gone">
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_amount"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -914,7 +914,7 @@
                             android:inputType="numberDecimal"
                             android:textSize="@dimen/_13sdp"
                             app:theme="@style/EvoEditTextTheme" />
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <com.rubyfood.widgets.AppCustomTextView
                         android:id="@+id/tv_amount_asterisk_mark"
@@ -965,7 +965,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:visibility="gone">
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_what"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -982,7 +982,7 @@
                             android:inputType="text"
                             android:textSize="@dimen/_13sdp"
                             app:theme="@style/EvoEditTextTheme" />
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <com.rubyfood.widgets.AppCustomTextView
                         android:id="@+id/tv_what_asterisk_mark"
@@ -1137,7 +1137,7 @@
                     android:layout_marginRight="@dimen/_12sdp"
                     android:layout_marginTop="@dimen/_5sdp">
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_volume_crm_cme"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -1155,7 +1155,7 @@
                             android:singleLine="true"
                             android:textSize="@dimen/_13sdp"
                             app:theme="@style/EvoEditTextTheme" />
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <com.rubyfood.widgets.AppCustomTextView
                         android:id="@+id/tv_volume_crm_cme_asterisk_mark"
@@ -1290,7 +1290,7 @@
                 android:layout_marginTop="@dimen/_5sdp"
                 android:visibility="gone">
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_kind"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -1308,7 +1308,7 @@
                         android:singleLine="true"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.rubyfood.widgets.AppCustomTextView
                     android:id="@+id/tv_which_kind_asterisk_mark"
@@ -1426,7 +1426,7 @@
                 android:layout_marginRight="@dimen/_12sdp"
                 android:layout_marginTop="@dimen/_5sdp">
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_remarks_mr"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -1444,7 +1444,7 @@
                         android:singleLine="true"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.rubyfood.widgets.AppCustomTextView
                     android:id="@+id/tv_remarks_asterisk_mark"

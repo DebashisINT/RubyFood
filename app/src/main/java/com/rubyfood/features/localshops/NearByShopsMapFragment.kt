@@ -43,7 +43,7 @@ class NearByShopsMapFragment : BaseFragment(), View.OnClickListener, OnMapReadyC
     private lateinit var progress_wheel: ProgressWheel
     private lateinit var rl_map_main: RelativeLayout
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         mContext = context!!
     }

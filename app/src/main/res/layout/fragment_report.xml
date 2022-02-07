@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:wheel="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nestedcsrollvire_dashboard"
@@ -18,7 +18,7 @@
             android:background="@color/report_screen_bg"
             android:clickable="true">
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/date_detail_CV"
                 cardBackgroundColor="@color/white"
                 android:layout_width="match_parent"
@@ -140,7 +140,7 @@
                     </RelativeLayout>
 
                 </RelativeLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
 
             <LinearLayout
@@ -325,7 +325,7 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/_13sdp" />
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/report_RCV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -343,4 +343,4 @@
             wheel:matProg_barColor="@color/default_text_color"
             wheel:matProg_progressIndeterminate="true" />
     </RelativeLayout>
-</android.support.v4.widget.NestedScrollView>
+</androidx.core.widget.NestedScrollView>

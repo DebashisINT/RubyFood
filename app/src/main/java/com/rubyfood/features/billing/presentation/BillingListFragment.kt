@@ -5,13 +5,14 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.FileProvider
 import com.elvishew.xlog.XLog
 import com.pnikosis.materialishprogress.ProgressWheel
 import com.rubyfood.R
@@ -159,7 +160,9 @@ class BillingListFragment : BaseFragment(), View.OnClickListener {
                         val fileUrl = Uri.parse(path)
 
                         val file = File(fileUrl.path)
-                        val uri = Uri.fromFile(file)
+                        //val uri = Uri.fromFile(file)
+                        //27-09-2021
+                        val uri: Uri = FileProvider.getUriForFile(mContext, context!!.applicationContext.packageName.toString() + ".provider", file)
                         shareIntent.type = "image/png"
                         shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
                         startActivity(Intent.createChooser(shareIntent, "Share pdf using"));
@@ -552,6 +555,29 @@ class BillingListFragment : BaseFragment(), View.OnClickListener {
 
             shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
 
+            /*10-12-2021*/
+            shopDurationData.updated_by = Pref.user_id
+            try {
+                shopDurationData.updated_on = shopActivity.updated_on!!
+            }catch (ex:Exception){
+                shopDurationData.updated_on = ""
+            }
+
+            if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                shopDurationData.pros_id = shopActivity.pros_id!!
+            else
+                shopDurationData.pros_id = ""
+
+            if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                shopDurationData.agency_name =shopActivity.agency_name!!
+            else
+                shopDurationData.agency_name = ""
+
+            if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+            else
+                shopDurationData.approximate_1st_billing_value = ""
+
             shopDataList.add(shopDurationData)
         }
         else {
@@ -609,6 +635,30 @@ class BillingListFragment : BaseFragment(), View.OnClickListener {
                 shopDurationData.out_location = shopActivity.out_loc
 
                 shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
+
+                /*10-12-2021*/
+                shopDurationData.updated_by = Pref.user_id
+                try {
+                    shopDurationData.updated_on = shopActivity.updated_on!!
+                }
+                catch(Ex:Exception){
+                    shopDurationData.updated_on = ""
+                }
+
+                if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                    shopDurationData.pros_id = shopActivity.pros_id!!
+                else
+                    shopDurationData.pros_id = ""
+
+                if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                    shopDurationData.agency_name =shopActivity.agency_name!!
+                else
+                    shopDurationData.agency_name = ""
+
+                if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                    shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+                else
+                    shopDurationData.approximate_1st_billing_value = ""
 
                 shopDataList.add(shopDurationData)
             }
@@ -754,6 +804,8 @@ class BillingListFragment : BaseFragment(), View.OnClickListener {
                                             assignToDD.dd_phn_no = list[i].phn_no
                                             assignToDD.pp_id = list[i].assigned_to_pp_id
                                             assignToDD.type_id = list[i].type_id
+                                            assignToDD.dd_latitude = list[i].dd_latitude
+                                            assignToDD.dd_longitude = list[i].dd_longitude
                                             AppDatabase.getDBInstance()?.ddListDao()?.insert(assignToDD)
                                         }
 
@@ -866,6 +918,11 @@ class BillingListFragment : BaseFragment(), View.OnClickListener {
         addOrder.latitude = orderLat
         addOrder.longitude = orderLong
 
+        if (orderListDetails!!.scheme_amount != null)
+            addOrder.scheme_amount = orderListDetails!!.scheme_amount
+        else
+            addOrder.scheme_amount = ""
+
         if (remarks != null)
             addOrder.remarks = remarks
         else
@@ -908,6 +965,17 @@ class BillingListFragment : BaseFragment(), View.OnClickListener {
                 addOrder.address = ""
         }
 
+        /*06-01-2022*/
+        if (orderListDetails?.Hospital != null)
+            addOrder.Hospital = orderListDetails?.Hospital
+        else
+            addOrder.Hospital = ""
+
+        if (orderListDetails?.Email_Address != null)
+            addOrder.Email_Address = orderListDetails?.Email_Address
+        else
+            addOrder.Email_Address = ""
+
         val list = AppDatabase.getDBInstance()!!.orderProductListDao().getDataAccordingToShopAndOrderId(order_id!!, shop_id!!)
         val productList = java.util.ArrayList<AddOrderInputProductList>()
 
@@ -918,6 +986,11 @@ class BillingListFragment : BaseFragment(), View.OnClickListener {
             product.rate = list[i].rate
             product.total_price = list[i].total_price
             product.product_name = list[i].product_name
+            product.scheme_qty = list[i].scheme_qty
+            product.scheme_rate = list[i].scheme_rate
+            product.total_scheme_price = list[i].total_scheme_price
+
+            product.MRP = list[i].MRP
             productList.add(product)
         }
 

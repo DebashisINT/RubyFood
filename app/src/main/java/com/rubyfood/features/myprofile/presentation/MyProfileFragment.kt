@@ -9,9 +9,9 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.AppCompatEditText
-import android.support.v7.widget.AppCompatImageView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatImageView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -337,32 +337,32 @@ class MyProfileFragment : BaseFragment() {
 
     private fun validateFieldAndApiCall() {
         val profile_name = profile_name_TV.text.trim()
-        val address = address_EDT.text.trim()
-        val city = city_EDT.text.trim()
-        val state = state_EDT.text.trim()
-        val country = country_EDT.text.trim()
-        val pincode = pincode_EDT.text.trim()
+        val address = address_EDT.text?.trim()
+        val city = city_EDT.text?.trim()
+        val state = state_EDT.text?.trim()
+        val country = country_EDT.text?.trim()
+        val pincode = pincode_EDT.text?.trim()
         if (profile_image_file.isBlank()) {
             (context as DashboardActivity).showSnackMessage(getString(R.string.alert_no_profile_img))
             return
         }
-        if (address.isBlank()) {
+        if (address!!.isBlank()) {
             (context as DashboardActivity).showSnackMessage(getString(R.string.alert_no_address))
             return
         }
-        if (address.isBlank()) {
+        if (address!!.isBlank()) {
             (context as DashboardActivity).showSnackMessage(getString(R.string.alert_no_address))
             return
         }
-        if (state.isBlank()) {
+        if (state!!.isBlank()) {
             (context as DashboardActivity).showSnackMessage(getString(R.string.alert_no_state))
             return
         }
-        if (city.isBlank()) {
+        if (city!!.isBlank()) {
             (context as DashboardActivity).showSnackMessage(getString(R.string.alert_no_city))
             return
         }
-        if (pincode.isBlank()) {
+        if (pincode!!.isBlank()) {
             (context as DashboardActivity).showSnackMessage(getString(R.string.alert_no_pincode))
             return
         }
@@ -370,9 +370,9 @@ class MyProfileFragment : BaseFragment() {
             stateId = AppDatabase.getDBInstance()?.stateDao()?.getIdFromName(state.toString())!!.toString()
             cityId = AppDatabase.getDBInstance()?.cityDao()?.getIdFromName(city.toString(), stateId)!!.toString()
         }
-        setDataInPrefs(profile_image_file, profile_name, address, stateId, cityId, country, pincode)
+        setDataInPrefs(profile_image_file, profile_name, address, stateId, cityId, country!!, pincode)
 
-        callUpDateProfileApi(profile_name, address, cityId, stateId, country, pincode)
+        callUpDateProfileApi(profile_name, address, cityId, stateId, country!!, pincode)
     }
 
     private fun setDataInPrefs(profile_image_file: String, profile_name: CharSequence, address: CharSequence, state: CharSequence, city: CharSequence, country: CharSequence, pincode: CharSequence) {
@@ -513,6 +513,8 @@ class MyProfileFragment : BaseFragment() {
                                             assignToDD.dd_phn_no = list[i].phn_no
                                             assignToDD.pp_id = list[i].assigned_to_pp_id
                                             assignToDD.type_id = list[i].type_id
+                                            assignToDD.dd_latitude = list[i].dd_latitude
+                                            assignToDD.dd_longitude = list[i].dd_longitude
                                             AppDatabase.getDBInstance()?.ddListDao()?.insert(assignToDD)
                                         }
 

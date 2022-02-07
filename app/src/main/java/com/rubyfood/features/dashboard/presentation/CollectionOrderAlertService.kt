@@ -3,7 +3,7 @@ package com.rubyfood.features.dashboard.presentation
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import android.support.v4.content.LocalBroadcastManager
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.text.TextUtils
 import com.rubyfood.app.AppDatabase
 import com.rubyfood.app.Pref

@@ -6,7 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import java.lang.ref.WeakReference;

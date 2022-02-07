@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.Typeface
 import android.util.AttributeSet
 import com.rubyfood.R
-class AppCustomEditText : android.support.v7.widget.AppCompatEditText {
+class AppCustomEditText : androidx.appcompat.widget.AppCompatEditText {
 
     constructor(context: Context) : super(context) {}
 

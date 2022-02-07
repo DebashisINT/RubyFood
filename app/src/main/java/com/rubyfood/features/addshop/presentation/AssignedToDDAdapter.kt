@@ -1,12 +1,12 @@
 package com.rubyfood.features.addshop.presentation
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+import androidx.recyclerview.widget.RecyclerView
 import com.rubyfood.R
 import com.rubyfood.app.domain.AssignToDDEntity
 import com.rubyfood.widgets.AppCustomTextView

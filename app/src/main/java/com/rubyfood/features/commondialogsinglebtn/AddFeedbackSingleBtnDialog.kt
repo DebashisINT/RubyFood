@@ -9,15 +9,15 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.support.annotation.RequiresApi
-import android.support.design.widget.TextInputLayout
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.AppCompatImageView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.RequiresApi
+import com.google.android.material.textfield.TextInputLayout
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
+import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.*
 import android.widget.PopupWindow
@@ -25,21 +25,35 @@ import android.widget.RelativeLayout
 import cafe.adriel.androidaudiorecorder.AndroidAudioRecorder
 import com.rubyfood.R
 import com.rubyfood.app.AppDatabase
+import com.rubyfood.app.NetworkConstant
 import com.rubyfood.app.Pref
+import com.rubyfood.app.domain.ProspectEntity
 import com.rubyfood.app.domain.ShopVisitCompetetorModelEntity
 import com.rubyfood.app.domain.VisitRemarksEntity
 import com.rubyfood.app.utils.AppUtils
 import com.rubyfood.app.utils.FTStorageUtils
 import com.rubyfood.app.utils.PermissionUtils
 import com.rubyfood.app.utils.Toaster
+import com.rubyfood.base.presentation.BaseActivity
+import com.rubyfood.features.addshop.model.AddShopRequestData
+import com.rubyfood.features.addshop.presentation.ProspectListDialog
 import com.rubyfood.features.dashboard.presentation.DashboardActivity
 import com.rubyfood.features.dashboard.presentation.MeetingTypeAdapter
 import com.rubyfood.features.dashboard.presentation.VisitRemarksTypeAdapter
+import com.rubyfood.features.nearbyshops.api.ShopListRepositoryProvider
+import com.rubyfood.features.nearbyshops.model.ProsListResponseModel
 import com.rubyfood.widgets.AppCustomEditText
 import com.rubyfood.widgets.AppCustomTextView
+import com.elvishew.xlog.XLog
 import com.squareup.picasso.Picasso
 import com.themechangeapp.pickimage.PermissionHelper
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.billing_adapter.view.*
 import kotlinx.android.synthetic.main.dialog_add_feedback_single_btn.*
+import kotlinx.android.synthetic.main.fragment_add_shop.*
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
@@ -63,10 +77,30 @@ class AddFeedbackSingleBtnDialog : DialogFragment(), View.OnClickListener {
     private lateinit var til_feedback: TextInputLayout
     private lateinit var ll_competitorImg: RelativeLayout
 
+    private lateinit var rl_approxvalue_main: RelativeLayout
+
+    private lateinit var rl_prospect_main: RelativeLayout
+    private lateinit var iv_prospect_dropdownn: AppCustomTextView
+
+    private lateinit var et_approxvalue_name: AppCustomEditText
+
+
+
+
+
+
+    private lateinit var tv_visit_asterisk_mark: AppCustomTextView
+
     private var visitRemarksPopupWindow: PopupWindow? = null
     private  var audioFile: File? = null
     private var nextVisitDate = ""
     private var filePath = ""
+
+    private var ProsId = ""
+
+    private var shopType = ""
+
+
 
     private val myCalendar by lazy {
         Calendar.getInstance(Locale.ENGLISH)
@@ -91,9 +125,9 @@ class AddFeedbackSingleBtnDialog : DialogFragment(), View.OnClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCanceledOnTouchOutside(false)
-        dialog.window!!.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
+        dialog?.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.setCanceledOnTouchOutside(false)
+        dialog?.window!!.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
         val v = inflater.inflate(R.layout.dialog_add_feedback_single_btn, container, false)
         initView(v)
 
@@ -116,12 +150,22 @@ class AddFeedbackSingleBtnDialog : DialogFragment(), View.OnClickListener {
         iv_close_icon = v.findViewById(R.id.iv_close_icon)
         et_next_visit_date = v.findViewById(R.id.et_next_visit_date)
         tv_visit_date_asterisk_mark = v.findViewById(R.id.tv_visit_date_asterisk_mark)
+        tv_visit_asterisk_mark = v.findViewById(R.id.tv_visit_asterisk_mark)
         et_audio = v.findViewById(R.id.et_audio)
         rl_audio = v.findViewById(R.id.rl_audio)
         tv_remarks_dropdown = v.findViewById(R.id.tv_remarks_dropdown)
         rl_remarks = v.findViewById(R.id.rl_remarks)
         til_feedback = v.findViewById(R.id.til_feedback)
         ll_competitorImg = v.findViewById(R.id.rl_competitor_image)
+
+        /*12-12-2021*/
+        rl_approxvalue_main = v.findViewById(R.id.rl_approxvalue_main)
+        rl_prospect_main = v.findViewById(R.id.rl_prospect_main)
+        iv_prospect_dropdownn = v.findViewById(R.id.iv_prospect_dropdownn)
+        et_approxvalue_name =  v.findViewById(R.id.et_approxvalue_name)
+
+        /*13-12-2021*/
+        shopType = AppDatabase.getDBInstance()?.addShopEntryDao()?.getShopType(mShopID).toString()
 
         dialogHeader.text = mHeader
 
@@ -157,6 +201,39 @@ class AddFeedbackSingleBtnDialog : DialogFragment(), View.OnClickListener {
         else
             ll_competitorImg.visibility=View.GONE
 
+
+        if(Pref.IsnewleadtypeforRuby && shopType.equals("16")){
+            rl_approxvalue_main.visibility = View.VISIBLE
+            rl_prospect_main.visibility = View.VISIBLE
+            ll_competitorImg.visibility=View.GONE
+//            var list  = AppDatabase.getDBInstance()!!.shopActivityDao().getAll()
+//            if(list.size==0){
+//                Toaster.msgShort(mContext, "please wait,background data under snyc")
+//                return
+//            }
+//            else{
+                var shopActivityListToProsId = AppDatabase.getDBInstance()!!.shopActivityDao().getProsId(mShopID) as String
+                var prosNameByID=""
+                if(shopActivityListToProsId!=null || !shopActivityListToProsId.equals("")){
+                    prosNameByID = AppDatabase.getDBInstance()!!.prosDao().getProsNameByProsId(shopActivityListToProsId)
+                }
+                iv_prospect_dropdownn.text = prosNameByID // select pros name showing
+                ProsId=shopActivityListToProsId
+
+
+        }
+
+
+
+
+        /*28-09-2021 For Gupta Power*/
+        if (Pref.RevisitRemarksMandatory) {
+            tv_visit_asterisk_mark.visibility = View.VISIBLE
+
+        } else {
+            tv_visit_asterisk_mark.visibility = View.GONE
+        }
+
         dialogOk.setOnClickListener(this)
         iv_close_icon.setOnClickListener(this)
         et_next_visit_date.setOnClickListener(this)
@@ -164,27 +241,35 @@ class AddFeedbackSingleBtnDialog : DialogFragment(), View.OnClickListener {
         tv_remarks_dropdown.setOnClickListener(this)
 
         ll_competitorImg.setOnClickListener(this)
+        rl_prospect_main.setOnClickListener(this)
+        rl_approxvalue_main.setOnClickListener(this)
     }
 
     override fun onClick(p0: View?) {
 //        deSelectAll()
         when (p0!!.id) {
             R.id.ok_TV -> {
-
                 iv_close_icon.isEnabled=true
-
-                if (Pref.isNextVisitDateMandatory && TextUtils.isEmpty(nextVisitDate))
+                if (Pref.RevisitRemarksMandatory && TextUtils.isEmpty(tv_remarks_dropdown.text.toString().trim()))
+                    Toaster.msgShort(mContext, getString(R.string.error_message_remarks_manadatory))
+               else if (Pref.isNextVisitDateMandatory && TextUtils.isEmpty(nextVisitDate))
                     Toaster.msgShort(mContext, getString(R.string.error_message_next_visit_date))
                 else if (Pref.isRecordAudioEnable && TextUtils.isEmpty(et_audio.text.toString().trim()))
                     Toaster.msgShort(mContext, getString(R.string.error_message_audio))
+                else if (Pref.IsnewleadtypeforRuby && shopType.equals("16") && TextUtils.isEmpty(et_approxvalue_name.text.toString().trim()))
+                    Toaster.msgShort(mContext, getString(R.string.error_message_approx))
                 else {
                     dialogOk.isSelected = true
                     dismiss()
-
-                    if (!Pref.isShowVisitRemarks)
-                        mListener.onOkClick(et_feedback.text.toString().trim(), nextVisitDate, filePath)
-                    else
-                        mListener.onOkClick(tv_remarks_dropdown.text.toString().trim(), nextVisitDate, filePath)
+                    if (Pref.RevisitRemarksMandatory){
+                        mListener.onOkClick(tv_remarks_dropdown.text.toString().trim(), nextVisitDate, filePath,et_approxvalue_name.text.toString(),ProsId)
+                    }
+                    else{
+                        if (!Pref.isShowVisitRemarks)
+                            mListener.onOkClick(et_feedback.text.toString().trim(), nextVisitDate, filePath,et_approxvalue_name.text.toString(),ProsId)
+                        else
+                            mListener.onOkClick(tv_remarks_dropdown.text.toString().trim(), nextVisitDate, filePath,et_approxvalue_name.text.toString(),ProsId)
+                    }
                 }
             }
             R.id.iv_close_icon -> {
@@ -235,6 +320,21 @@ class AddFeedbackSingleBtnDialog : DialogFragment(), View.OnClickListener {
                 else
                     showPictureDialog()
             }
+
+            /*12-12-2021*/
+            R.id.rl_prospect_main -> {
+                val list = AppDatabase.getDBInstance()?.prosDao()?.getAll() as ArrayList<ProspectEntity>
+                if (list == null || list.isEmpty())
+                    getProspectApi()
+                else
+                    showProsDialog(list)
+            }
+
+
+            R.id.rl_approxvalue_main->{
+
+            }
+
         }
     }
 
@@ -335,7 +435,7 @@ class AddFeedbackSingleBtnDialog : DialogFragment(), View.OnClickListener {
         dialogOk.isSelected = false
     }
 
-    override fun show(manager: FragmentManager?, tag: String?) {
+    override fun show(manager: FragmentManager, tag: String?) {
         try {
             //if (!dialog.isShowing) {
             val ft = manager?.beginTransaction()
@@ -348,7 +448,7 @@ class AddFeedbackSingleBtnDialog : DialogFragment(), View.OnClickListener {
     }
 
     interface OnOkClickListener {
-        fun onOkClick(feedback: String, nextVisitDate: String, filePath: String)
+        fun onOkClick(feedback: String, nextVisitDate: String, filePath: String,approxValue:String,prosId:String)
 
         fun onCloseClick()
 
@@ -377,5 +477,55 @@ class AddFeedbackSingleBtnDialog : DialogFragment(), View.OnClickListener {
         AppDatabase.getDBInstance()!!.shopVisitCompetetorImageDao().insert(obj)
 
         iv_close_icon.isEnabled=false
+    }
+
+    private fun getProspectApi() {
+        try {
+            val list = AppDatabase.getDBInstance()?.prosDao()?.getAll()
+            if (list!!.size == 0) {
+                val repository = ShopListRepositoryProvider.provideShopListRepository()
+                BaseActivity.compositeDisposable.add(
+                        repository.getProsList()
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeOn(Schedulers.io())
+                                .subscribe({ result ->
+                                    val response = result as ProsListResponseModel
+                                    XLog.d("GET PROS DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                                    if (response.status == NetworkConstant.SUCCESS) {
+                                        if (response.Prospect_list != null && response.Prospect_list!!.isNotEmpty()) {
+                                            doAsync {
+                                                AppDatabase.getDBInstance()?.prosDao()?.insertAll(response.Prospect_list!!)
+                                                uiThread {
+
+                                                }
+                                            }
+                                        } else {
+
+                                        }
+                                    } else {
+
+                                    }
+
+                                }, { error ->
+
+
+                                })
+                )
+            } else {
+
+            }
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+
+
+        }
+
+    }
+
+    private fun showProsDialog(prosList: ArrayList<ProspectEntity>) {
+        ProspectListDialog.newInstance(prosList) { pros: ProspectEntity ->
+            iv_prospect_dropdownn.text = pros.pros_name
+            ProsId = pros.pros_id!!
+        }.show((mContext as DashboardActivity).supportFragmentManager, "")
     }
 }

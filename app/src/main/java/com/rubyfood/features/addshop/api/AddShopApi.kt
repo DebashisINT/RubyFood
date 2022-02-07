@@ -2,6 +2,7 @@ package com.rubyfood.features.addshop.api
 
 import com.rubyfood.app.NetworkConstant
 import com.rubyfood.base.BaseResponse
+import com.rubyfood.features.addshop.model.AddQuestionSubmitRequestData
 import com.rubyfood.features.addshop.model.AddShopRequestData
 import com.rubyfood.features.addshop.model.AddShopResponse
 import io.reactivex.Observable
@@ -16,6 +17,19 @@ import retrofit2.http.*
  */
 interface AddShopApi {
 
+
+    @POST("RubyFoodLead/QuestionListSave")
+    fun getAddQuestionSubmit(@Body addQuestion:AddQuestionSubmitRequestData?): Observable<BaseResponse>
+
+    @POST("RubyFoodLead/QuestionListEdit")
+    fun getAddQuestionUpdateSubmit(@Body addQuestion:AddQuestionSubmitRequestData?): Observable<BaseResponse>
+
+    //02-11-2021
+    @FormUrlEncoded
+    @POST("DuplicateRecords/PhoneNo")
+    fun getDuplicationshopPhoneNumber(@Field("user_id") user_id: String,@Field("session_token") session_token: String,@Field("new_shop_phone") new_shop_phone: String):
+            Observable<BaseResponse>
+
     @POST("Shoplist/AddShop")
     fun getAddShop(@Body addShop: AddShopRequestData?): Observable<AddShopResponse>
 
@@ -26,6 +40,15 @@ interface AddShopApi {
     @Multipart
     @POST("ShopRegistration/AddCompetitorImage")
     fun getAddShopCompetetorImage(@Query("data") addShop: String, @Part competitor_img: MultipartBody.Part?): Observable<BaseResponse>
+
+    /*9-12-2021*/
+    @Multipart
+    @POST("RubyLeadImage/RubyLeadImage1Save")
+    fun getAddShopUploadImage(@Query("data") addImageupload: String, @Part competitor_img: MultipartBody.Part?): Observable<BaseResponse>
+    @Multipart
+    @POST("RubyLeadImage/RubyLeadImage2Save")
+    fun getAddShopUploadImage2(@Query("data") addImageupload: String, @Part competitor_img: MultipartBody.Part?): Observable<BaseResponse>
+    /*9-12-2021*/
 
     @Multipart
     @POST("ShopRegistration/RegisterShop")

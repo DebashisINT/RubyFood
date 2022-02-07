@@ -11,21 +11,23 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
-import android.support.annotation.NonNull
-import android.support.annotation.RequiresApi
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.CoordinatorLayout
-import android.support.design.widget.TabLayout
-import android.support.design.widget.TextInputLayout
-import android.support.v4.content.ContextCompat
-import android.support.v4.widget.NestedScrollView
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.*
+import androidx.annotation.NonNull
+import androidx.annotation.RequiresApi
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.textfield.TextInputLayout
+import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.*
 import android.text.TextUtils
 import android.util.Log
 import android.view.*
 import android.widget.*
 import android.widget.ListPopupWindow
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.elvishew.xlog.XLog
@@ -1223,7 +1225,7 @@ class EditReimbursementFragment : BaseFragment(), DateAdapter.onPetSelectedListe
                             }
                         }
 
-                    }).show(fragmentManager, "")
+                    }).show(fragmentManager!!, "")
 
                 } else
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_available))

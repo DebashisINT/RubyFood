@@ -5,10 +5,10 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
-import android.support.v7.widget.AppCompatImageView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.*
 import android.widget.ImageView
@@ -288,7 +288,7 @@ class EditPJPFragment : BaseFragment(), DateAdapter.onPetSelectedListener, View.
 
                     iv_customer_cross_icon.visibility = View.VISIBLE
 
-                }).show(fragmentManager, "")
+                }).show(fragmentManager!!, "")
             }
 
             R.id.tv_customer_dropdown -> {
@@ -303,7 +303,7 @@ class EditPJPFragment : BaseFragment(), DateAdapter.onPetSelectedListener, View.
                     cust_id = customer.cust_id
                     iv_customer_cross_icon.visibility = View.VISIBLE
 
-                }).show(fragmentManager, "")
+                }).show(fragmentManager!!, "")
             }
 
             R.id.iv_customer_cross_icon -> {

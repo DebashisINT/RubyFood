@@ -7,7 +7,7 @@ import android.os.Build
 import android.os.CancellationSignal
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 import android.util.Log
 import java.security.*
 import javax.crypto.Cipher

@@ -3,8 +3,8 @@ package com.rubyfood.features.quotation.presentation
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
-import android.support.v4.content.ContextCompat
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.MotionEvent

@@ -5,9 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.RequiresApi
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -42,6 +42,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import java.lang.Exception
 import java.util.*
 
 /**
@@ -147,12 +148,13 @@ class NewCollectionListFragment : BaseFragment(), View.OnClickListener {
         )
     }
 
-    private fun saveToDatabase(collection_details_list: ArrayList<CollectionListDataModel>) {
+    //private fun saveToDatabase(collection_details_list: ArrayList<CollectionListDataModel>) {
+    private fun saveToDatabase(collection_details_list: ArrayList<CollectionDetailsEntity>) {
         doAsync {
 
-            for (i in collection_details_list.indices) {
+        /*    for (i in collection_details_list.indices) {
                 val collectionList = CollectionDetailsEntity()
-                collectionList.date = AppUtils.convertDateTimeToCommonFormat(collection_details_list[i].collection_date!!) /*AppUtils.convertToCommonFormat(collection_details_list[i].collection_date!!)*/
+                collectionList.date = AppUtils.convertDateTimeToCommonFormat(collection_details_list[i].collection_date!!) *//*AppUtils.convertToCommonFormat(collection_details_list[i].collection_date!!)*//*
                 collectionList.shop_id = collection_details_list[i].shop_id
                 collectionList.isUploaded = true
                 collectionList.collection_id = collection_details_list[i].collection_id
@@ -170,7 +172,9 @@ class NewCollectionListFragment : BaseFragment(), View.OnClickListener {
                 collectionList.patient_address = collection_details_list[i].patient_address
 
                 AppDatabase.getDBInstance()!!.collectionDetailsDao().insert(collectionList)
-            }
+            }*/
+
+            AppDatabase.getDBInstance()!!.collectionDetailsDao().insertAll(collection_details_list!!)
 
             uiThread {
                 progress_wheel.stopSpinning()
@@ -287,6 +291,11 @@ class NewCollectionListFragment : BaseFragment(), View.OnClickListener {
 
         var uniqKeyObj=AppDatabase.getDBInstance()!!.shopActivityDao().getNewShopActivityKey(mAddShopDBModelEntity.shop_id!!,false)
         addShopData.shop_revisit_uniqKey=uniqKeyObj?.shop_revisit_uniqKey!!
+
+        addShopData.project_name = mAddShopDBModelEntity.project_name
+        addShopData.landline_number = mAddShopDBModelEntity.landline_number
+        addShopData.agency_name = mAddShopDBModelEntity.agency_name
+
 
         callAddShopApiForSync(addShopData, mAddShopDBModelEntity.shopImageLocalPath, list, adapterPosition, mAddShopDBModelEntity.doc_degree)
     }
@@ -561,6 +570,29 @@ class NewCollectionListFragment : BaseFragment(), View.OnClickListener {
 
             shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
 
+            /*10-12-2021*/
+            shopDurationData.updated_by = Pref.user_id
+            try {
+                shopDurationData.updated_on = shopActivity.updated_on!!
+            }catch(ex:Exception){
+                shopDurationData.updated_on = ""
+            }
+
+            if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                shopDurationData.pros_id = shopActivity.pros_id!!
+            else
+                shopDurationData.pros_id = ""
+
+            if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                shopDurationData.agency_name =shopActivity.agency_name!!
+            else
+                shopDurationData.agency_name = ""
+
+            if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+            else
+                shopDurationData.approximate_1st_billing_value = ""
+
             shopDataList.add(shopDurationData)
         }
         else {
@@ -619,6 +651,30 @@ class NewCollectionListFragment : BaseFragment(), View.OnClickListener {
 
                 shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
 
+                /*10-12-2021*/
+                shopDurationData.updated_by = Pref.user_id
+                try {
+                    shopDurationData.updated_on = shopActivity.updated_on!!
+                }
+                catch(ex:Exception){
+                    shopDurationData.updated_on = ""
+                }
+
+                if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                    shopDurationData.pros_id = shopActivity.pros_id!!
+                else
+                    shopDurationData.pros_id = ""
+
+                if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                    shopDurationData.agency_name =shopActivity.agency_name!!
+                else
+                    shopDurationData.agency_name = ""
+
+                if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                    shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+                else
+                    shopDurationData.approximate_1st_billing_value = ""
+
                 shopDataList.add(shopDurationData)
             }
         }
@@ -671,6 +727,9 @@ class NewCollectionListFragment : BaseFragment(), View.OnClickListener {
         addCollection.patient_name = if (TextUtils.isEmpty(list[adapterPosition].patient_name)) "" else list[adapterPosition].patient_name!!
         addCollection.patient_address = if (TextUtils.isEmpty(list[adapterPosition].patient_address)) "" else list[adapterPosition].patient_address!!
         addCollection.patient_no = if (TextUtils.isEmpty(list[adapterPosition].patient_no)) "" else list[adapterPosition].patient_no!!
+        /*06-01-2022*/
+        addCollection.Hospital = if (TextUtils.isEmpty(list[adapterPosition].Hospital)) "" else list[adapterPosition].Hospital!!
+        addCollection.Email_Address = if (TextUtils.isEmpty(list[adapterPosition].Email_Address)) "" else list[adapterPosition].Email_Address!!
 
         progress_wheel.spin()
 

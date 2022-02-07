@@ -1,11 +1,12 @@
 package com.rubyfood.features.viewAllOrder
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.rubyfood.R
+import com.rubyfood.app.Pref
 import com.rubyfood.app.domain.OrderProductListEntity
 import com.rubyfood.features.dashboard.presentation.DashboardActivity
 import kotlinx.android.synthetic.main.inflate_cart.view.*
@@ -37,6 +38,42 @@ class ViewCartAdapter(private val context: Context, private val selectedProductL
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindItems(context: Context, categoryList: List<OrderProductListEntity>) {
+
+            if (!Pref.IsnewleadtypeforRuby) {
+                itemView.ll_inflate_cart_scheme.visibility = View.GONE
+
+            } else {
+                itemView.ll_inflate_cart_scheme.visibility = View.VISIBLE
+//                itemView.tv_category_item_scheme.text = "Sche.Qty: ₹ " + String.format("%.2f", categoryList[adapterPosition].scheme_qty?.toFloat())
+//                itemView.tv_brand_item_scheme.text = "Sche.Rate: ₹ " + String.format("%.2f", categoryList[adapterPosition].scheme_rate?.toFloat())
+            }
+
+            if(categoryList[adapterPosition].scheme_qty!=null){
+                itemView.tv_category_item_scheme.text = "Sch.Qty:" + categoryList[adapterPosition].scheme_qty?.toFloat()?.toInt()
+            }
+            else{
+                itemView.tv_category_item_scheme.text = "Sch.Qty: " + "0"
+            }
+            if(categoryList[adapterPosition].scheme_rate!=null){
+                itemView.tv_brand_item_scheme.text = "Sch.Rate: ₹ " + String.format("%.2f", categoryList[adapterPosition].scheme_rate?.toFloat())
+            }
+            else{
+                itemView.tv_brand_item_scheme.text = "Sch.Rate: ₹ " +  "0"
+            }
+
+
+            try {
+                val totalScPrice = String.format("%.2f", categoryList[adapterPosition].total_scheme_price?.toFloat())
+                itemView.tv_watt_item_scheme.text = "Sch.Price: ₹ $totalScPrice"  //categoryList?.get(adapterPosition)?.watt
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+//            if (categoryList[adapterPosition].scheme_qty?.contains(".")!! )
+//                itemView.tv_category_item.text = "Sch.Qty: " + categoryList[adapterPosition].scheme_qty?.toFloat()?.toInt()
+//            else
+//                itemView.tv_category_item.text = "Sch.Qty: " + categoryList[adapterPosition].scheme_qty
+
 
             /*if (adapterPosition % 2 == 0)
                 itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.report_screen_bg))

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/smoke_white">
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/nsv_apply_reimbursement"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -52,7 +52,7 @@
                 android:background="@color/light_gray" />
 
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvDateList"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_60sdp" />
@@ -180,7 +180,7 @@
                     android:layout_marginBottom="10dp"
                     android:paddingEnd="@dimen/_25sdp">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_customer_cross_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -232,7 +232,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_location"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -253,9 +253,9 @@
                             android:textColor="@color/black"
                             android:textSize="@dimen/_13sdp"
                             app:theme="@style/EvoEditTextTheme" />
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_view_map"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -358,7 +358,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:src="@drawable/ic_remarks_icon" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColorHint="@color/light_gray"
@@ -376,11 +376,11 @@
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
 
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 
     <com.rubyfood.widgets.AppCustomTextView
@@ -388,7 +388,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/selector_order_history_bg"
+        android:background="@drawable/deselected_new_order_history"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center"

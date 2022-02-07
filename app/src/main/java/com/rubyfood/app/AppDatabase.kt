@@ -1,21 +1,20 @@
 package com.rubyfood.app
 
-import android.arch.persistence.db.SupportSQLiteDatabase
-import android.arch.persistence.room.Database
-import android.arch.persistence.room.Room
-import android.arch.persistence.room.RoomDatabase
-import android.arch.persistence.room.TypeConverters
-import android.arch.persistence.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import androidx.room.migration.Migration
 import android.content.Context
 
 import com.rubyfood.app.AppConstant.DBNAME
-import com.rubyfood.app.AppConstant.SHOP_TYPE_STOCK_VIEW_STATUS
 import com.rubyfood.app.domain.*
 import com.rubyfood.features.location.UserLocationDataDao
 import com.rubyfood.features.location.UserLocationDataEntity
 import com.rubyfood.features.login.UserAttendanceDataDao
 import com.rubyfood.features.login.UserLoginDataEntity
-import com.rubyfood.features.stockCompetetorStock.model.CompetetorStockData
+
 
 
 /*
@@ -53,9 +52,12 @@ import com.rubyfood.features.stockCompetetorStock.model.CompetetorStockData
         EntityTypeEntity::class, PartyStatusEntity::class, RetailerEntity::class, DealerEntity::class, BeatEntity::class, AssignToShopEntity::class,
         VisitRemarksEntity::class,ShopVisitCompetetorModelEntity::class,
         OrderStatusRemarksModelEntity::class,CurrentStockEntryModelEntity::class,CurrentStockEntryProductModelEntity::class,
-        CcompetetorStockEntryModelEntity::class,CompetetorStockEntryProductModelEntity::class,
-        ShopTypeStockViewStatus::class),
-        version = 2, exportSchema = false)
+           CcompetetorStockEntryModelEntity::class,CompetetorStockEntryProductModelEntity::class,
+        ShopTypeStockViewStatus::class,
+        NewOrderGenderEntity::class,NewOrderProductEntity::class,NewOrderColorEntity::class,NewOrderSizeEntity::class,NewOrderScrOrderEntity::class,ProspectEntity::class,
+        QuestionEntity::class,QuestionSubmitEntity::class,AddShopSecondaryImgEntity::class,ReturnDetailsEntity::class
+        ,ReturnProductListEntity::class,UserWiseLeaveListEntity::class),
+        version = 3, exportSchema = false)
 @TypeConverters(DateConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun addShopEntryDao(): AddShopDao
@@ -157,6 +159,25 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun visitRemarksDao(): VisitRemarksDao
 
+
+    //03-09-2021
+    abstract fun newOrderGenderDao(): NewOrderGenderDao
+    abstract fun newOrderProductDao(): NewOrderProductDao
+    abstract fun newOrderColorDao(): NewOrderColorDao
+    abstract fun newOrderSizeDao(): NewOrderSizeDao
+    abstract fun newOrderScrOrderDao(): NewOrderScrOrderDao
+
+    abstract fun prosDao(): ProspectDao
+    abstract fun questionMasterDao(): QuestionDao
+    abstract fun questionSubmitDao():  QuestionSubmitDao
+    abstract fun addShopSecondaryImgDao():  AddShopSecondaryImgDao
+
+    abstract fun returnDetailsDao():ReturnDetailsDao
+    abstract fun returnProductListDao():ReturnProductListDao
+
+    abstract fun userWiseLeaveListDao(): UserWiseLeaveListDao
+
+
     companion object {
         var INSTANCE: AppDatabase? = null
 
@@ -166,7 +187,7 @@ abstract class AppDatabase : RoomDatabase() {
                         // allow queries on the main thread.
                         // Don't do this on a real app! See PersistenceBasicSample for an example.
                         .allowMainThreadQueries()
-                        .addMigrations(MIGRATION_1_2
+                        .addMigrations(MIGRATION_1_2,MIGRATION_2_3
                         )
 //                        .fallbackToDestructiveMigration()
                         .build()
@@ -181,7 +202,6 @@ abstract class AppDatabase : RoomDatabase() {
         fun destroyInstance() {
             INSTANCE = null
         }
-
 
         val MIGRATION_1_2: Migration = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
@@ -218,7 +238,77 @@ abstract class AppDatabase : RoomDatabase() {
             }
 
         }
+        val MIGRATION_2_3: Migration = object : Migration(2, 3){
+            override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("CREATE TABLE tbl_user_wise_leave_list (id INTEGER NOT NULL PRIMARY KEY , applied_date  TEXT , applied_date_time TEXT," +
+            "  from_date TEXT, from_date_modified TEXT, to_date TEXT , leave_type TEXT , approve_status INTEGER, reject_status INTEGER , leave_reason TEXT, " +
+            " approval_date_time TEXT , approver_remarks TEXT) ")
+
+                /*update shop details table*/
+                database.execSQL("ALTER TABLE shop_detail ADD COLUMN agency_name TEXT")
+                database.execSQL("ALTER TABLE shop_detail ADD COLUMN lead_contact_number TEXT")
+                database.execSQL("ALTER TABLE shop_detail ADD COLUMN rubylead_image1 TEXT")
+                database.execSQL("ALTER TABLE shop_detail ADD COLUMN rubylead_image2 TEXT")
+                database.execSQL("ALTER TABLE shop_detail ADD COLUMN project_name TEXT")
+                database.execSQL("ALTER TABLE shop_detail ADD COLUMN landline_number TEXT")
+
+                /*update shop activity table*/
+                database.execSQL("alter table shop_activity ADD COLUMN updated_by TEXT")
+                database.execSQL("alter table shop_activity ADD COLUMN updated_on TEXT")
+                database.execSQL("alter table shop_activity ADD COLUMN approximate_1st_billing_value TEXT")
+                database.execSQL("alter table shop_activity ADD COLUMN agency_name TEXT")
+                database.execSQL("alter table shop_activity ADD COLUMN pros_id TEXT")
+
+                database.execSQL("alter table assignedto_dd ADD COLUMN dd_latitude TEXT  ")
+                database.execSQL("alter table assignedto_dd ADD COLUMN dd_longitude TEXT ")
+
+                /*update order_details_list table*/
+                database.execSQL("alter table order_details_list ADD COLUMN scheme_amount TEXT")
+                database.execSQL("alter table order_details_list ADD COLUMN Hospital TEXT")
+                database.execSQL("alter table order_details_list ADD COLUMN Email_Address TEXT")
+
+                /*update collection_list table*/
+                database.execSQL("alter table collection_list ADD COLUMN Hospital TEXT")
+                database.execSQL("alter table collection_list ADD COLUMN Email_Address TEXT")
+
+                /*update order produect list table*/
+                database.execSQL("alter table order_product_list ADD COLUMN scheme_qty TEXT")
+                database.execSQL("alter table order_product_list ADD COLUMN scheme_rate TEXT")
+                database.execSQL("alter table order_product_list ADD COLUMN total_scheme_price TEXT")
+                database.execSQL("alter table order_product_list ADD COLUMN MRP TEXT")
+
+                database.execSQL("alter table document_type ADD COLUMN IsForOrganization INTEGER NOT NULL DEFAULT 0 ")
+                database.execSQL("alter table document_type ADD COLUMN IsForOwn INTEGER NOT NULL DEFAULT 0 ")
+
+                database.execSQL("alter table document_list ADD COLUMN document_name TEXT ")
+
+                database.execSQL("CREATE TABLE IF NOT EXISTS `new_order_gender` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `gender_id` INTEGER NOT NULL, `gender` TEXT)");
+
+                database.execSQL("CREATE TABLE new_order_product (id INTEGER NOT NULL PRIMARY KEY , product_id INTEGER , product_name TEXT , product_for_gender TEXT ) ")
+                database.execSQL("CREATE TABLE new_order_color (id INTEGER NOT NULL PRIMARY KEY , color_id INTEGER , color_name TEXT , product_id INTEGER ) ")
+                database.execSQL("CREATE TABLE new_order_size (id INTEGER NOT NULL PRIMARY KEY , product_id INTEGER , size TEXT  ) ")
+
+                database.execSQL("CREATE TABLE new_order_entry (id INTEGER NOT NULL PRIMARY KEY , order_id TEXT , product_id TEXT ," +
+                        " product_name TEXT , gender TEXT , size TEXT , qty TEXT , order_date TEXT , shop_id TEXT , color_id TEXT , color_name TEXT , " +
+                        " isUploaded INTEGER NOT NULL DEFAULT 0  ) ")
+
+                /*New create table*/
+                database.execSQL("CREATE TABLE prospect_list_master (id INTEGER NOT NULL PRIMARY KEY , pros_id  TEXT , pros_name TEXT ) ")
+                database.execSQL("CREATE TABLE question_list_master (id INTEGER NOT NULL PRIMARY KEY , question_id TEXT , question TEXT) ")
+
+                database.execSQL("CREATE TABLE question_list_submit (id INTEGER NOT NULL PRIMARY KEY , shop_id TEXT, question_id TEXT , answer TEXT ,"+
+                        " isUploaded INTEGER NOT NULL DEFAULT 0 , isUpdateToUploaded INTEGER NOT NULL DEFAULT 0)")
+                database.execSQL("CREATE TABLE tbl_addShop_Secondary_Img (id INTEGER NOT NULL PRIMARY KEY , lead_shop_id TEXT, rubylead_image1 TEXT , rubylead_image2 TEXT ,"+
+                        " isUploaded_image1 INTEGER NOT NULL DEFAULT 0 , isUploaded_image2 INTEGER NOT NULL DEFAULT 0)")
+                database.execSQL("CREATE TABLE tbl_return_details (id INTEGER NOT NULL PRIMARY KEY , date TEXT, only_date TEXT , amount TEXT ,description TEXT ,"+
+                        " isUploaded INTEGER NOT NULL DEFAULT 0 , return_id TEXT , shop_id TEXT ,return_lat TEXT ,return_long TEXT)")
+                database.execSQL("CREATE TABLE return_product_list (id INTEGER NOT NULL PRIMARY KEY , product_id TEXT, product_name TEXT , brand_id TEXT ,brand TEXT ,"+
+                        "category_id TEXT , category TEXT ,watt_id TEXT ,watt TEXT ,qty TEXT ,rate TEXT ,total_price TEXT ,return_id TEXT ,shop_id TEXT )")
+            }
+        }
+
     }
+
 
 //}
 

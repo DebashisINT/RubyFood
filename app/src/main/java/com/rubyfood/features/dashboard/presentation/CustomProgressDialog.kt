@@ -3,9 +3,9 @@ package com.rubyfood.features.dashboard.presentation
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.support.design.widget.TextInputLayout
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.FragmentManager
+import com.google.android.material.textfield.TextInputLayout
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -37,7 +37,7 @@ class CustomProgressDialog : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
         //dialog.window?.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
         val v = inflater.inflate(R.layout.custom_progress_dialog, container, false)
 
@@ -50,7 +50,7 @@ class CustomProgressDialog : DialogFragment() {
         mContext = context
     }
 
-    override fun show(manager: FragmentManager?, tag: String?) {
+    override fun show(manager: FragmentManager, tag: String?) {
         //super.show(manager, tag)
         val ft = manager?.beginTransaction()
         ft?.add(this, tag)

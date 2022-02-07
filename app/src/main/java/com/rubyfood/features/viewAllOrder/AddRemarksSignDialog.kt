@@ -2,9 +2,9 @@ package com.rubyfood.features.viewAllOrder
 
 import android.content.Context
 import android.os.Bundle
-import android.support.design.widget.TextInputLayout
-import android.support.v4.app.DialogFragment
-import android.support.v7.widget.AppCompatImageView
+import com.google.android.material.textfield.TextInputLayout
+import androidx.fragment.app.DialogFragment
+import androidx.appcompat.widget.AppCompatImageView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -65,8 +65,8 @@ class AddRemarksSignDialog : DialogFragment(), View.OnClickListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.window?.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
+        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.window?.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
         val v = inflater.inflate(R.layout.dialog_add_remarks_sign, container, false)
 
         isCancelable = false
@@ -88,7 +88,7 @@ class AddRemarksSignDialog : DialogFragment(), View.OnClickListener {
             tl_remarks = findViewById(R.id.tl_remarks)
         }
 
-        dialog_header_TV.text = AppUtils.hiFirstNameText()
+        dialog_header_TV.text = AppUtils.hiFirstNameText()+"!"
 
         if (!TextUtils.isEmpty(feedback))
             et_remarks.setText(feedback)

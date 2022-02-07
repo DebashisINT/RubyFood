@@ -3,7 +3,7 @@ package com.rubyfood.features.reimbursement.presentation
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
+import androidx.fragment.app.DialogFragment
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -44,8 +44,8 @@ class FullImageDialog : DialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
+        dialog?.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.window!!.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
         val v = inflater.inflate(R.layout.dialog_full_image, container, false)
 
         initView(v)

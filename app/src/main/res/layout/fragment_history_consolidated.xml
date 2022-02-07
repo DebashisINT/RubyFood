@@ -8,7 +8,7 @@
         android:id="@+id/header_option"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/translucent_color_primary"
+        android:background="@color/color_silver"
         android:orientation="vertical"
         android:paddingBottom="@dimen/_10sdp"
         android:paddingLeft="@dimen/_5sdp"
@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <android.support.v7.widget.AppCompatRadioButton
+            <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/this_week"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
                 android:text="@string/this_week"
                 android:textColor="@color/colorAccent" />
 
-            <android.support.v7.widget.AppCompatRadioButton
+            <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/last_week"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <android.support.v7.widget.AppCompatRadioButton
+            <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/this_month"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
                 android:text="@string/this_month"
                 android:textColor="@color/colorAccent" />
 
-            <android.support.v7.widget.AppCompatRadioButton
+            <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/last_month"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
                 android:textColor="@color/colorAccent" />
         </LinearLayout>
 
-        <android.support.v7.widget.AppCompatRadioButton
+        <androidx.appcompat.widget.AppCompatRadioButton
             android:id="@+id/date_range"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -123,12 +123,12 @@
     </LinearLayout>
 
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/history_consolidated_RCV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/header_option"
-        android:background="@color/translucent_color_primary"
+        android:background="@color/color_silver"
         android:paddingTop="@dimen/_5sdp"
         android:visibility="visible" />
 

@@ -5,9 +5,9 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.TextUtils
@@ -224,6 +224,9 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
                                             orderDetailList.patient_name = order_details_list[i].patient_name
                                             orderDetailList.patient_address = order_details_list[i].patient_address
 
+                                            orderDetailList.Hospital = order_details_list[i].Hospital
+                                            orderDetailList.Email_Address = order_details_list[i].Email_Address
+
                                             if (order_details_list[i].product_list != null && order_details_list[i].product_list?.size!! > 0) {
                                                 for (j in order_details_list[i].product_list?.indices!!) {
                                                     val productOrderList = OrderProductListEntity()
@@ -236,6 +239,12 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
                                                     productOrderList.category = order_details_list[i].product_list?.get(j)?.category
                                                     productOrderList.order_id = order_details_list[i].order_id
                                                     productOrderList.product_name = order_details_list[i].product_list?.get(j)?.product_name
+
+                                                    /*06-01-2022*/
+                                                    if (!TextUtils.isEmpty(order_details_list[i].product_list?.get(j)?.MRP)) {
+                                                        val finalMRP = String.format("%.2f", order_details_list[i].product_list?.get(j)?.MRP?.toFloat())
+                                                        productOrderList.MRP = finalMRP
+                                                    }
 
                                                     /*if (order_details_list[i].product_list?.get(j)?.rate?.contains(".")!!)
                                                         productOrderList.rate = order_details_list[i].product_list?.get(j)?.rate?.toDouble()?.toInt().toString()
@@ -330,7 +339,8 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
 
                 shop_IV.setImageDrawable(drawable)*/
 
-            } else if (maddShopDataObj != null) {
+            }
+            else if (maddShopDataObj != null) {
                 viewAllOrderList = AppDatabase.getDBInstance()!!.orderDetailsListDao().getListAccordingToShopId(maddShopDataObj?.shop_id!!) as ArrayList<OrderDetailsListEntity>
                 shopId = maddShopDataObj?.shop_id!!
                 shopName = maddShopDataObj?.shopName!!
@@ -376,7 +386,8 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
 
                 shop_IV.setImageDrawable(drawable)*/
 
-            } else {
+            }
+            else {
                 viewAllOrderList = AppDatabase.getDBInstance()!!.orderDetailsListDao().getListAccordingToShopId(orderListObj?.shop_id!!) as ArrayList<OrderDetailsListEntity>
                 shopId = orderListObj?.shop_id!!
                 shopName = orderListObj?.shop_name!!
@@ -844,8 +855,14 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
         addShopData.assigned_to_shop_id = mAddShopDBModelEntity.assigned_to_shop_id
         addShopData.actual_address = mAddShopDBModelEntity.actual_address
 
+
         var uniqKeyObj=AppDatabase.getDBInstance()!!.shopActivityDao().getNewShopActivityKey(mAddShopDBModelEntity.shop_id,false)
         addShopData.shop_revisit_uniqKey=uniqKeyObj?.shop_revisit_uniqKey!!
+
+
+        addShopData.project_name = mAddShopDBModelEntity.project_name
+        addShopData.landline_number = mAddShopDBModelEntity.landline_number
+        addShopData.agency_name = mAddShopDBModelEntity.agency_name
 
         callAddShopApi(addShopData, mAddShopDBModelEntity.shopImageLocalPath, shop_id, order_id, amount, collection,
                 currentDateForShopActi, desc, mAddShopDBModelEntity.doc_degree)
@@ -1135,6 +1152,29 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
 
             shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
 
+            /*10-12-2021*/
+            shopDurationData.updated_by = Pref.user_id
+            try {
+                shopDurationData.updated_on = shopActivity.updated_on!!
+            }catch (ex:Exception){
+                shopDurationData.updated_on = ""
+            }
+
+            if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                shopDurationData.pros_id = shopActivity.pros_id!!
+            else
+                shopDurationData.pros_id = ""
+
+            if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                shopDurationData.agency_name =shopActivity.agency_name!!
+            else
+                shopDurationData.agency_name = ""
+
+            if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+            else
+                shopDurationData.approximate_1st_billing_value = ""
+
             shopDataList.add(shopDurationData)
         }
         else {
@@ -1192,6 +1232,29 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
                 shopDurationData.out_location = shopActivity.out_loc
 
                 shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
+
+                /*10-12-2021*/
+                shopDurationData.updated_by = Pref.user_id
+                try {
+                    shopDurationData.updated_on = shopActivity.updated_on!!
+                }catch (ex:Exception){
+                    shopDurationData.updated_on = ""
+                }
+
+                if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                    shopDurationData.pros_id = shopActivity.pros_id!!
+                else
+                    shopDurationData.pros_id = ""
+
+                if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                    shopDurationData.agency_name =shopActivity.agency_name!!
+                else
+                    shopDurationData.agency_name = ""
+
+                if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                    shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+                else
+                    shopDurationData.approximate_1st_billing_value = ""
 
                 shopDataList.add(shopDurationData)
             }
@@ -1361,7 +1424,8 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
                                 AppUtils.getCurrentDateFormatInTa(viewAllOrderList?.get(position)?.only_date!!), viewAllOrderList[position].amount!!,
                                 viewAllOrderList[position].order_id!!, object : AddCollectionDialog.AddCollectionClickLisneter {
                             override fun onClick(collection: String, date: String, paymentId: String, instrument: String, bank: String,
-                                                 filePath: String, feedback: String, patientName: String, patientAddress: String, patinetNo: String) {
+                                                 filePath: String, feedback: String, patientName: String, patientAddress: String, patinetNo: String,
+                                                 hospital:String,emailAddress:String) {
 
 
                                 if (addShop != null) {
@@ -1391,6 +1455,10 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
                                         collectionDetails.patient_name = patientName
                                         collectionDetails.patient_address = patientAddress
                                         collectionDetails.patient_no = patinetNo
+                                        /*06-01-2022*/
+                                        collectionDetails.Hospital = hospital
+                                        collectionDetails.Email_Address = emailAddress
+
                                         AppDatabase.getDBInstance()!!.collectionDetailsDao().insert(collectionDetails)
 
                                         val collectionDate = AppUtils.getCurrentDateForShopActi() + "T" + collectionDetails.only_time
@@ -1515,6 +1583,11 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
         addOrder.latitude = order.order_lat
         addOrder.longitude = order.order_long
 
+        if (order.scheme_amount != null)
+            addOrder.scheme_amount = order.scheme_amount
+        else
+            addOrder.scheme_amount = ""
+
         if (order.remarks != null)
             addOrder.remarks = order.remarks
         else
@@ -1556,7 +1629,16 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
             else
                 addOrder.address = ""
         }
+            /*06-01-2022*/
+        if (order.Hospital != null)
+            addOrder.Hospital = order.Hospital
+        else
+            addOrder.Hospital = ""
 
+        if (order.Email_Address != null)
+            addOrder.Email_Address = order.Email_Address
+        else
+            addOrder.Email_Address = ""
 
         val list = AppDatabase.getDBInstance()!!.orderProductListDao().getDataAccordingToShopAndOrderId(order.order_id!!, shop_id!!)
         val productList = ArrayList<AddOrderInputProductList>()
@@ -1568,6 +1650,10 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
             product.rate = list[i].rate
             product.total_price = list[i].total_price
             product.product_name = list[i].product_name
+            product.scheme_qty = list[i].scheme_qty
+            product.scheme_rate = list[i].scheme_rate
+            product.total_scheme_price = list[i].total_scheme_price
+            product.MRP = list[i].MRP
             productList.add(product)
         }
 
@@ -1715,6 +1801,11 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
 
         var uniqKeyObj=AppDatabase.getDBInstance()!!.shopActivityDao().getNewShopActivityKey(mAddShopDBModelEntity.shop_id,false)
         addShopData.shop_revisit_uniqKey=uniqKeyObj?.shop_revisit_uniqKey!!
+
+
+        addShopData.project_name = mAddShopDBModelEntity.project_name
+        addShopData.landline_number = mAddShopDBModelEntity.landline_number
+        addShopData.agency_name = mAddShopDBModelEntity.agency_name
 
         callAddShopApi(addShopData, mAddShopDBModelEntity.shopImageLocalPath, shop_id, collection_id, amount, collection,
                 currentDateForShopActi, desc, billId, mAddShopDBModelEntity.doc_degree, orderId, collectionDetails)
@@ -1978,6 +2069,13 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
         if (collectionDetails.patient_no != null)
             addCollection.patient_no = collectionDetails.patient_no!!
 
+        /*06-02-2022*/
+        if (collectionDetails.Hospital != null)
+            addCollection.Hospital = collectionDetails.Hospital!!
+
+        if (collectionDetails.Email_Address != null)
+            addCollection.Email_Address = collectionDetails.Email_Address!!
+
         progress_wheel.spin()
 
         if (TextUtils.isEmpty(collectionDetails.file_path)) {
@@ -2141,6 +2239,10 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
         var uniqKeyObj=AppDatabase.getDBInstance()!!.shopActivityDao().getNewShopActivityKey(mAddShopDBModelEntity.shop_id,false)
         addShopData.shop_revisit_uniqKey=uniqKeyObj?.shop_revisit_uniqKey!!
 
+
+        addShopData.project_name = mAddShopDBModelEntity.project_name
+        addShopData.landline_number = mAddShopDBModelEntity.landline_number
+        addShopData.agency_name = mAddShopDBModelEntity.agency_name
 
         callAddShopApiForSync(addShopData, mAddShopDBModelEntity.shopImageLocalPath, shop_id, order_id, amount, collection,
                 currentDateForShopActi, desc, mAddShopDBModelEntity.doc_degree, remarks, signature, orderLat, orderLong, orderDetailsListEntity)
@@ -2376,6 +2478,11 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
         addOrder.latitude = orderLat
         addOrder.longitude = orderLong
 
+        if (orderListDetails!!.scheme_amount != null)
+            addOrder.scheme_amount = orderListDetails!!.scheme_amount
+        else
+            addOrder.scheme_amount = ""
+
         if (remarks != null)
             addOrder.remarks = remarks
         else
@@ -2418,6 +2525,18 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
                 addOrder.address = ""
         }
 
+        /*06-01-2022*/
+        if (orderListDetails?.Hospital != null)
+            addOrder.Hospital = orderListDetails?.Hospital
+        else
+            addOrder.Hospital = ""
+
+        if (orderListDetails?.Email_Address != null)
+            addOrder.Email_Address = orderListDetails?.Email_Address
+        else
+            addOrder.Email_Address = ""
+
+
         val list = AppDatabase.getDBInstance()!!.orderProductListDao().getDataAccordingToShopAndOrderId(order_id!!, shop_id!!)
         val productList = ArrayList<AddOrderInputProductList>()
 
@@ -2428,6 +2547,11 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
             product.rate = list[i].rate
             product.total_price = list[i].total_price
             product.product_name = list[i].product_name
+            product.scheme_qty = list[i].scheme_qty
+            product.scheme_rate = list[i].scheme_rate
+            product.total_scheme_price = list[i].total_scheme_price
+
+            product.MRP = list[i].MRP
             productList.add(product)
         }
 

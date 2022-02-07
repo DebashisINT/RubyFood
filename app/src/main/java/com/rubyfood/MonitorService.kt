@@ -5,17 +5,18 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.location.LocationManager
 import android.os.*
 import android.provider.Settings
 import android.util.Log
-import android.widget.Toast
-import com.rubyfood.MonitorBroadcast
+import com.rubyfood.Customdialog.CustomDialog
+import com.rubyfood.Customdialog.OnDialogCustomClickListener
 import com.rubyfood.app.Pref
 import com.rubyfood.app.utils.AppUtils
 import com.rubyfood.app.utils.FTStorageUtils
+import com.rubyfood.features.dashboard.presentation.DashboardActivity
 import com.rubyfood.features.location.LocationFuzedService
+import com.rubyfood.features.powerSavingSettings.PowerSavingSettingsActivity
 import com.rubyfood.mappackage.SendBrod
 import com.elvishew.xlog.XLog
 import java.util.*
@@ -50,7 +51,7 @@ class MonitorService:Service() {
         timer = Timer()
         val task: TimerTask = object : TimerTask() {
             override fun run() {
-                //println("abc - 3 sec method");
+                println("abc - 3 sec method");
                 serviceStatusActionable()
 
             }
@@ -65,7 +66,7 @@ class MonitorService:Service() {
     }
 
     fun serviceStatusActionable(){
-       // Log.e("abc", "startabc" )
+        Log.e("abc", "startabc" )
         monitorBroadcast=MonitorBroadcast()
 
         var powerMode:String = ""
@@ -74,22 +75,38 @@ class MonitorService:Service() {
             if(powerManager.isPowerSaveMode){
                 powerMode = "Power Save Mode ON"
 
-                println("abc - Power Save Mode ON");
+                Log.e("pww", "Power Save Mode ON" )
+                XLog.d("pww : Power Save Mode ON" + " Time :" + AppUtils.getCurrentDateTime())
 
                 Handler(Looper.getMainLooper()).postDelayed({
-                    println("abc - Power Save Mode ON - Post delayed");
-                    SendBrod.sendBrod(this)
+                    if(Pref.GPSAlertGlobal){
+                        if(Pref.GPSAlert){
+                            SendBrod.sendBrod(this)
+
+                            /*val intent = Intent(this, PowerSavingSettingsActivity::class.java)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(intent)*/
+
+                        }}
                 }, 500)
 
                 powerSaver=true
                 //sendGPSOffBroadcast()
             }else{
+                Log.e("pww", "Power Save Mode OFF" )
+                XLog.d("pww : Power Save Mode OFF" + " Time :" + AppUtils.getCurrentDateTime())
+
                 powerMode = "Power Save Mode OFF"
+
                 powerSaver=false
                 Handler(Looper.getMainLooper()).postDelayed({
-                    println("abc - Power Save Mode ON - Post delayed");
                     if(!Pref.isLocFuzedBroadPlaying){
                         SendBrod.stopBrod(this)
+
+                     /*   val intent = Intent(this, DashboardActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)*/
+
                     }
 
                 }, 500)
@@ -100,12 +117,37 @@ class MonitorService:Service() {
         var manu= Build.MANUFACTURER.toUpperCase(Locale.getDefault())
         if(manu.equals("XIAOMI")){
             if(isPowerSaveModeCompat(this) ){
+
+                println("pww - Power Save Mode ON xm")
+                Log.e("pww", "Power Save Mode ON xm" )
+                XLog.d("pww : Power Save Mode ON xm" + " Time :" + AppUtils.getCurrentDateTime())
+
+
                 powerMode = "Power Save Mode ON"
-                SendBrod.sendBrod(this)
+
+                if(Pref.GPSAlertGlobal){
+                    if(Pref.GPSAlert){
+                        SendBrod.sendBrod(this)
+
+                     /*   val intent = Intent(this, PowerSavingSettingsActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)*/
+                    }}
                 //sendGPSOffBroadcast()
             }else{
+
+                println("pww - Power Save Mode OFF xm")
+                Log.e("pww", "Power Save Mode OFF xm" )
+                XLog.d("pww : Power Save Mode OFF xm" + " Time :" + AppUtils.getCurrentDateTime())
+
+
                 powerMode = "Power Save Mode OFF"
                 SendBrod.stopBrod(this)
+
+        /*        val intent = Intent(this, DashboardActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)*/
+
                 //cancelGpsBroadcast()
             }
         }
@@ -113,7 +155,7 @@ class MonitorService:Service() {
         if(shouldShopActivityUpdate()){
             if (FTStorageUtils.isMyServiceRunning(LocationFuzedService::class.java, this)) {
                 XLog.d("MonitorService LocationFuzedService : " + "true" + "," + " Time :" + AppUtils.getCurrentDateTime())
-                XLog.d("MonitorService  Power Save Mode Status : " + powerMode + "," + " Time :" + AppUtils.getCurrentDateTime())
+                XLog.d("MonitorService Power Save Mode Status : " + powerMode + "," + " Time :" + AppUtils.getCurrentDateTime())
                 /*if(powerSaver){
                     sendGPSOffBroadcast()
                 }else{
@@ -138,6 +180,7 @@ class MonitorService:Service() {
             XLog.d("MonitorService Called for Battery Broadcast :  Time :" + AppUtils.getCurrentDateTime())
             //var notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             //notificationManager.cancel(monitorNotiID)
+            MonitorBroadcast.isSound=Pref.GPSAlertwithSound
             var intent: Intent = Intent(this, MonitorBroadcast::class.java)
             intent.putExtra("notiId", monitorNotiID)
             intent.putExtra("fuzedLoc", "Fuzed Stop.")

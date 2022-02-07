@@ -9,8 +9,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
-import android.support.design.widget.TextInputLayout
-import android.support.v7.app.AlertDialog
+import com.google.android.material.textfield.TextInputLayout
+import androidx.appcompat.app.AlertDialog
 import android.text.InputFilter
 import android.text.InputType
 import android.text.TextUtils

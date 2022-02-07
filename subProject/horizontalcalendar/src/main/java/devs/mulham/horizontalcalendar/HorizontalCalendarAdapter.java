@@ -3,7 +3,7 @@ package devs.mulham.horizontalcalendar;
 import android.content.Context;
 import android.graphics.Point;
 import android.os.Build;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.format.DateFormat;
 import android.util.TypedValue;
 import android.view.Display;

@@ -3,9 +3,9 @@ package com.rubyfood.features.nearbyshops.presentation
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.CardView
-import android.support.v7.widget.SearchView
+import androidx.core.content.ContextCompat
+import androidx.cardview.widget.CardView
+import androidx.appcompat.widget.SearchView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -75,8 +75,8 @@ class NewNearByShopsListFragment : BaseFragment(), View.OnClickListener {
         svSearchForShop.isIconified = false
 
 
-        val editText = svSearchForShop.findViewById<EditText>(android.support.v7.appcompat.R.id.search_src_text)
-        val mCloseButton = svSearchForShop.findViewById<ImageView>(android.support.v7.appcompat.R.id.search_close_btn)
+        val editText = svSearchForShop.findViewById<EditText>(R.id.search_src_text)
+        val mCloseButton = svSearchForShop.findViewById<ImageView>(R.id.search_close_btn)
         mCloseButton.setOnClickListener(View.OnClickListener {
 
             editText.setText("")

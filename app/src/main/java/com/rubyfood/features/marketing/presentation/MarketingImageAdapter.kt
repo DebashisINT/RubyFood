@@ -1,7 +1,7 @@
 package com.rubyfood.features.marketing.presentation
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,7 +32,7 @@ class MarketingImageAdapter(context: Context, marketing_list: ArrayList<Marketin
         return marketing_list.size
     }
 
-    class MyViewHolder(itemView:View):RecyclerView.ViewHolder(itemView) {
+    class MyViewHolder(itemView:View): RecyclerView.ViewHolder(itemView) {
         fun bindItems(context: Context, marketingitem:MarketingDetailImageData,listener: RecyclerViewClickListener) {
 
             if (marketingitem.image_url!!.isBlank()){

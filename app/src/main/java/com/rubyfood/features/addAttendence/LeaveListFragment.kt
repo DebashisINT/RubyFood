@@ -4,9 +4,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -75,6 +75,7 @@ class LeaveListFragment : BaseFragment(), View.OnClickListener, DatePickerDialog
             val tomorrowsDateLong = Calendar.getInstance(Locale.ENGLISH).timeInMillis + (1000 * 60 * 60 * 24)
             val cal = Calendar.getInstance(Locale.ENGLISH)
             cal.timeInMillis = tomorrowsDateLong
+
             text = AppUtils.getFormattedDate(cal.time) + " To " + AppUtils.getFormattedDate(cal.time)
         }
 
@@ -196,4 +197,10 @@ class LeaveListFragment : BaseFragment(), View.OnClickListener, DatePickerDialog
 
         getLeaveList(AppUtils.convertFromRightToReverseFormat(fronString), AppUtils.convertFromRightToReverseFormat(endString))
     }
+
+    fun updateItem() {
+        getLeaveList(AppUtils.getCurrentDateForShopActi(), AppUtils.getCurrentDateForShopActi())
+    }
+
+
 }

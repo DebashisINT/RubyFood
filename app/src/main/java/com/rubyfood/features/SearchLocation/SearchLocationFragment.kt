@@ -11,11 +11,11 @@ import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -165,7 +165,7 @@ class SearchLocationFragment : BaseFragment(), View.OnClickListener, LocationAda
                     isLocationClicked = false
                     searchLocation_edt.setText(searchLocation_edt.text.toString())
                     rv_address_list.visibility = View.GONE
-                    Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId).setResultCallback { places ->
+                    Places.GeoDataApi.getPlaceById(mGoogleApiClient!!, placeId).setResultCallback { places ->
                         if (places.status.isSuccess) {
 
                             try {
@@ -457,7 +457,7 @@ class SearchLocationFragment : BaseFragment(), View.OnClickListener, LocationAda
         fullAdd = description
         rv_address_list.visibility = View.GONE
         placeId = place_id
-        Places.GeoDataApi.getPlaceById(mGoogleApiClient, place_id).setResultCallback { places ->
+        Places.GeoDataApi.getPlaceById(mGoogleApiClient!!, place_id).setResultCallback { places ->
             if (places.status.isSuccess) {
 
                 try {

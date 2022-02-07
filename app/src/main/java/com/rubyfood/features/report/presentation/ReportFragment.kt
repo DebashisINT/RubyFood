@@ -3,11 +3,11 @@ package com.rubyfood.features.report.presentation
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.widget.NestedScrollView
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.AppCompatTextView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.core.widget.NestedScrollView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

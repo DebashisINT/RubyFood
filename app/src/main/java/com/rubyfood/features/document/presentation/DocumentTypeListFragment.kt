@@ -2,14 +2,16 @@ package com.rubyfood.features.document.presentation
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.rubyfood.CustomStatic
 import com.rubyfood.R
 import com.rubyfood.app.AppDatabase
 import com.rubyfood.app.NetworkConstant
+import com.rubyfood.app.Pref
 import com.rubyfood.app.domain.DocumentypeEntity
 import com.rubyfood.app.types.FragType
 import com.rubyfood.app.utils.AppUtils
@@ -47,9 +49,9 @@ class DocumentTypeListFragment : BaseFragment() {
 
         initView(view)
 
-        val list = AppDatabase.getDBInstance()?.documentTypeDao()?.getAll()
-        if (list != null && list.isNotEmpty())
-            initAdapter(list)
+        val own = AppDatabase.getDBInstance()?.documentTypeDao()?.getOwnList()
+        if (own != null && own.isNotEmpty())
+            initAdapter(own)
         else
             getDocumentTypeApi()
 
@@ -93,6 +95,8 @@ class DocumentTypeListFragment : BaseFragment() {
                                                 type_id = it.id
                                                 type_name = it.type
                                                 image = it.image
+                                                IsForOrganization= it.IsForOrganization
+                                                IsForOwn = it.IsForOwn
                                             })
                                         }
 

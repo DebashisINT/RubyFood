@@ -2,8 +2,8 @@ package com.rubyfood.features.alarm.presetation
 
 import android.content.Context
 import android.graphics.Typeface
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.RecyclerView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -62,6 +62,12 @@ class AttendanceReportAdapter(context: Context, val userLocationDataEntity: Arra
                 itemView.tv_login_time.text = "--"
 
             itemView.tv_status.text = userLocationDataEntity?.get(adapterPosition)?.status
+            if(userLocationDataEntity?.get(adapterPosition)?.status.equals("Not Login")){
+                itemView.tv_status.text = "Absent"
+            }
+            else{
+                itemView.tv_status.text = userLocationDataEntity?.get(adapterPosition)?.status
+            }
 
             if (userLocationDataEntity?.get(adapterPosition)?.status.equals("leave", ignoreCase = true))
                 itemView.tv_status.setTextColor(context.resources.getColor(R.color.bill_green))

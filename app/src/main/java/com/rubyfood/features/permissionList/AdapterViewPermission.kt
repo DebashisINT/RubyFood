@@ -1,9 +1,9 @@
 package com.rubyfood.test.viewPermission
 
 import android.content.Context
-import android.support.v4.content.ContextCompat
-import android.support.v7.content.res.AppCompatResources
-import android.support.v7.widget.RecyclerView
+import androidx.core.content.ContextCompat
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +11,7 @@ import com.rubyfood.R
 import com.rubyfood.features.permissionList.ViewPermissionFragment
 import kotlinx.android.synthetic.main.row_permission_list.view.*
 
-class AdapterViewPermission(val context: Context,val permList:List<ViewPermissionFragment.PermissionDetails>):RecyclerView.Adapter<AdapterViewPermission.ViewPermission>() {
+class AdapterViewPermission(val context: Context,val permList:List<ViewPermissionFragment.PermissionDetails>): RecyclerView.Adapter<AdapterViewPermission.ViewPermission>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewPermission {
@@ -34,7 +34,7 @@ class AdapterViewPermission(val context: Context,val permList:List<ViewPermissio
         return permList.size
     }
 
-    inner class ViewPermission(itemView: View):RecyclerView.ViewHolder(itemView){
+    inner class ViewPermission(itemView: View): RecyclerView.ViewHolder(itemView){
         val tv_permiName = itemView.tv_permi_name
         val tv_permiTag = itemView.tv_permi_tag
     }

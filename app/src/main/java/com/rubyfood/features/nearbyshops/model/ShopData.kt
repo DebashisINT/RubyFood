@@ -72,6 +72,11 @@ class ShopData {
     var upi = ""
     var assigned_to_shop_id = ""
 
+    var project_name = ""
+    var landline_number = ""
+    var agency_name = ""
+    var lead_contact_number = ""
+
 //    "shop_id": "1639_1512128366843",
 //    "shop_name": "company 1",
 //    "address": "sdf,kolkata",

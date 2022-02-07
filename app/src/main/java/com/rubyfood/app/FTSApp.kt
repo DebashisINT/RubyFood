@@ -1,12 +1,12 @@
 package com.rubyfood.app
 
-import android.app.Application
 import android.content.Context
-import android.os.Environment.getExternalStorageDirectory
+import android.os.Environment
 import android.os.StrictMode
-import android.support.multidex.MultiDex
-import android.support.multidex.MultiDexApplication
+import androidx.multidex.MultiDex
+import androidx.multidex.MultiDexApplication
 import com.crashlytics.android.Crashlytics
+import com.rubyfood.app.utils.AppUtils
 import com.elvishew.xlog.LogConfiguration
 import com.elvishew.xlog.XLog
 import com.elvishew.xlog.interceptor.BlacklistTagsFilterInterceptor
@@ -61,6 +61,7 @@ class FTSApp : MultiDexApplication() {
      * Initialize XLog.
      */
     private fun initXlog() {
+        println("initXlog - FTSApp" + AppUtils.getCurrentDateTime().toString())
         val config = LogConfiguration.Builder()
 //                .logLevel(if (BuildConfig.DEBUG)
 //                    LogLevel.ALL             // Specify log level, logs below this level won't be printed, default: LogLevel.ALL
@@ -86,7 +87,8 @@ class FTSApp : MultiDexApplication() {
                 .build()
 
         val androidPrinter = AndroidPrinter()             // Printer that print the log using android.util.Log
-        val filePrinter = FilePrinter.Builder(File(getExternalStorageDirectory(), "xrubyfoodlogsample").path)// Printer that print the log to the file system
+        //val filePrinter = FilePrinter.Builder(File(getExternalStorageDirectory(), "xrubyfoodlogsample").path)// Printer that print the log to the file system
+        val filePrinter = FilePrinter.Builder(File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "xrubyfoodlogsample").path)// Printer that print the log to the file system
                 // Specify the path to save log file
 //                .fileNameGenerator(ChangelessFileNameGenerator())        // Default: ChangelessFileNameGenerator("log")
                  .backupStrategy(NeverBackupStrategy())             // Default: FileSizeBackupStrategy(1024 * 1024)

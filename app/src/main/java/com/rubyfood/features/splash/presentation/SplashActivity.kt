@@ -5,7 +5,7 @@ import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.net.Uri
@@ -14,10 +14,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.PowerManager
 import android.provider.Settings
-import android.support.annotation.RequiresApi
 import android.text.TextUtils
 import android.util.Log
-import com.elvishew.xlog.XLog
+import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationManagerCompat
 import com.rubyfood.BuildConfig
 import com.rubyfood.R
 import com.rubyfood.app.NetworkConstant
@@ -33,10 +34,12 @@ import com.rubyfood.features.commondialog.presentation.CommonDialogClickListener
 import com.rubyfood.features.commondialogsinglebtn.CommonDialogSingleBtn
 import com.rubyfood.features.commondialogsinglebtn.OnDialogClickListener
 import com.rubyfood.features.dashboard.presentation.DashboardActivity
-import com.rubyfood.features.dashboard.presentation.SystemEventReceiver
 import com.rubyfood.features.login.presentation.LoginActivity
 import com.rubyfood.features.splash.presentation.api.VersionCheckingRepoProvider
 import com.rubyfood.features.splash.presentation.model.VersionCheckingReponseModel
+import com.elvishew.xlog.XLog
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.messaging.FirebaseMessaging
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_splash.*
@@ -55,6 +58,11 @@ class SplashActivity : BaseActivity(), GpsStatusDetector.GpsStatusDetectorCallBa
     private var mGpsStatusDetector: GpsStatusDetector? = null
     private lateinit var progress_wheel: com.pnikosis.materialishprogress.ProgressWheel
 
+    var permList = mutableListOf<PermissionDetails>()
+    var permListDenied = mutableListOf<PermissionDetails>()
+    data class PermissionDetails(var permissionName: String, var permissionTag: Int)
+
+//test
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +72,13 @@ class SplashActivity : BaseActivity(), GpsStatusDetector.GpsStatusDetectorCallBa
         //Code by wasim
        // this is for test purpose timing seeting
       // AlarmReceiver.setAlarm(this, 17, 45, 2017)
+
+
+        FirebaseMessaging.getInstance().subscribeToTopic("newss").addOnSuccessListener(object : OnSuccessListener<Void?> {
+            override fun onSuccess(aVoid: Void?) {
+                //Toast.makeText(applicationContext, "Success", Toast.LENGTH_LONG).show()
+            }
+        })
 
         val receiver = ComponentName(this, AlarmBootReceiver::class.java)
         packageManager.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP)
@@ -89,6 +104,53 @@ class SplashActivity : BaseActivity(), GpsStatusDetector.GpsStatusDetectorCallBa
         else {
             checkGPSProvider()
         }
+        permissionCheck()
+    }
+
+    private fun permissionCheck() {
+        var strSub:String=""
+        permList.clear()
+        var info: PackageInfo = this.packageManager.getPackageInfo(this.packageName, PackageManager.GET_PERMISSIONS)
+        var list = info.requestedPermissionsFlags
+        var list1 = info.requestedPermissions
+        for (i in 0..list.size - 1) {
+            if (list1.get(i) != "android.permission.ACCESS_GPS") {
+
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && list1.get(i) == "android.permission.ACCESS_BACKGROUND_LOCATION"){
+                    strSub=" (For Android 10 & Later)"
+                }
+
+                if ( list1.get(i) == "android.permission.USE_FULL_SCREEN_INTENT" || list1.get(i) == "android.permission.SYSTEM_ALERT_WINDOW"
+                        || list1.get(i) == "android.permission.FOREGROUND_SERVICE"){
+                    strSub=" (System Defined)"
+                }
+
+                var obj: PermissionDetails = PermissionDetails(list1.get(i).replace("android.permission.", "").replace("_", " ")
+                        .replace("com.google.android.c2dm.permission.RECEIVE", "Receive Data from Internet").replace("com.rubyfood.permission.C2D", "") + strSub, list.get(i))
+
+                strSub=""
+                if (list.get(i) == 3) {
+                    permList.add(obj)
+                } else {
+                    permListDenied.add(obj)
+                }
+            }
+        }
+        val notifi: Boolean = NotificationManagerCompat.from(this).areNotificationsEnabled()
+
+        if (notifi) {
+            permList.add(PermissionDetails("Notification", 3))
+        } else {
+            permListDenied.add(PermissionDetails("Notification", 1))
+        }
+        permList = (permList + permListDenied).toMutableList()
+
+        for(i in 0..permList.size-1){
+            XLog.d("Permission Name"+permList.get(i).permissionName + " Status : Granted")
+        }
+        for(i in 0..permListDenied.size-1){
+            XLog.d("Permission Name"+permListDenied.get(i).permissionName + " Status : Denied")
+        }
     }
 
     private fun initPermissionCheck() {
@@ -96,10 +158,40 @@ class SplashActivity : BaseActivity(), GpsStatusDetector.GpsStatusDetectorCallBa
         var permissionLists : Array<String> ?= null
 
         permissionLists = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            arrayOf<String>(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+            //arrayOf<String>(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+            arrayOf<String>(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
         else
             arrayOf<String>(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
 
+        permissionUtils = PermissionUtils(this, object : PermissionUtils.OnPermissionListener {
+            @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+            override fun onPermissionGranted() {
+                //Pref.isLocationPermissionGranted = true
+                //checkGPSProvider()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+                    accessBackLoc()
+                }else{
+                    Pref.isLocationPermissionGranted = true
+                    checkGPSProvider()
+                }
+            }
+
+            override fun onPermissionNotGranted() {
+                //AppUtils.showButtonSnackBar(this@SplashActivity, rl_splash_main, getString(R.string.error_loc_permission_request_msg))
+                DisplayAlert.showSnackMessage(this@SplashActivity, alert_splash_snack_bar, getString(R.string.accept_permission))
+                Handler().postDelayed(Runnable {
+                    finish()
+                    exitProcess(0)
+                }, 3000)
+            }
+
+        }, permissionLists)
+    }
+
+    private fun accessBackLoc(){
+        var permissionLists : Array<String> ?= null
+
+        permissionLists = arrayOf<String>( Manifest.permission.ACCESS_BACKGROUND_LOCATION)
         permissionUtils = PermissionUtils(this, object : PermissionUtils.OnPermissionListener {
             @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
             override fun onPermissionGranted() {

@@ -1,7 +1,7 @@
 package com.rubyfood.features.stockAddCurrentStock.adapter
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.row_show_stock_list.view.sync_status_iv
 import kotlinx.android.synthetic.main.row_show_stock_list.view.tv_stock_view
 import kotlinx.android.synthetic.main.row_view_competetor_stock_list.view.*
 
-class AdapterShowStockList(val context: Context, val stockList: List<CurrentStockEntryModelEntity>,val listner: ShowStockOnClick):RecyclerView.Adapter<AdapterShowStockList.ShowStockViewHolder>() {
+class AdapterShowStockList(val context: Context, val stockList: List<CurrentStockEntryModelEntity>,val listner: ShowStockOnClick): RecyclerView.Adapter<AdapterShowStockList.ShowStockViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowStockViewHolder {
@@ -41,7 +41,7 @@ class AdapterShowStockList(val context: Context, val stockList: List<CurrentStoc
         holder.tv_stock_view.setOnClickListener { listner.stockListOnClick(stockList!!.get(position).stock_id!!) }
     }
 
-    inner class ShowStockViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
+    inner class ShowStockViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         val tv_stock_date = itemView.stock_date_tv
         val tv_stock_qty = itemView.stock_qty_tv
         val tv_stock_view = itemView.tv_stock_view

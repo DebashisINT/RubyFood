@@ -4,9 +4,9 @@
     android:id="@+id/rl_add_bill_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/color_silver">
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/tv_submit_btn"
@@ -205,7 +205,7 @@
             </LinearLayout>
 
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <com.rubyfood.widgets.AppCustomTextView
         android:id="@+id/tv_submit_btn"

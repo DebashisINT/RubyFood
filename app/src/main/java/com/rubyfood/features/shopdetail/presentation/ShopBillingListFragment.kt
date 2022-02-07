@@ -4,8 +4,8 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.TextUtils
@@ -221,7 +221,8 @@ class ShopBillingListFragment : BaseFragment() {
                     (mContext as DashboardActivity).checkToShowAddAttendanceAlert()
                 else {
                     collectionDialog = AddCollectionDialog.getInstance(mAddShopDataObj, true, mAddShopDataObj?.shopName!!, it.invoice_date!!, it.total_amount!!, it.order_id!!,  object : AddCollectionDialog.AddCollectionClickLisneter {
-                        override fun onClick(collection: String, date: String, paymentId: String, instrument: String, bank: String, filePath: String, feedback: String, patientName: String, patientAddress: String, patinetNo: String) {
+                        override fun onClick(collection: String, date: String, paymentId: String, instrument: String, bank: String, filePath: String, feedback: String, patientName: String, patientAddress: String, patinetNo: String,
+                                             hospital:String,emailAddress:String) {
 
 
                             val addShop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(mAddShopDataObj?.shop_id)
@@ -252,6 +253,10 @@ class ShopBillingListFragment : BaseFragment() {
                                     collectionDetails.patient_name = patientName
                                     collectionDetails.patient_address = patientAddress
                                     collectionDetails.patient_no = patinetNo
+
+                                    /*06-01-2022*/
+                                    collectionDetails.Hospital = hospital
+                                    collectionDetails.Email_Address = emailAddress
                                     AppDatabase.getDBInstance()!!.collectionDetailsDao().insert(collectionDetails)
 
                                     val collectionDate = AppUtils.getCurrentDateForShopActi() + "T" + collectionDetails.only_time
@@ -390,6 +395,11 @@ class ShopBillingListFragment : BaseFragment() {
 
         var uniqKeyObj=AppDatabase.getDBInstance()!!.shopActivityDao().getNewShopActivityKey(mAddShopDBModelEntity.shop_id,false)
         addShopData.shop_revisit_uniqKey=uniqKeyObj?.shop_revisit_uniqKey!!
+
+
+        addShopData.project_name = mAddShopDBModelEntity.project_name
+        addShopData.landline_number = mAddShopDBModelEntity.landline_number
+        addShopData.agency_name = mAddShopDBModelEntity.agency_name
 
         callAddShopApi(addShopData, mAddShopDBModelEntity.shopImageLocalPath, shop_id, collection_id, amount, collection,
                 currentDateForShopActi, desc, billId, mAddShopDBModelEntity.doc_degree, orderId, collectionDetails)
@@ -680,6 +690,29 @@ class ShopBillingListFragment : BaseFragment() {
 
             shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
 
+            /*10-12-2021*/
+            shopDurationData.updated_by = Pref.user_id
+            try {
+                shopDurationData.updated_on = shopActivity.updated_on!!
+            }catch (ex:Exception){
+                shopDurationData.updated_on = ""
+            }
+
+            if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                shopDurationData.pros_id = shopActivity.pros_id!!
+            else
+                shopDurationData.pros_id = ""
+
+            if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                shopDurationData.agency_name =shopActivity.agency_name!!
+            else
+                shopDurationData.agency_name = ""
+
+            if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+            else
+                shopDurationData.approximate_1st_billing_value = ""
+
             shopDataList.add(shopDurationData)
         }
         else {
@@ -737,6 +770,30 @@ class ShopBillingListFragment : BaseFragment() {
                 shopDurationData.out_location = shopActivity.out_loc
 
                 shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
+
+
+                /*10-12-2021*/
+                shopDurationData.updated_by = Pref.user_id
+                try {
+                    shopDurationData.updated_on = shopActivity.updated_on!!
+                }catch (ex:Exception){
+                    shopDurationData.updated_on = ""
+                }
+
+                if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                    shopDurationData.pros_id = shopActivity.pros_id!!
+                else
+                    shopDurationData.pros_id = ""
+
+                if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                    shopDurationData.agency_name =shopActivity.agency_name!!
+                else
+                    shopDurationData.agency_name = ""
+
+                if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                    shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+                else
+                    shopDurationData.approximate_1st_billing_value = ""
 
                 shopDataList.add(shopDurationData)
             }

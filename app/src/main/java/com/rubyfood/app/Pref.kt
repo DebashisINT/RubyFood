@@ -246,4 +246,123 @@ object Pref : PreferenceHolder() {
     var IsCurrentStockApplicableforAll: Boolean by bindToPreferenceField(false, "IsCurrentStockApplicableforAll")
     var IscompetitorStockRequired: Boolean by bindToPreferenceField(false, "IscompetitorStockRequired")
     var IsCompetitorStockforParty: Boolean by bindToPreferenceField(false, "IsCompetitorStockforParty")
+    var IsFaceDetectionOn: Boolean by bindToPreferenceField(false, "IsFaceDetectionOn")
+    var IsFaceDetection: Boolean by bindToPreferenceField(false, "IsFaceDetection")
+    var IsFaceDetectionWithCaptcha: Boolean by bindToPreferenceField(false, "IsFaceDetectionWithCaptcha")
+    var IsScreenRecorderEnable: Boolean by bindToPreferenceField(false, "IsScreenRecorderEnable")
+//    var IsFromPortal: Boolean by bindToPreferenceField(false, "IsFromPortal")
+    var IsFromPortal: Boolean by bindToPreferenceField(false, " IsDocRepoFromPortal")//30-08-21 changes this
+    var IsDocRepShareDownloadAllowed: Boolean by bindToPreferenceField(false, "IsDocRepShareDownloadAllowed")
+
+
+
+    var IsShowMenuAddAttendance: Boolean by bindToPreferenceField(false, "IsShowMenuAddAttendance")
+    var IsShowMenuAttendance: Boolean by bindToPreferenceField(false, "IsShowMenuAttendance")
+    var IsShowMenuMIS_Report: Boolean by bindToPreferenceField(false, "IsShowMenuMIS_Report")
+    var IsShowMenuAnyDesk: Boolean by bindToPreferenceField(false, "IsShowMenuAnyDesk")
+    var IsShowMenuPermission_Info: Boolean by bindToPreferenceField(false, "IsShowMenuPermission_Info")
+    var IsShowMenuScan_QR_Code: Boolean by bindToPreferenceField(false, "IsShowMenuScan_QR_Code")
+    var IsShowMenuChat: Boolean by bindToPreferenceField(false, "IsShowMenuChat")
+    var IsShowMenuWeather_Details: Boolean by bindToPreferenceField(false, "IsShowMenuWeather_Details")
+    var IsShowMenuHome_Location: Boolean by bindToPreferenceField(false, "IsShowMenuHome_Location")
+    var IsShowMenuShare_Location: Boolean by bindToPreferenceField(false, "IsShowMenuShare_Location")
+    var IsShowMenuMap_View: Boolean by bindToPreferenceField(false, "IsShowMenuMap_View")
+    var IsShowMenuReimbursement: Boolean by bindToPreferenceField(false, "IsShowMenuReimbursement")
+    var IsShowMenuOutstanding_Details_PP_DD: Boolean by bindToPreferenceField(false, "IsShowMenuOutstanding_Details_PP_DD")
+    var IsShowMenuStock_Details_PP_DD: Boolean by bindToPreferenceField(false, "IsShowMenuStock_Details_PP_DD")
+
+
+
+    var IsLeavePressed: Boolean by bindToPreferenceField(false, "IsLeavePressed")// local
+    var IsLeaveGPSTrack: Boolean by bindToPreferenceField(false, "IsLeaveGPSTrack")
+    var IsShowActivitiesInTeam: Boolean by bindToPreferenceField(false, "IsShowActivitiesInTeam")
+    var IsMyJobFromTeam: Boolean by bindToPreferenceField(false, "IsMyJobFromTeam")// local
+
+    var IsShowPartyOnAppDashboard: Boolean by bindToPreferenceField(false, "IsShowPartyOnAppDashboard")
+    var IsShowAttendanceOnAppDashboard: Boolean by bindToPreferenceField(false, "IsShowAttendanceOnAppDashboard")
+    var IsShowTotalVisitsOnAppDashboard: Boolean by bindToPreferenceField(false, "IsShowTotalVisitsOnAppDashboard")
+    var IsShowVisitDurationOnAppDashboard: Boolean by bindToPreferenceField(false, "IsShowVisitDurationOnAppDashboard")
+
+
+    var IsShowDayStart: Boolean by bindToPreferenceField(false, "IsShowDayStart")
+    var IsshowDayStartSelfie: Boolean by bindToPreferenceField(false, "IsshowDayStartSelfie")
+    var IsShowDayEnd: Boolean by bindToPreferenceField(false, "IsShowDayEnd")
+    var IsshowDayEndSelfie: Boolean by bindToPreferenceField(false, "IsshowDayEndSelfie")
+
+    var IsShowLeaveInAttendance: Boolean by bindToPreferenceField(false, "IsShowLeaveInAttendance")
+
+
+    var DayStartMarked: Boolean by bindToPreferenceField(false, "DayStartMarked")
+    var DayEndMarked: Boolean by bindToPreferenceField(false, "DayEndMarked")
+    var DayStartShopType: String by bindToPreferenceField("", "DayStartShopType")
+    var DayStartShopID: String by bindToPreferenceField("", "DayStartShopID")
+
+
+    //19-08-21
+    var IsShowMarkDistVisitOnDshbrd: Boolean by bindToPreferenceField(false, "IsShowMarkDistVisitOnDshbrd")//30-08-21 changes this
+    var IsDDvistedOnceByDay: Boolean by bindToPreferenceField(false, "IsMyDDVisit")
+    var visit_distributor_id: String by bindToPreferenceField("", "visit_distributor_id")
+    var visit_distributor_name: String by bindToPreferenceField("", "visit_distributor_name")
+    var visit_distributor_date_time: String by bindToPreferenceField("", "visit_distributor_date_time")
+
+    var IsActivateNewOrderScreenwithSize: Boolean by bindToPreferenceField(false, "IsActivateNewOrderScreenwithSize")
+
+    var IsPhotoDeleteShow: Boolean by bindToPreferenceField(false, "IsPhotoDeleteShow")
+
+
+    /*28-09-2021 For Gupta Power*/
+    var RevisitRemarksMandatory: Boolean by bindToPreferenceField(false, "RevisitRemarksMandatory")
+
+    var new_ord_gender_male: String by bindToPreferenceField("", "new_ord_gender_male")
+    var new_ord_gender_female: String by bindToPreferenceField("", "new_ord_gender_female")
+
+
+    var GPSAlertGlobal: Boolean by bindToPreferenceField(false, "GPSAlertGlobal")
+    var GPSAlert: Boolean by bindToPreferenceField(false, "GPSAlert")
+    var GPSAlertwithSound: Boolean by bindToPreferenceField(false, "GPSAlertwithSound")
+
+    var IsTeamAttendance: Boolean by bindToPreferenceField(false, "IsTeamAttendance")/*29-10-2021 Team Attendance*/
+
+    var IsDuplicateShopContactnoAllowedOnline: Boolean by bindToPreferenceField(false, "IsDuplicateShopContactnoAllowedOnline")/*02-11-2021*/
+
+
+    /*24-11-2021 ITC face And Distributoraccu*/
+    var FaceDetectionAccuracyUpper: String by bindToPreferenceField("0.93", "FaceDetectionAccuracyUpper")
+    var FaceDetectionAccuracyLower: String by bindToPreferenceField("0.73", "FaceDetectionAccuracyLower")
+    var DistributorGPSAccuracy: String by bindToPreferenceField("500", "DistributorGPSAccuracy")
+
+    /*26-11-2021*/
+    var BatterySettingGlobal: Boolean by bindToPreferenceField(false, "BatterySettingGlobal")
+    var PowerSaverSettingGlobal: Boolean by bindToPreferenceField(false, "PowerSaverSettingGlobal")
+
+    var BatterySetting: Boolean by bindToPreferenceField(false, "BatterySetting")
+    var PowerSaverSetting: Boolean by bindToPreferenceField(false, "PowerSaverSetting")
+
+    /*1-12-2021*/
+    var IsnewleadtypeforRuby: Boolean by bindToPreferenceField(false, "IsnewleadtypeforRuby")
+
+    /*16-12-2021 return features*/
+   var IsReturnEnableforParty: Boolean by bindToPreferenceField(false, "IsReturnEnableforParty")
+
+    var IsReturnActivatedforPP: Boolean by bindToPreferenceField(false, "IsReturnActivatedforPP")
+    var IsReturnActivatedforDD: Boolean by bindToPreferenceField(false, "IsReturnActivatedforDD")
+    var IsReturnActivatedforSHOP: Boolean by bindToPreferenceField(false, "IsReturnActivatedforSHOP")
+
+    /*06-01-2022*/
+    var MRPInOrderGlobal: Boolean by bindToPreferenceField(false, "MRPInOrderGlobal")
+    var FaceRegistrationOpenFrontCamera: Boolean by bindToPreferenceField(false, "FaceRegistrationOpenFrontCamera")
+
+    var MRPInOrder: Boolean by bindToPreferenceField(false, "MRPInOrder")
+    var FaceRegistrationFrontCamera: Boolean by bindToPreferenceField(false, "FaceRegistrationFrontCamera")
+
+    /*18-01-2022*/
+    var IslandlineforCustomer: Boolean by bindToPreferenceField(false, "IslandlineforCustomer")
+    var IsprojectforCustomer: Boolean by bindToPreferenceField(false, "IsprojectforCustomer")
+
+
+    var Leaveapprovalfromsupervisorinteam: Boolean by bindToPreferenceField(false, "Leaveapprovalfromsupervisorinteam")
+    var Leaveapprovalfromsupervisor: Boolean by bindToPreferenceField(false, "Leaveapprovalfromsupervisor")
+
+
+
 }

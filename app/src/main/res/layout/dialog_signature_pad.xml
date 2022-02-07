@@ -7,7 +7,7 @@
     android:background="@android:color/transparent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
@@ -33,7 +33,7 @@
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/_15sdp" />
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_close_icon"
                     android:layout_width="@dimen/_22sdp"
                     android:layout_height="@dimen/_22sdp"
@@ -80,9 +80,13 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:text="@string/clear"
-                        android:background="@drawable/selector_order_history_bg"
+                        android:background="@drawable/selected_new_order_history"
                         android:textColor="@drawable/selector_text_clor_blue_white"
                         android:textSize="@dimen/_13sdp" />
+
+                    <Space
+                    android:layout_width="@dimen/_2sdp"
+                    android:layout_height="match_parent"/>
 
                     <com.rubyfood.widgets.AppCustomTextView
                         android:id="@+id/ok_TV"
@@ -92,7 +96,7 @@
                         android:text="@string/save"
                         android:textSize="@dimen/_13sdp"
                         android:gravity="center"
-                        android:background="@drawable/selector_order_history_bg"
+                        android:background="@drawable/deselected_new_order_history"
                         android:textColor="@drawable/selector_text_clor_blue_white"
                         android:clickable="true"
                         android:focusable="true" />
@@ -100,5 +104,5 @@
 
             </RelativeLayout>
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 </RelativeLayout>

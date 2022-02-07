@@ -5,9 +5,9 @@
     android:id="@+id/rl_dynamic_list_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@color/color_silver">
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_all_dynamic_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -33,7 +33,7 @@
         wheel:matProg_barColor="@color/default_text_color"
         wheel:matProg_progressIndeterminate="true" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

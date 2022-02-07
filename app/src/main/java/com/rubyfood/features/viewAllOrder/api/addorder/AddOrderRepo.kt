@@ -3,8 +3,10 @@ package com.rubyfood.features.viewAllOrder.api.addorder
 import android.content.Context
 import com.rubyfood.base.BaseResponse
 import com.rubyfood.features.dashboard.presentation.DashboardActivity
+import com.rubyfood.features.returnsOrder.ReturnRequest
 import com.rubyfood.features.timesheet.model.AddTimeSheetInputModel
 import com.rubyfood.features.viewAllOrder.model.AddOrderInputParamsModel
+import com.rubyfood.features.viewAllOrder.model.NewOrderSaveApiModel
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.reactivex.Observable
 import okhttp3.MediaType
@@ -18,6 +20,10 @@ import java.io.File
 class AddOrderRepo(val apiService: AddOrderApi) {
     fun addOrder(sessiontoken: String, user_id: String, shop_id: String, order_id: String, order_amount: String, description: String, collection: String, order_date: String): Observable<BaseResponse> {
         return apiService.addOrder(sessiontoken, user_id, shop_id, order_id, order_amount, description, collection, order_date)
+    }
+
+    fun addReturn(ReturnRequest:ReturnRequest): Observable<BaseResponse> {
+        return apiService.addReturn(ReturnRequest)
     }
 
     fun addNewOrder(addOrder: AddOrderInputParamsModel): Observable<BaseResponse> {
@@ -50,4 +56,11 @@ class AddOrderRepo(val apiService: AddOrderApi) {
         return apiService.addNewOrderWithImage(jsonInString, profile_img_data)
         // return apiService.getAddShopWithoutImage(jsonInString)
     }
+
+
+
+    fun addOrderNewOrderScr(addOrder: NewOrderSaveApiModel): Observable<BaseResponse> {
+        return apiService.addOrderNewOrderScr(addOrder)
+    }
+
 }

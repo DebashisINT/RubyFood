@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_margin="@dimen/_1sdp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -110,6 +111,39 @@
                         android:gravity="center_vertical"
                         android:drawablePadding="@dimen/_5sdp"
                         android:drawableLeft="@drawable/ic_registered_shop_call_select"/>
+
+                    <RelativeLayout
+                        android:id="@+id/rl_type"
+                        android:layout_below="@id/tv_shop_contact_no"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/_5sdp">
+
+                        <com.rubyfood.widgets.AppCustomTextView
+                            android:id="@+id/myshop_Type_TVheader"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:singleLine="true"
+                            android:text="Type : "
+                            android:textColor="@color/light_gray"
+                            android:textSize="@dimen/_11sdp" />
+
+                        <com.rubyfood.widgets.AppCustomTextView
+                            android:id="@+id/myyshop_Type_TV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="@dimen/_2sdp"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:layout_toRightOf="@id/myshop_Type_TVheader"
+                            android:singleLine="true"
+                            android:text="N.A."
+                            android:textColor="@color/login_txt_color"
+                            android:textSize="@dimen/_11sdp" />
+                    </RelativeLayout>
+
 
                 </RelativeLayout>
             </RelativeLayout>
@@ -445,6 +479,76 @@
                         android:background="@color/popup_window_bar_color"
                         android:visibility="gone" />
 
+
+                    <!--16-12-2021-->
+                    <LinearLayout
+                        android:id="@+id/lead_return_lll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/lead_return_iv"
+                            android:layout_width="@dimen/_25sdp"
+                            android:layout_height="@dimen/_25sdp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_return_ruby_customized" />
+
+                        <com.rubyfood.widgets.AppCustomTextView
+                            android:id="@+id/lead_return_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:singleLine="true"
+                            android:text="@string/returns"
+                            android:textColor="@color/login_txt_color"
+                            android:textSize="@dimen/_8sdp"  />
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/lead_return_vview"
+                        android:layout_width="@dimen/_1sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_marginLeft="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
+                        android:background="@color/popup_window_bar_color" />
+
+                    <!--12-12-2021-->
+
+                    <LinearLayout
+                        android:id="@+id/lead_new_question_lll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/lead_new_question_iv"
+                            android:layout_width="@dimen/_25sdp"
+                            android:layout_height="@dimen/_25sdp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_question_answer_new_lead" />
+
+                        <com.rubyfood.widgets.AppCustomTextView
+                            android:id="@+id/lead_new_question_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:singleLine="true"
+                            android:text="@string/questionnaire"
+                            android:textColor="@color/login_txt_color"
+                            android:textSize="@dimen/_8sdp"  />
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/lead_new_questions_view"
+                        android:layout_width="@dimen/_1sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_marginLeft="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
+                        android:background="@color/popup_window_bar_color" />
+
                     <LinearLayout
                         android:id="@+id/ll_competetor_stock"
                         android:layout_width="wrap_content"
@@ -453,7 +557,7 @@
                         android:orientation="vertical"
                         android:visibility="gone">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="@dimen/_25sdp"
                             android:layout_height="@dimen/_25sdp"
                             android:layout_gravity="center"
@@ -486,7 +590,7 @@
                         android:orientation="vertical"
                         android:visibility="gone">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="@dimen/_25sdp"
                             android:layout_height="@dimen/_25sdp"
                             android:layout_gravity="center"
@@ -511,7 +615,6 @@
                         android:background="@color/popup_window_bar_color"
                         android:visibility="gone"/>
 
-
                     <LinearLayout
                         android:id="@+id/ll_activity"
                         android:layout_width="wrap_content"
@@ -519,7 +622,7 @@
                         android:gravity="center"
                         android:orientation="vertical">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/iv_activity"
                             android:layout_width="@dimen/_25sdp"
                             android:layout_height="@dimen/_25sdp"
@@ -669,6 +772,8 @@
                             android:textSize="@dimen/_8sdp"  />
                     </LinearLayout>
 
+
+
                     <View
                         android:id="@+id/order_view"
                         android:layout_width="@dimen/_1sdp"
@@ -701,6 +806,11 @@
                             android:textColor="@color/login_txt_color"
                             android:textSize="@dimen/_8sdp"  />
                     </LinearLayout>
+
+
+
+
+
                 </LinearLayout>
 
                 <ImageView

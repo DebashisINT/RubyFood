@@ -4,14 +4,13 @@ package com.rubyfood.features.login.presentation
 import android.Manifest
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
-import android.app.Activity
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.app.Service
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
 import android.location.Criteria
 import android.location.Location
 import android.location.LocationListener
@@ -20,23 +19,28 @@ import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
 import android.provider.Settings
-import android.support.design.widget.CoordinatorLayout
-import android.support.design.widget.TextInputEditText
-import android.support.v4.content.FileProvider
 import android.telephony.TelephonyManager
 import android.text.TextUtils
+import android.transition.Slide
+import android.transition.TransitionManager
 import android.util.Log
+import android.view.Gravity
 import android.view.View
+import android.view.animation.TranslateAnimation
 import android.widget.CheckBox
 import android.widget.ImageView
-import android.widget.TextView
+import android.widget.LinearLayout
 import android.widget.Toast
-import com.elvishew.xlog.XLog
+import androidx.appcompat.widget.SwitchCompat
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.FileProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.rubyfood.CustomStatic
 import com.rubyfood.R
 import com.rubyfood.app.*
 import com.rubyfood.app.AlarmReceiver.Companion.setAlarm
 import com.rubyfood.app.domain.*
-import com.rubyfood.app.uiaction.DisplayAlert
 import com.rubyfood.app.utils.*
 import com.rubyfood.app.utils.AppUtils.Companion.getCurrentTimeInMintes
 import com.rubyfood.base.BaseResponse
@@ -53,14 +57,17 @@ import com.rubyfood.features.addshop.model.*
 import com.rubyfood.features.addshop.model.TypeListResponseModel
 import com.rubyfood.features.addshop.model.assigntoddlist.AssignToDDListResponseModel
 import com.rubyfood.features.addshop.model.assigntopplist.AssignToPPListResponseModel
+import com.rubyfood.features.addshop.presentation.AdapterQuestionList
 import com.rubyfood.features.alarm.model.AlarmData
 import com.rubyfood.features.billing.api.billinglistapi.BillingListRepoProvider
 import com.rubyfood.features.billing.model.BillingListResponseModel
 import com.rubyfood.features.commondialog.presentation.CommonDialog
 import com.rubyfood.features.commondialog.presentation.CommonDialogClickListener
 import com.rubyfood.features.dashboard.presentation.DashboardActivity
+import com.rubyfood.features.dashboard.presentation.api.dayStartEnd.DayStartEndRepoProvider
 import com.rubyfood.features.dashboard.presentation.api.gteroutelistapi.GetRouteListRepoProvider
 import com.rubyfood.features.dashboard.presentation.model.SelectedRouteListResponseModel
+import com.rubyfood.features.dashboard.presentation.model.StatusDayStartEnd
 import com.rubyfood.features.document.api.DocumentRepoProvider
 import com.rubyfood.features.document.model.DocumentListResponseModel
 import com.rubyfood.features.document.model.DocumentTypeResponseModel
@@ -77,13 +84,13 @@ import com.rubyfood.features.login.api.alarmconfigapi.AlarmConfigRepoProvider
 import com.rubyfood.features.login.api.global_config.ConfigFetchRepoProvider
 import com.rubyfood.features.login.api.productlistapi.ProductListRepoProvider
 import com.rubyfood.features.login.api.user_config.UserConfigRepoProvider
-import com.rubyfood.features.login.model.LoginResponse
-import com.rubyfood.features.login.model.NewSettingsResponseModel
-import com.rubyfood.features.login.model.UserDetail
+import com.rubyfood.features.login.model.*
 import com.rubyfood.features.login.model.alarmconfigmodel.AlarmConfigResponseModel
 import com.rubyfood.features.login.model.globalconfig.ConfigFetchResponseModel
 import com.rubyfood.features.login.model.mettingListModel.MeetingListResponseModel
-import com.rubyfood.features.login.model.productlistmodel.ProductListOfflineResponseModel
+import com.rubyfood.features.login.model.productlistmodel.ModelListResponse
+import com.rubyfood.features.login.model.productlistmodel.NewOdrScrOrderListModel
+import com.rubyfood.features.login.model.productlistmodel.ProductListOfflineResponseModelNew
 import com.rubyfood.features.login.model.productlistmodel.ProductListResponseModel
 import com.rubyfood.features.login.model.userconfig.UserConfigResponseModel
 import com.rubyfood.features.meetinglist.api.MeetingRepoProvider
@@ -97,10 +104,10 @@ import com.rubyfood.features.newcollection.model.PaymentModeResponseModel
 import com.rubyfood.features.newcollection.newcollectionlistapi.NewCollectionListRepoProvider
 import com.rubyfood.features.orderList.api.neworderlistapi.NewOrderListRepoProvider
 import com.rubyfood.features.orderList.model.NewOrderListResponseModel
+import com.rubyfood.features.orderList.model.ReturnListResponseModel
 import com.rubyfood.features.quotation.api.QuotationRepoProvider
 import com.rubyfood.features.quotation.model.BSListResponseModel
 import com.rubyfood.features.quotation.model.QuotationListResponseModel
-import com.rubyfood.features.shopdetail.presentation.model.collectionlist.CollectionListDataModel
 import com.rubyfood.features.stock.api.StockRepositoryProvider
 import com.rubyfood.features.stock.model.NewStockListResponseModel
 import com.rubyfood.features.stockAddCurrentStock.api.ShopAddStockProvider
@@ -112,28 +119,34 @@ import com.rubyfood.features.task.model.TaskListResponseModel
 import com.rubyfood.features.timesheet.api.TimeSheetRepoProvider
 import com.rubyfood.features.timesheet.model.TimeSheetConfigResponseModel
 import com.rubyfood.features.timesheet.model.TimeSheetDropDownResponseModel
+import com.rubyfood.features.viewAllOrder.api.OrderDetailsListRepoProvider
+import com.rubyfood.features.viewAllOrder.interf.QaOnCLick
+import com.rubyfood.features.viewAllOrder.model.NewOrderDataModel
 import com.rubyfood.features.viewPPDDStock.api.stocklist.StockListRepoProvider
 import com.rubyfood.features.viewPPDDStock.model.stocklist.StockListDataModel
 import com.rubyfood.features.viewPPDDStock.model.stocklist.StockListResponseModel
 import com.rubyfood.widgets.AppCustomEditText
 import com.rubyfood.widgets.AppCustomTextView
-
+import com.elvishew.xlog.XLog
+import com.google.android.material.textfield.TextInputEditText
 import com.theartofdev.edmodo.cropper.CropImage
 import com.themechangeapp.pickimage.PermissionHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_login_new.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.io.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 
-/**
+/**Permission NameDISABLE KEYGUARD Status
  * Created by Pratishruti on 26-10-2017.
  */
 class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
 
-    override fun onLocationChanged(location: Location?) {
+    override fun onLocationChanged(location: Location) {
         Pref.latitude = location?.latitude.toString()
         Pref.longitude = location?.longitude.toString()
     }
@@ -142,11 +155,11 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
         Log.d("TAG", "onStatusChanged");
     }
 
-    override fun onProviderEnabled(p0: String?) {
+    override fun onProviderEnabled(p0: String) {
         getLocation()
     }
 
-    override fun onProviderDisabled(p0: String?) {
+    override fun onProviderDisabled(p0: String) {
         if (locationManager != null) {
             locationManager!!.removeUpdates(this);
         }
@@ -181,10 +194,19 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
     private lateinit var cb_remember_me: CheckBox
     private lateinit var share_log_login_TV: AppCustomTextView
 
+    private lateinit var tvappCustomAnydeskInfo: AppCustomTextView
+
+    private lateinit var icon_internet:ImageView
+//    private lateinit var tvappCustomAnydesk: AppCustomTextView
+//    private lateinit var tvappCustomSharelog: AppCustomTextView
+
+    private lateinit var mContext: Context
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
-
+        setContentView(R.layout.activity_login_new)
+        mContext = this@LoginActivity
+        println("xyz - login oncreate started" + AppUtils.getCurrentDateTime());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             initPermissionCheck()
         else
@@ -205,7 +227,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
         initView()
 
         if (AppUtils.getSharedPreferenceslogShareinLogin(this)) {
-            share_log_login_TV.visibility = View.VISIBLE
+            share_log_login_TV.visibility = View.GONE
         } else {
             share_log_login_TV.visibility = View.GONE
         }
@@ -215,7 +237,10 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
         /*Handler().postDelayed(Runnable {
             getConfigFetchApi()
         },100)*/
+
+
     }
+
 
     override fun onStart() {
         super.onStart()
@@ -375,6 +400,44 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
 
                                 if (configResponse.isVoiceEnabledForHelpAndTipsInBot != null)
                                     Pref.isVoiceEnabledForHelpAndTipsInBot = configResponse.isVoiceEnabledForHelpAndTipsInBot!!
+
+
+                                if (configResponse.GPSAlert != null)
+                                    Pref.GPSAlertGlobal = configResponse.GPSAlert!!
+
+                                //02-11-2021
+                                if (configResponse.IsDuplicateShopContactnoAllowedOnline != null)
+                                    Pref.IsDuplicateShopContactnoAllowedOnline = configResponse.IsDuplicateShopContactnoAllowedOnline!!
+
+
+                                /*26-11-2021*/
+
+                                if (configResponse.BatterySetting != null)
+                                    Pref.BatterySettingGlobal = configResponse.BatterySetting!!
+
+                                if (configResponse.PowerSaverSetting != null)
+                                    Pref.PowerSaverSettingGlobal = configResponse.PowerSaverSetting!!
+
+                                /*1-12-2021*/
+                                if (configResponse.IsnewleadtypeforRuby != null)
+                                    Pref.IsnewleadtypeforRuby = configResponse.IsnewleadtypeforRuby!!
+
+
+                                /*16-12-2021*/
+                                if (configResponse.IsReturnActivatedforPP != null)
+                                    Pref.IsReturnActivatedforPP = configResponse.IsReturnActivatedforPP!!
+
+                                if (configResponse.IsReturnActivatedforDD != null)
+                                    Pref.IsReturnActivatedforDD = configResponse.IsReturnActivatedforDD!!
+
+                                if (configResponse.IsReturnActivatedforSHOP != null)
+                                    Pref.IsReturnActivatedforSHOP = configResponse.IsReturnActivatedforSHOP!!
+
+                                /*06-01-2022*/
+                                if (configResponse.MRPInOrder != null)
+                                    Pref.MRPInOrderGlobal = configResponse.MRPInOrder!!
+                                if (configResponse.FaceRegistrationFrontCamera != null)
+                                    Pref.FaceRegistrationOpenFrontCamera = configResponse.FaceRegistrationFrontCamera!!
 
 
                                 /*if (configResponse.willShowUpdateDayPlan != null)
@@ -683,11 +746,12 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
         val repository = ProductListRepoProvider.productListProvider()
         progress_wheel.spin()
         BaseActivity.compositeDisposable.add(
-                repository.getProductRateOfflineList()
+                repository.getProductRateOfflineListNew()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
-                            val response = result as ProductListOfflineResponseModel
+                            //val response = result as ProductListOfflineResponseModel
+                            val response = result as ProductListOfflineResponseModelNew
                             isApiInitiated = false
                             if (response.status == NetworkConstant.SUCCESS) {
                                 val productRateList = response.product_rate_list
@@ -697,21 +761,25 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
 
                                     doAsync {
 
-                                        productRateList.forEach {
-                                            val productRate = ProductRateEntity()
-                                            AppDatabase.getDBInstance()?.productRateDao()?.insert(productRate.apply {
-                                                product_id = it.product_id
-                                                rate1 = it.rate1
-                                                rate2 = it.rate2
-                                                rate3 = it.rate3
-                                                rate4 = it.rate4
-                                                rate5 = it.rate5
-                                                stock_amount = it.stock_amount
-                                                stock_unit = it.stock_unit
-                                                isStockShow = it.isStockShow
-                                                isRateShow = it.isRateShow
-                                            })
-                                        }
+
+                                        AppDatabase.getDBInstance()?.productRateDao()?.insertAll(productRateList)
+
+
+                                        /*  productRateList.forEach {
+                                              val productRate = ProductRateEntity()
+                                              AppDatabase.getDBInstance()?.productRateDao()?.insert(productRate.apply {
+                                                  product_id = it.product_id
+                                                  rate1 = it.rate1
+                                                  rate2 = it.rate2
+                                                  rate3 = it.rate3
+                                                  rate4 = it.rate4
+                                                  rate5 = it.rate5
+                                                  stock_amount = it.stock_amount
+                                                  stock_unit = it.stock_unit
+                                                  isStockShow = it.isStockShow
+                                                  isRateShow = it.isRateShow
+                                              })
+                                          }*/
 
                                         uiThread {
                                             progress_wheel.stopSpinning()
@@ -791,6 +859,8 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
     }
 
     private fun checkToCallShopTypeApi() {
+        /*14-12-2021*/
+        AppDatabase.getDBInstance()?.shopTypeDao()?.deleteAll()
         val shopTypeList = AppDatabase.getDBInstance()?.shopTypeDao()?.getAll()
         if (shopTypeList == null || shopTypeList.isEmpty())
             getShopTypeListApi()
@@ -911,28 +981,37 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
     }
 
     private fun getModelListApi() {
+        println("xyzzz - getModelListApi called" + AppUtils.getCurrentDateTime());
         progress_wheel.spin()
+        //checkPrimaryAppList()
         val repository = ShopListRepositoryProvider.provideShopListRepository()
         BaseActivity.compositeDisposable.add(
-                repository.getModelList()
+                //repository.getModelList()
+                repository.getModelListNew()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
-                            val response = result as ModelListResponseModel
+                            //val response = result as ModelListResponseModelNew
+                            val response = result as ModelListResponse
                             XLog.d("GET MODEL DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             if (response.status == NetworkConstant.SUCCESS) {
 
                                 if (response.model_list != null && response.model_list!!.isNotEmpty()) {
 
                                     doAsync {
+                                        println("xyzzz - getModelListApi db_______started" + AppUtils.getCurrentDateTime());
+                                        AppDatabase.getDBInstance()?.modelListDao()?.insertAllLarge(response.model_list!!)
+                                        //AppDatabase.getDBInstance()?.modelListDao()?.getSinglepe()
+                                        println("xyzzz - getModelListApi db_______started" + AppUtils.getCurrentDateTime());
+                                        /*           response.model_list?.forEach {
 
-                                        response.model_list?.forEach {
-                                            val modelEntity = ModelEntity()
-                                            AppDatabase.getDBInstance()?.modelListDao()?.insertAll(modelEntity.apply {
-                                                model_id = it.id
-                                                model_name = it.name
-                                            })
-                                        }
+                                                       val modelEntity = ModelEntity()
+                                                       AppDatabase.getDBInstance()?.modelListDao()?.insertAll(modelEntity.apply {
+                                                           model_id = it.id
+                                                           model_name = it.name
+                                                       })
+
+                                                   }*/
 
                                         uiThread {
                                             progress_wheel.stopSpinning()
@@ -1472,7 +1551,9 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
     }
 
     private fun checkToCallTypeApi() {
+        AppDatabase.getDBInstance()?.typeListDao()?.delete()
         val typeList = AppDatabase.getDBInstance()?.typeListDao()?.getAll()
+        XLog.d("login activity typeList_size " + typeList)
         if (typeList == null || typeList.isEmpty())
             getTypeListApi()
         else
@@ -2240,6 +2321,8 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
                                                 type_id = it.id
                                                 type_name = it.type
                                                 image = it.image
+                                                IsForOrganization = it.IsForOrganization
+                                                IsForOwn = it.IsForOwn
                                             })
                                         }
 
@@ -2278,7 +2361,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
         val repository = DocumentRepoProvider.documentRepoProvider()
         progress_wheel.spin()
         BaseActivity.compositeDisposable.add(
-                repository.getDocList()
+                repository.getDocList("")
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
@@ -2296,6 +2379,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
                                                 date_time = it.date_time
                                                 attachment = it.attachment
                                                 isUploaded = true
+                                                document_name = it.document_name
                                             })
                                         }
 
@@ -2862,11 +2946,25 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
             override fun onPermissionGranted() {
                 getIMEI()
 
+                /*if(Build.VERSION.SDK_INT>=30){
+                    if (!Environment.isExternalStorageManager()){
+                        fileManagePermii()
+                    }else{
+                        Handler().postDelayed(Runnable {
+                            if (!Settings.canDrawOverlays(this@LoginActivity)) {
+                                getOverlayPermission()
+                            }
+                        }, 1000)
+                    }
+                }else{*/
                 Handler().postDelayed(Runnable {
                     if (!Settings.canDrawOverlays(this@LoginActivity)) {
                         getOverlayPermission()
                     }
                 }, 1000)
+                //}
+
+
             }
 
             override fun onPermissionNotGranted() {
@@ -2881,11 +2979,31 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
         }, arrayOf<String>(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.RECORD_AUDIO))
     }
 
+    fun fileManagePermii() {
+        /*try {
+            val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+            intent.addCategory("android.intent.category.DEFAULT")
+            intent.data = Uri.parse(String.format("package:%s", applicationContext.packageName))
+            startActivityForResult(intent, 777)
+        } catch (e: java.lang.Exception) {
+            val intent = Intent()
+            intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
+            startActivityForResult(intent, 777)
+        }*/
+
+
+/*        val intent = Intent()
+        intent.action = Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
+        val uri = Uri.fromParts("package", this.packageName, null)
+        intent.data = uri
+        startActivityForResult(intent,777)*/
+    }
+
     private fun getLastLocation() {
         try {
             val criteria = Criteria()
             val provider = locationManager!!.getBestProvider(criteria, false)
-            val location = locationManager!!.getLastKnownLocation(provider)
+            val location = locationManager!!.getLastKnownLocation(provider!!)
             Pref.latitude = location?.latitude.toString()
             Pref.longitude = location?.longitude.toString()
         } catch (e: SecurityException) {
@@ -3040,7 +3158,8 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
     }
 
     private fun initView() {
-        val login_TV = findViewById<TextView>(R.id.login_TV)
+        val login_TV= findViewById<ImageView>(R.id.login_TV)
+        login_TV.isEnabled = true
         username_EDT = findViewById(R.id.username_EDT)
         password_EDT = findViewById(R.id.password_EDT)
         forgotPassword = findViewById(R.id.forgot_password_TV)
@@ -3052,7 +3171,27 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
         iv_shopImage = findViewById(R.id.iv_shopImage)
         tv_internet_info = findViewById(R.id.tv_internet_info)
         cb_remember_me = findViewById(R.id.cb_remember_me)
+
+        icon_internet = findViewById(R.id.icon_internet)
+        tvappCustomAnydeskInfo = findViewById(R.id.activity_login_tvappCustomAnydeskInfo)
+//        tvappCustomAnydesk = findViewById(R.id.activity_login_tvappCustomAnydesk)
+//        tvappCustomSharelog = findViewById(R.id.activity_login_tvappCustomLogs)
+//        tvappCustomAnydesk.setOnClickListener(this)
+//        tvappCustomSharelog.setOnClickListener(this)
+        tvappCustomAnydeskInfo.setOnClickListener(this)
         cb_remember_me.isChecked = Pref.isRememberMe
+
+
+        tvappCustomAnydeskInfo.isSelected = false
+
+        var launchIntent: Intent? = packageManager.getLaunchIntentForPackage("com.anydesk.anydeskandroid")
+        if (launchIntent != null) {
+//            activity_login_tvappCustomAnydesk.text = resources.getString(R.string.label_open_anydesk)
+        } else {
+//            activity_login_tvappCustomAnydesk.text = resources.getString(R.string.label_install_anydesk)
+        }
+
+
 
         if (Pref.isRememberMe) {
             username_EDT.setText(Pref.PhnNo)
@@ -3064,6 +3203,8 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
         forgotPassword.setOnClickListener(this)
         share_log_login_TV.setOnClickListener(this)
         cb_remember_me.setOnCheckedChangeListener { buttonView, isChecked ->
+
+
             cb_remember_me.isChecked = isChecked
             Pref.isRememberMe = isChecked
 
@@ -3072,33 +3213,104 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
                 Pref.pwd = ""
             }
         }
+
+
     }
 
     override fun onClick(p0: View?) {
         when (p0!!.id) {
             R.id.login_TV -> {
-                //Crashlytics.getInstance().crash()
-                if (TextUtils.isEmpty(username_EDT.text.toString().trim()))
-                    showSnackMessage(getString(R.string.error_enter_username))
-                else if (TextUtils.isEmpty(password_EDT.text.toString().trim()))
-                    showSnackMessage(getString(R.string.error_enter_pwd))
-                else {
-                    AppUtils.hideSoftKeyboard(this)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        if (Settings.canDrawOverlays(this)) {
-                            initiateLogin()
-                        } else {
-                            //Permission is not available. Display error text.
-                            getOverlayPermission()
-                        }
-                    } else {
-                        initiateLogin()
-                    }
 
-
+                val stat = StatFs(Environment.getExternalStorageDirectory().path)
+                val bytesAvailable: Long
+                bytesAvailable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                    stat.blockSizeLong * stat.availableBlocksLong
+                } else {
+                    stat.blockSize.toLong() * stat.availableBlocks.toLong()
                 }
-                /*gotoHomeActivity()
-                isLoginLoaded = true*/
+                val megAvailable = bytesAvailable / (1024 * 1024)
+                println("storage " + megAvailable.toString());
+                XLog.d("phone storage : FREE SPACE AVAILABLE : " + megAvailable.toString() + " Time :" + AppUtils.getCurrentDateTime())
+
+
+                if (megAvailable < 5000 && false) {
+                    val simpleDialog = Dialog(this)
+                    simpleDialog.setCancelable(false)
+                    simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                    simpleDialog.setContentView(R.layout.dialog_message)
+                    val dialogHeader = simpleDialog.findViewById(R.id.dialog_message_header_TV) as AppCustomTextView
+                    val dialog_yes_no_headerTV = simpleDialog.findViewById(R.id.dialog_message_headerTV) as AppCustomTextView
+                    if (Pref.user_name != null) {
+                        dialog_yes_no_headerTV.text = "Hi " + Pref.user_name!! + "!"
+                    } else {
+                        dialog_yes_no_headerTV.text = "Hi User" + "!"
+                    }
+                    //dialogHeader.text = "You have only "+megAvailable.toString()+ " MB available to store data. It is not sufficient\n" +
+                    //"to proceed. Please clear memory and Retry Login again. Thanks."
+
+                    dialogHeader.text = "Please note that memory available is less than 5 GB. App may not function properly. Please make available memory greater than 5 GB."
+
+                    val dialogYes = simpleDialog.findViewById(R.id.tv_message_ok) as AppCustomTextView
+                    dialogYes.setOnClickListener({ view ->
+                        simpleDialog.cancel()
+                        login_TV.isEnabled = false
+                        println("xyzy - login called" + AppUtils.getCurrentDateTime());
+                        //Crashlytics.getInstance().crash()
+                        if (TextUtils.isEmpty(username_EDT.text.toString().trim())) {
+                            showSnackMessage(getString(R.string.error_enter_username))
+                            login_TV.isEnabled = true
+                        } else if (TextUtils.isEmpty(password_EDT.text.toString().trim())) {
+                            showSnackMessage(getString(R.string.error_enter_pwd))
+                            login_TV.isEnabled = true
+                        } else {
+                            AppUtils.hideSoftKeyboard(this)
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                if (Settings.canDrawOverlays(this)) {
+                                    initiateLogin()
+                                } else {
+                                    //Permission is not available. Display error text.
+                                    getOverlayPermission()
+                                }
+                            } else {
+                                initiateLogin()
+                            }
+
+
+                        }
+                        /*gotoHomeActivity()
+                        isLoginLoaded = true*/
+                    })
+                    simpleDialog.show()
+                } else {
+                    login_TV.isEnabled = false
+                    println("xyzy - login called" + AppUtils.getCurrentDateTime());
+                    //Crashlytics.getInstance().crash()
+                    if (TextUtils.isEmpty(username_EDT.text.toString().trim())) {
+                        showSnackMessage(getString(R.string.error_enter_username))
+                        login_TV.isEnabled = true
+                    } else if (TextUtils.isEmpty(password_EDT.text.toString().trim())) {
+                        showSnackMessage(getString(R.string.error_enter_pwd))
+                        login_TV.isEnabled = true
+                    } else {
+                        AppUtils.hideSoftKeyboard(this)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (Settings.canDrawOverlays(this)) {
+                                initiateLogin()
+                            } else {
+                                //Permission is not available. Display error text.
+                                getOverlayPermission()
+                            }
+                        } else {
+                            initiateLogin()
+                        }
+
+
+                    }
+                    /*gotoHomeActivity()
+                    isLoginLoaded = true*/
+                }
+
+
             }
             R.id.forgot_password_TV -> {
                 val pop = ForgotPasswordDialog()
@@ -3107,24 +3319,114 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
 
             }
 
+         /*   R.id.activity_login_tvappCustomLogs -> {
+                *//*if(Build.VERSION.SDK_INT>=30){
+                    if (!Environment.isExternalStorageManager()){
+                        fileManagePermi()
+                    }else{
+                        openShareIntents()
+                    }
+                }else{
+                    openShareIntents()
+                }*//*
+                openShareIntents()
+                activity_login_llList.visibility = View.INVISIBLE
+            }*/
+
+//            R.id.activity_login_tvappCustomAnydesk -> {
+//                var launchIntent: Intent? = packageManager.getLaunchIntentForPackage("com.anydesk.anydeskandroid")
+//                if (launchIntent != null) {
+//                    startActivity(launchIntent)
+//                    activity_login_llList.visibility = View.INVISIBLE
+//                } else {
+//                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.anydesk.anydeskandroid"))
+//                    startActivity(intent)
+//                    activity_login_llList.visibility = View.INVISIBLE
+//                }
+//            }
+
+            R.id.activity_login_tvappCustomAnydeskInfo -> {
+                val simpleDialog = Dialog(mContext)
+                simpleDialog.setCancelable(true)
+                simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                simpleDialog.setContentView(R.layout.dialog_settings)
+                val tvappCustomAnydesk = simpleDialog.findViewById(R.id.activity_login_tvappCustomAnydesk) as AppCustomTextView
+                val tvappCustomSharelog = simpleDialog.findViewById(R.id.activity_login_tvappCustomLogs) as AppCustomTextView
+
+                tvappCustomAnydesk.setOnClickListener {
+                    var launchIntent: Intent? = packageManager.getLaunchIntentForPackage("com.anydesk.anydeskandroid")
+                    if (launchIntent != null) {
+                        startActivity(launchIntent)
+                    } else {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.anydesk.anydeskandroid"))
+                        startActivity(intent)
+                    }
+                    simpleDialog.dismiss()
+                }
+                tvappCustomSharelog.setOnClickListener {
+                    openShareIntents()
+                    simpleDialog.dismiss()
+
+                }
+                var launchIntent: Intent? = packageManager.getLaunchIntentForPackage("com.anydesk.anydeskandroid")
+                if (launchIntent != null) {
+                    tvappCustomAnydesk.text = resources.getString(R.string.label_open_anydesk)
+                } else {
+                    tvappCustomAnydesk.text = resources.getString(R.string.label_install_anydesk)
+                 }
+
+                if (!activity_login_tvappCustomAnydeskInfo.isSelected) {
+                    activity_login_tvappCustomAnydeskInfo.isSelected = true
+//                    activity_login_llList.visibility = View.VISIBLE
+                } else {
+                    activity_login_tvappCustomAnydeskInfo.isSelected = false
+//                    activity_login_llList.visibility = View.INVISIBLE
+                }
+
+                simpleDialog.show()
+
+
+            }
+
             R.id.share_log_login_TV -> {
+                /* if(Build.VERSION.SDK_INT>=30){
+                     if (!Environment.isExternalStorageManager()){
+                         fileManagePermi()
+                     }else{
+                         openShareIntents()
+                     }
+                 }else{
+                     openShareIntents()
+                 }*/
                 openShareIntents()
             }
         }
+    }
+
+
+    private fun fileManagePermi() {
+//        val intent = Intent()
+//        intent.action = Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
+//        val uri = Uri.fromParts("package", this.packageName, null)
+//        intent.data = uri
+//        startActivity(intent)
+
     }
 
     fun openShareIntents() {
         try {
             val shareIntent = Intent(Intent.ACTION_SEND)
 //        val phototUri = Uri.parse(localAbsoluteFilePath)
-            val fileUrl = Uri.parse(File(Environment.getExternalStorageDirectory(), "xrubyfoodlogsample/log").path);
-
+            //val fileUrl = Uri.parse(File(Environment.getExternalStorageDirectory(), "xrubyfoodlogsample/log").path);
+            //27-09-2021
+            val fileUrl = Uri.parse(File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "xrubyfoodlogsample/log").path);
             val file = File(fileUrl.path)
             if (!file.exists()) {
                 return
             }
 
-            val uri = Uri.fromFile(file)
+//            val uri = Uri.fromFile(file)
+            val uri: Uri = FileProvider.getUriForFile(mContext, mContext!!.applicationContext.packageName.toString() + ".provider", file)
 //        shareIntent.data = fileUrl
             shareIntent.type = "image/png"
             shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
@@ -3139,8 +3441,9 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
 //        startActivity(Intent.createChooser(emailIntent,""))
     }
 
-    private fun initiateLogin() {
 
+    private fun initiateLogin() {
+        println("xyz - initiateLogin started" + AppUtils.getCurrentDateTime());
         val list = AppDatabase.getDBInstance()?.addShopEntryDao()?.all
 
         if (Pref.isClearData) {
@@ -3152,20 +3455,45 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
 
         /***********API CALL************/
         if (AppUtils.isOnline(this)) {
-            tv_internet_info.setBackgroundColor(resources.getColor(R.color.green))
-            tv_internet_info.text = getString(R.string.login_net_connected)
+            //tv_internet_info.setBackgroundColor(resources.getColor(R.color.color_custom_green))
+            tv_internet_info.setTextColor(resources.getColor(R.color.color_custom_white_1))
+            tv_internet_info.text = getString(R.string.login_net_connected1)
+            icon_internet.setImageDrawable(mContext.getDrawable(R.drawable.ic_internet_new))
+//            tv_internet_info.slideDown()
+
             if (isApiInitiated)
                 return
             //prapareLogin(this)
-            callNewSettingsApi()
+            println("xyz - initiateLogin end" + AppUtils.getCurrentDateTime());
+            Handler(Looper.getMainLooper()).postDelayed({
+                callNewSettingsApi()
+            }, 400)
         } else {
             //showSnackMessage(getString(R.string.no_internet))
-            tv_internet_info.setBackgroundColor(resources.getColor(R.color.red))
-            tv_internet_info.text = getString(R.string.login_net_disconnected)
+//            tv_internet_info.setBackgroundColor(resources.getColor(R.color.color_custom_red))
+            tv_internet_info.setTextColor(resources.getColor(R.color.color_custom_red_1))
+            tv_internet_info.text = getString(R.string.login_net_disconnected1)
+            icon_internet.setImageDrawable(mContext.getDrawable(R.drawable.ic_wifi_connection_offline_new))
+            login_TV.isEnabled = true
         }
+    }
+    fun View.slideUp(duration: Int = 1000) {
+        visibility = View.VISIBLE
+        val animate = TranslateAnimation(0f, 0f, this.height.toFloat(), 0f)
+        animate.duration = duration.toLong()
+        animate.fillAfter = true
+        this.startAnimation(animate)
+    }
+    fun View.slideDown(duration: Int = 1000) {
+        visibility = View.VISIBLE
+        val animate = TranslateAnimation(0f, 0f, 0f, this.height.toFloat())
+        animate.duration = duration.toLong()
+        animate.fillAfter = true
+        this.startAnimation(animate)
     }
 
     private fun callNewSettingsApi() {
+        println("xyz - callNewSettingsApi started" + AppUtils.getCurrentDateTime());
         val repository = LoginRepositoryProvider.provideLoginRepository()
         progress_wheel.spin()
         BaseActivity.compositeDisposable.add(
@@ -3210,6 +3538,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
                             } else {
                                 progress_wheel.stopSpinning()
                                 showSnackMessage(newSettings.message!!)
+                                login_TV.isEnabled = true
                             }
                             isApiInitiated = false
 
@@ -3217,7 +3546,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
                             isApiInitiated = false
                             error.printStackTrace()
                             progress_wheel.stopSpinning()
-
+                            login_TV.isEnabled = true
                             showSnackMessage(getString(R.string.something_went_wrong))
                         })
         )
@@ -3277,6 +3606,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
     }
 
     fun prapareLogin(context: Context) {
+        println("xyz - callNewSettingsApi end" + AppUtils.getCurrentDateTime());
         if (!AppUtils.isLocationEnabled(this)) {
             showSnackMessage(getString(R.string.alert_nolocation))
             return
@@ -3285,12 +3615,14 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
         XLog.d("LoginLocationRequest : " + "\n, IMEI :" + Pref.imei + ", Time :" + AppUtils.getCurrentDateTime() + ", Version :" + AppUtils.getVersionName(this))
 //        progress_wheel.spin()
         if (Pref.latitude != null && Pref.latitude!!.trim() != "") {
+            println("xyz - callApi started" + AppUtils.getCurrentDateTime());
             callApi(username_EDT.text.toString().trim(), password_EDT.text.toString())
         } else {
             val gpsTracker = GPSTracker(this)
             if (gpsTracker.isGPSTrackingEnabled) {
                 Pref.latitude = gpsTracker.getLatitude().toString()
                 Pref.longitude = gpsTracker.getLongitude().toString()
+                println("xyz - callApi started" + AppUtils.getCurrentDateTime());
                 callApi(username_EDT.text.toString().trim(), password_EDT.text.toString().trim())
             }
 //            SingleShotLocationProvider.requestSingleUpdate(context,
@@ -3399,7 +3731,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
 
                             if (mLocation.contains("http"))
                                 mLocation = "Unknown"
-
+                            println("xyz - callNewSettingsApi end" + AppUtils.getCurrentDateTime());
                             doLogin(username, password, mLocation)
                         }
                     })
@@ -3408,6 +3740,8 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
 
 
     private fun doLogin(username: String, password: String, location: String) {
+        println("xyz - doLogin started" + AppUtils.getCurrentDateTime());
+
         XLog.d("LoginApiRequest : " + "\n, IMEI :" + Pref.imei + ", Time :" + AppUtils.getCurrentDateTime() + ", Version :" + AppUtils.getVersionName(this) +
                 ", username : " + username + ", password : " + password + ", lat : " + Pref.latitude + ", long : " + Pref.longitude + ", location : " + location +
                 ", device token : " + Pref.deviceToken)
@@ -3520,17 +3854,23 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
 
                                 XLog.d("LoginApiResponse : " + "\n" + "Username :" + Pref.user_name + ", IMEI :" + Pref.imei + ", Time :" + AppUtils.getCurrentDateTime() + ", Version :" + AppUtils.getVersionName(this))
 
-                            } else if (loginResponse.status == "220") {
+                            }
+                            else if (loginResponse.status == "220") {
                                 progress_wheel.stopSpinning()
                                 //showSnackMessage(loginResponse.message!!)
+
+                                login_TV.isEnabled = true
                                 Toaster.msgLong(this, loginResponse.message!!)
-                            } else {
+                            }
+                            else {
                                 progress_wheel.stopSpinning()
                                 showSnackMessage(loginResponse.message!!)
+                                login_TV.isEnabled = true
                             }
                             isApiInitiated = false
 
                         }, { error ->
+                            login_TV.isEnabled = true
                             isApiInitiated = false
                             error.printStackTrace()
                             progress_wheel.stopSpinning()
@@ -3542,7 +3882,8 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
 
 
     private fun doAfterLoginFunctionality(loginResponse: LoginResponse) {
-
+        println("xyz - doLogin end" + AppUtils.getCurrentDateTime());
+        println("xyz - doAfterLoginFunctionality started" + AppUtils.getCurrentDateTime());
         // setEveningAlarm(this, 15, 9)
 
         Pref.user_id = loginResponse.user_details!!.user_id
@@ -3600,6 +3941,17 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
         if (!TextUtils.isEmpty(loginResponse.user_details?.isOnLeave))
             Pref.isOnLeave = loginResponse.user_details?.isOnLeave!!
 
+        if (TextUtils.isEmpty(loginResponse.user_details?.isOnLeave)) {
+            Pref.IsLeavePressed = false
+        } else if (loginResponse.user_details?.isOnLeave.equals("true")) {
+            Pref.IsLeavePressed = true
+        } else if (loginResponse.user_details?.isOnLeave.equals("false")) {
+            Pref.IsLeavePressed = false
+        }
+        Log.e("leave", Pref.IsLeavePressed.toString())
+
+
+
         XLog.d("LoginApiResponse : " + "\n" + "GPS SETTINGS=====> " + Pref.gpsAccuracy)
 
         if (!TextUtils.isEmpty(loginResponse.user_details!!.add_attendence_time))
@@ -3655,8 +4007,74 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
         }
 
         progress_wheel.stopSpinning()
-        getListFromDatabase()
+
+
+        // updated on 17/08/2021
+        //getListFromDatabase()
+        println("xyz - doAfterLoginFunctionality end" + AppUtils.getCurrentDateTime());
+        println("xyz - isStartOrEndDay started" + AppUtils.getCurrentDateTime());
+        isStartOrEndDay()
     }
+
+
+    fun isStartOrEndDay() {
+        try {
+            Pref.DayStartMarked = false
+            Pref.DayEndMarked = false
+            Pref.DayStartShopType = ""
+            Pref.DayStartShopID = ""
+            //Pref.IsDDvistedOnceByDay=false
+            val repository = DayStartEndRepoProvider.dayStartRepositiry()
+            BaseActivity.compositeDisposable.add(
+                    repository.dayStartEndStatus(AppUtils.getCurrentDateyymmdd())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe({ result ->
+                                XLog.d("Login DayStart : RESPONSE " + result.status)
+                                val response = result as StatusDayStartEnd
+                                if (response.status == NetworkConstant.SUCCESS) {
+
+                                    doAsync {
+                                        Pref.DayStartMarked = response.DayStartMarked!!
+                                        Pref.DayEndMarked = response.DayEndMarked!!
+                                        Pref.DayStartShopType = response.day_start_shop_type!!
+                                        Pref.DayStartShopID = response.day_start_shop_id!!
+                                        Pref.IsDDvistedOnceByDay = response.IsDDvistedOnceByDay!!
+
+                                        uiThread {
+                                            if (Pref.DayEndMarked) {
+                                                //showSnackMessage(resources.getString(R.string.alert_imei_unavailable))
+                                                Pref.user_id = ""
+                                                showSnackMessage("You already marked Day End. You will be able to login tomorrow! Thanks.")
+                                                login_TV.isEnabled = true
+                                            } else {
+                                                getListFromDatabase()
+                                            }
+                                        }
+                                    }
+
+                                } else {
+                                    Pref.IsDDvistedOnceByDay = false
+                                    getListFromDatabase()
+                                }
+                            }, { error ->
+                                if (error == null) {
+                                    XLog.d("Login DayStart : ERROR " + "UNEXPECTED ERROR IN DayStart API")
+                                } else {
+                                    XLog.d("Login DayStart : ERROR " + error.localizedMessage)
+                                    error.printStackTrace()
+                                }
+                                Pref.IsDDvistedOnceByDay = false
+                                getListFromDatabase()
+                            })
+            )
+        } catch (ex: java.lang.Exception) {
+            ex.printStackTrace()
+            getListFromDatabase()
+        }
+
+    }
+
 
     private fun setProfileDetailInPref(user_details: UserDetail) {
         if (user_details.profile_image == null) {
@@ -3676,6 +4094,8 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
     }
 
     private fun getListFromDatabase() {
+        println("xyz - isStartOrEndDay end" + AppUtils.getCurrentDateTime());
+        println("xyz - getListFromDatabase started" + AppUtils.getCurrentDateTime());
         list = AppDatabase.getDBInstance()!!.addShopEntryDao().uniqueShoplist
         if (list.isEmpty())
             callShopListApi()
@@ -3689,6 +4109,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
     }
 
     private fun callShopListApi() {
+        println("xyz - getListFromDatabase end" + AppUtils.getCurrentDateTime());
         val repository = ShopListRepositoryProvider.provideShopListRepository()
         progress_wheel.spin()
         BaseActivity.compositeDisposable.add(
@@ -3756,16 +4177,36 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
 
 
     private fun getProductList(date: String?) {
+        println("xyzzz - getProductList started" + AppUtils.getCurrentDateTime());
         val repository = ProductListRepoProvider.productListProvider()
         progress_wheel.spin()
         BaseActivity.compositeDisposable.add(
-                repository.getProductList(Pref.session_token!!, Pref.user_id!!, date!!)
+                //repository.getProductList(Pref.session_token!!, Pref.user_id!!, date!!)
+                repository.getProductList(Pref.session_token!!, Pref.user_id!!, "")
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as ProductListResponseModel
                             if (response.status == NetworkConstant.SUCCESS) {
-                                val list = response.product_list
+
+                                var list = response.product_list
+
+
+                                /*                            var ppL: ArrayList<ProductListEntity>? = ArrayList()
+                                                            var ppObj:ProductListEntity = ProductListEntity()
+                                                            ppObj.id=35354
+                                                            ppObj.brand_id="1"
+                                                            ppObj.category_id="2"
+                                                            ppObj.watt_id= "11"
+                                                            ppObj.brand="Meca"
+                                                            ppObj.product_name="GLOCILIN CLAV 625"
+                                                            ppObj.category="DRUGS"
+                                                            ppObj.watt="N.A"
+
+                                                            ppL!!.add(ppObj)
+
+                                                            response.product_list?.add(ppObj)
+                                                            list=response.product_list*/
 
                                 if (list != null && list.isNotEmpty()) {
 
@@ -3774,7 +4215,17 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
                                         if (!TextUtils.isEmpty(date))
                                             AppDatabase.getDBInstance()?.productListDao()?.deleteAllProduct()
 
-                                        for (i in list.indices) {
+
+                                        //var listConv : List<ProductListEntity> = list!! as List<ProductListEntity>
+                                        println("xyzzz - getProductList db_______started" + AppUtils.getCurrentDateTime());
+
+                                        AppDatabase.getDBInstance()?.productListDao()?.insertAll(list!!)
+
+                                        println("xyzzz - getProductList db_______end" + AppUtils.getCurrentDateTime());
+
+                                        //AppDatabase.getDBInstance()?.productListDao()?.updateData(listConv!!)
+
+                                        /*for (i in list.indices) {
                                             val productEntity = ProductListEntity()
                                             productEntity.id = list[i].id?.toInt()!!
                                             productEntity.product_name = list[i].product_name
@@ -3786,7 +4237,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
                                             productEntity.category_id = list[i].category_id
                                             productEntity.date = AppUtils.getCurrentDateForShopActi()
                                             AppDatabase.getDBInstance()?.productListDao()?.insert(productEntity)
-                                        }
+                                        }*/
 
                                         uiThread {
                                             progress_wheel.stopSpinning()
@@ -3824,6 +4275,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
     }
 
     private fun getOrderList() {
+        println("xyz - getOrderList started" + AppUtils.getCurrentDateTime());
         val repository = NewOrderListRepoProvider.provideOrderListRepository()
         progress_wheel.spin()
         BaseActivity.compositeDisposable.add(
@@ -3868,6 +4320,16 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
                                             orderDetailList.patient_name = order_details_list[i].patient_name
                                             orderDetailList.patient_address = order_details_list[i].patient_address
 
+                                            orderDetailList.Hospital = order_details_list[i].Hospital
+                                            orderDetailList.Email_Address = order_details_list[i].Email_Address
+
+
+                                            /*28-12-2021*/
+                                            if (!TextUtils.isEmpty(order_details_list[i].scheme_amount)) {
+                                                val finalScAmount = String.format("%.2f", order_details_list[i].scheme_amount?.toFloat())
+                                                orderDetailList.scheme_amount = finalScAmount
+                                            }
+
 
                                             if (order_details_list[i].product_list != null && order_details_list[i].product_list?.size!! > 0) {
                                                 for (j in order_details_list[i].product_list?.indices!!) {
@@ -3881,6 +4343,11 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
                                                     productOrderList.category = order_details_list[i].product_list?.get(j)?.category
                                                     productOrderList.order_id = order_details_list[i].order_id
                                                     productOrderList.product_name = order_details_list[i].product_list?.get(j)?.product_name
+                                                        /*06-01-2022*/
+                                                    if (!TextUtils.isEmpty(order_details_list[i].product_list?.get(j)?.MRP)) {
+                                                        val finalMRP = String.format("%.2f", order_details_list[i].product_list?.get(j)?.MRP?.toFloat())
+                                                        productOrderList.MRP = finalMRP
+                                                    }
 
                                                     /*if (order_details_list[i].product_list?.get(j)?.rate?.contains(".")!!)
                                                         productOrderList.rate = order_details_list[i].product_list?.get(j)?.rate?.toDouble()?.toInt().toString()
@@ -3900,6 +4367,22 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
                                                         val finalTotalPrice = String.format("%.2f", order_details_list[i].product_list?.get(j)?.total_price?.toFloat())
                                                         productOrderList.total_price = finalTotalPrice
                                                     }
+
+                                                    /*28-12-2021*/
+                                                    if (!TextUtils.isEmpty(order_details_list[i].product_list?.get(j)?.scheme_rate)) {
+                                                        val finalScRate = String.format("%.2f", order_details_list[i].product_list?.get(j)?.scheme_rate?.toFloat())
+                                                        productOrderList.scheme_rate = finalScRate
+                                                    }
+                                                    if (!TextUtils.isEmpty(order_details_list[i].product_list?.get(j)?.scheme_rate)) {
+                                                        productOrderList.scheme_qty = order_details_list[i].product_list?.get(j)?.scheme_qty
+                                                    } else {
+                                                        productOrderList.scheme_qty = "0"
+                                                    }
+                                                    if (!TextUtils.isEmpty(order_details_list[i].product_list?.get(j)?.total_scheme_price)) {
+                                                        val finalTotalScPrice = String.format("%.2f", order_details_list[i].product_list?.get(j)?.total_scheme_price?.toFloat())
+                                                        productOrderList.total_scheme_price = finalTotalScPrice
+                                                    }
+
                                                     productOrderList.shop_id = order_details_list[i].shop_id
 
                                                     AppDatabase.getDBInstance()!!.orderProductListDao().insert(productOrderList)
@@ -3933,6 +4416,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
     }
 
     private fun checkToCallSelectedRouteListApi() {
+        println("xyz - getOrderList ended" + AppUtils.getCurrentDateTime());
         val list = AppDatabase.getDBInstance()?.selectedWorkTypeDao()?.getAll()
         if (list != null && list.isNotEmpty()) {
             //gotoHomeActivity()
@@ -3949,6 +4433,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
 
 
     private fun checkToCallCollectionApi() {
+        println("xyz - getSelectedRouteList ended" + AppUtils.getCurrentDateTime());
         val list = AppDatabase.getDBInstance()!!.collectionDetailsDao().getAll()
         if (list != null && list.isNotEmpty()) {
             callUserConfigApi()
@@ -3984,40 +4469,48 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
         )
     }
 
-    private fun saveToDatabase(collection_details_list: ArrayList<CollectionListDataModel>) {
+    //private fun saveToDatabase(collection_details_list: ArrayList<CollectionListDataModel>) {
+    private fun saveToDatabase(collection_details_list: ArrayList<CollectionDetailsEntity>) {
         doAsync {
+            println("xyz - saveToDatabase started" + AppUtils.getCurrentDateTime());
+            //for (i in collection_details_list.indices) {
+            //val collectionList = CollectionDetailsEntity()
+            //collectionList.date = AppUtils.convertDateTimeToCommonFormat(collection_details_list[i].collection_date!!) //  /*AppUtils.convertToCommonFormat(collection_details_list[i].collection_date!!)*/
+            //collectionList.shop_id = collection_details_list[i].shop_id      //
+            //collectionList.isUploaded = true
+            //collectionList.collection_id = collection_details_list[i].collection_id
+            //collectionList.collection = collection_details_list[i].collection    //
+            //collectionList.only_time = AppUtils.convertDateTimeToTime(collection_details_list[i].collection_date!!)  //
+            //collectionList.payment_id = collection_details_list[i].payment_id //
+            //collectionList.instrument_no = collection_details_list[i].instrument_no//
+            //collectionList.feedback = collection_details_list[i].remarks//
+            //collectionList.bank = collection_details_list[i].bank//
+            //collectionList.file_path = collection_details_list[i].doc//
+            //collectionList.bill_id = collection_details_list[i].bill_id//
+            //collectionList.order_id = collection_details_list[i].order_id//
+            //collectionList.patient_no = collection_details_list[i].patient_no//
+            //collectionList.patient_name = collection_details_list[i].patient_name//
+            //collectionList.patient_address = collection_details_list[i].patient_address//
 
-            for (i in collection_details_list.indices) {
-                val collectionList = CollectionDetailsEntity()
-                collectionList.date = AppUtils.convertDateTimeToCommonFormat(collection_details_list[i].collection_date!!) /*AppUtils.convertToCommonFormat(collection_details_list[i].collection_date!!)*/
-                collectionList.shop_id = collection_details_list[i].shop_id
-                collectionList.isUploaded = true
-                collectionList.collection_id = collection_details_list[i].collection_id
-                collectionList.collection = collection_details_list[i].collection
-                collectionList.only_time = AppUtils.convertDateTimeToTime(collection_details_list[i].collection_date!!)
-                collectionList.payment_id = collection_details_list[i].payment_id
-                collectionList.instrument_no = collection_details_list[i].instrument_no
-                collectionList.feedback = collection_details_list[i].remarks
-                collectionList.bank = collection_details_list[i].bank
-                collectionList.file_path = collection_details_list[i].doc
-                collectionList.bill_id = collection_details_list[i].bill_id
-                collectionList.order_id = collection_details_list[i].order_id
-                collectionList.patient_no = collection_details_list[i].patient_no
-                collectionList.patient_name = collection_details_list[i].patient_name
-                collectionList.patient_address = collection_details_list[i].patient_address
+
+            //AppDatabase.getDBInstance()!!.collectionDetailsDao().insert(collectionList)
+            //}
 
 
-                AppDatabase.getDBInstance()!!.collectionDetailsDao().insert(collectionList)
-            }
+            AppDatabase.getDBInstance()!!.collectionDetailsDao().insertAll(collection_details_list!!)
+
+
 
             uiThread {
                 progress_wheel.stopSpinning()
+                println("xyz - saveToDatabase ended" + AppUtils.getCurrentDateTime());
                 callUserConfigApi()
             }
         }
     }
 
     private fun callUserConfigApi() {
+        println("xyz - callUserConfigApi started" + AppUtils.getCurrentDateTime());
         val repository = UserConfigRepoProvider.provideUserConfigRepository()
         //progress_wheel.spin()
         BaseActivity.compositeDisposable.add(
@@ -4373,8 +4866,13 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
                                                 if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
                                                     Pref.isShopImageMandatory = response.getconfigure!![i].Value == "1"
                                                 }
-                                            } else if (response.getconfigure!![i].Key.equals("isShopImageMandatory", ignoreCase = true)) {
-                                                AppUtils.saveSharedPreferenceslogShareinLogin(this, true)
+                                            } else if (response.getconfigure!![i].Key.equals("isLogShareinLogin", ignoreCase = true)) {
+                                                if (response.getconfigure!![i].Value == "1") {
+                                                    AppUtils.saveSharedPreferenceslogShareinLogin(this, true)
+                                                } else {
+                                                    AppUtils.saveSharedPreferenceslogShareinLogin(this, false)
+                                                }
+
                                             } else if (response.getconfigure!![i].Key.equals("IsCompetitorenable", ignoreCase = true)) {
                                                 Pref.isCompetitorImgEnable = response.getconfigure!![i].Value == "1"
                                                 if (Pref.isCompetitorImgEnable) {
@@ -4391,7 +4889,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
                                                 }
                                             } else if (response.getconfigure!![i].Key.equals("IsCurrentStockEnable", ignoreCase = true)) {
                                                 Pref.isCurrentStockEnable = response.getconfigure!![i].Value == "1"
-                                                
+
                                                 if (Pref.isCurrentStockEnable) {
                                                     AppUtils.saveSharedPreferencesCurrentStock(this, true)
                                                 } else {
@@ -4422,6 +4920,315 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
                                                     AppUtils.saveSharedPreferencesIsCompetitorStockforParty(this, false)
                                                 }
                                             }
+//                                            else if(response.getconfigure!![i].Key.equals("IsFaceDetectionOn", ignoreCase = true)){
+                                            else if (response.getconfigure!![i].Key.equals("ShowFaceRegInMenu", ignoreCase = true)) {
+                                                Pref.IsFaceDetectionOn = response.getconfigure!![i].Value == "1"
+                                                if (Pref.IsFaceDetectionOn) {
+                                                    AppUtils.saveSharedPreferencesIsFaceDetectionOn(this, true)
+                                                } else {
+                                                    AppUtils.saveSharedPreferencesIsFaceDetectionOn(this, false)
+                                                }
+                                            } else if (response.getconfigure!![i].Key.equals("IsFaceDetection", ignoreCase = true)) {
+                                                Pref.IsFaceDetection = response.getconfigure!![i].Value == "1"
+                                                if (Pref.IsFaceDetection) {
+                                                    AppUtils.saveSharedPreferencesIsFaceDetection(this, true)
+                                                } else {
+                                                    AppUtils.saveSharedPreferencesIsFaceDetection(this, false)
+                                                }
+                                            } else if (response.getconfigure!![i].Key.equals("IsFaceDetectionWithCaptcha", ignoreCase = true)) {
+                                                Pref.IsFaceDetectionWithCaptcha = response.getconfigure!![i].Value == "1"
+                                                if (Pref.IsFaceDetectionWithCaptcha) {
+                                                    AppUtils.saveSharedPreferencesIsFaceDetectionWithCaptcha(this, true)
+                                                } else {
+                                                    AppUtils.saveSharedPreferencesIsFaceDetectionWithCaptcha(this, false)
+                                                }
+                                            } else if (response.getconfigure!![i].Key.equals("IsScreenRecorderEnable", ignoreCase = true)) {
+                                                Pref.IsScreenRecorderEnable = response.getconfigure!![i].Value == "1"
+                                                if (Pref.IsScreenRecorderEnable) {
+                                                    AppUtils.saveSharedPreferencesIsScreenRecorderEnable(this, true)
+                                                } else {
+                                                    AppUtils.saveSharedPreferencesIsScreenRecorderEnable(this, false)
+                                                }
+                                            }
+//                                            else if (response.getconfigure?.get(i)?.Key.equals("IsFromPortal", ignoreCase = true)) {
+                                            else if (response.getconfigure?.get(i)?.Key.equals("IsDocRepoFromPortal", ignoreCase = true)) {
+                                                Pref.IsFromPortal = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsFromPortal = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsDocRepShareDownloadAllowed", ignoreCase = true)) {
+                                                Pref.IsDocRepShareDownloadAllowed = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsDocRepShareDownloadAllowed = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsShowMenuAddAttendance", ignoreCase = true)) {
+                                                Pref.IsShowMenuAddAttendance = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowMenuAddAttendance = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsShowMenuAttendance", ignoreCase = true)) {
+                                                Pref.IsShowMenuAttendance = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowMenuAttendance = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsShowMenuMIS Report", ignoreCase = true)) {
+                                                Pref.IsShowMenuMIS_Report = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowMenuMIS_Report = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsShowMenuAnyDesk", ignoreCase = true)) {
+                                                Pref.IsShowMenuAnyDesk = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowMenuAnyDesk = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsShowMenuPermission Info", ignoreCase = true)) {
+                                                Pref.IsShowMenuPermission_Info = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowMenuPermission_Info = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsShowMenuScan QR Code", ignoreCase = true)) {
+                                                Pref.IsShowMenuScan_QR_Code = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowMenuScan_QR_Code = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsShowMenuChat", ignoreCase = true)) {
+                                                Pref.IsShowMenuChat = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowMenuChat = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsShowMenuWeather Details", ignoreCase = true)) {
+                                                Pref.IsShowMenuWeather_Details = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowMenuWeather_Details = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsShowMenuHome Location", ignoreCase = true)) {
+                                                Pref.IsShowMenuHome_Location = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowMenuHome_Location = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsShowMenuShare Location", ignoreCase = true)) {
+                                                Pref.IsShowMenuShare_Location = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowMenuShare_Location = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsShowMenuMap View", ignoreCase = true)) {
+                                                Pref.IsShowMenuMap_View = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowMenuMap_View = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsShowMenuReimbursement", ignoreCase = true)) {
+                                                Pref.IsShowMenuReimbursement = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowMenuReimbursement = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsShowMenuOutstanding Details PP/DD", ignoreCase = true)) {
+                                                Pref.IsShowMenuOutstanding_Details_PP_DD = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowMenuOutstanding_Details_PP_DD = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsShowMenuStock Details - PP/DD", ignoreCase = true)) {
+                                                Pref.IsShowMenuStock_Details_PP_DD = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowMenuStock_Details_PP_DD = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsLeaveGPSTrack", ignoreCase = true)) {
+                                                Pref.IsLeaveGPSTrack = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsLeaveGPSTrack = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsShowActivitiesInTeam", ignoreCase = true)) {
+                                                Pref.IsShowActivitiesInTeam = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowActivitiesInTeam = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }
+                                            // Added setting Login 12-08-21
+                                            else if (response.getconfigure?.get(i)?.Key.equals("IsShowPartyOnAppDashboard", ignoreCase = true)) {
+                                                Pref.IsShowPartyOnAppDashboard = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowPartyOnAppDashboard = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsShowAttendanceOnAppDashboard", ignoreCase = true)) {
+                                                Pref.IsShowAttendanceOnAppDashboard = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowAttendanceOnAppDashboard = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsShowTotalVisitsOnAppDashboard", ignoreCase = true)) {
+                                                Pref.IsShowTotalVisitsOnAppDashboard = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowTotalVisitsOnAppDashboard = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsShowVisitDurationOnAppDashboard", ignoreCase = true)) {
+                                                Pref.IsShowVisitDurationOnAppDashboard = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowVisitDurationOnAppDashboard = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsShowDayStart", ignoreCase = true)) {
+                                                Pref.IsShowDayStart = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowDayStart = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                                //Pref.IsShowDayStart = true
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsshowDayStartSelfie", ignoreCase = true)) {
+                                                Pref.IsshowDayStartSelfie = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsshowDayStartSelfie = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                                //Pref.IsshowDayStartSelfie = true
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsShowDayEnd", ignoreCase = true)) {
+                                                Pref.IsShowDayEnd = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowDayEnd = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+
+                                                //Pref.IsShowDayEnd = true
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsshowDayEndSelfie", ignoreCase = true)) {
+                                                Pref.IsshowDayEndSelfie = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsshowDayEndSelfie = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                                //Pref.IsshowDayEndSelfie = true
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsShowLeaveInAttendance", ignoreCase = true)) {
+                                                Pref.IsShowLeaveInAttendance = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowLeaveInAttendance = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }
+                                            //19-08-21
+                                            else if (response.getconfigure?.get(i)?.Key.equals("IsShowMarkDistVisitOnDshbrd", ignoreCase = true)) {
+                                                Pref.IsShowMarkDistVisitOnDshbrd = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowMarkDistVisitOnDshbrd = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsActivateNewOrderScreenwithSize", ignoreCase = true)) {
+                                                Pref.IsActivateNewOrderScreenwithSize = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsActivateNewOrderScreenwithSize = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsPhotoDeleteShow", ignoreCase = true)) {
+                                                Pref.IsPhotoDeleteShow = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsPhotoDeleteShow = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }
+
+                                            /*28-09-2021 For Gupta Power*/
+                                            else if (response.getconfigure?.get(i)?.Key.equals("RevisitRemarksMandatory", ignoreCase = true)) {
+                                                Pref.RevisitRemarksMandatory = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.RevisitRemarksMandatory = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("GPSAlert", ignoreCase = true)) {
+                                                Pref.GPSAlert = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.GPSAlert = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("GPSAlertwithSound", ignoreCase = true)) {
+                                                Pref.GPSAlertwithSound = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.GPSAlertwithSound = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }
+
+                                            /*29-10-2021 Team Attendance*/
+                                            else if (response.getconfigure?.get(i)?.Key.equals("IsTeamAttendance", ignoreCase = true)) {
+                                                Pref.IsTeamAttendance = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsTeamAttendance = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }
+
+                                            /*24-11-2021 ITC face And Distributoraccu*/
+                                            else if (response.getconfigure?.get(i)?.Key.equals("FaceDetectionAccuracyUpper")) {
+                                                Pref.FaceDetectionAccuracyUpper = response.getconfigure!![i].Value!!
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.FaceDetectionAccuracyUpper = response.getconfigure?.get(i)?.Value!!
+                                                }
+                                                CustomStatic.FaceDetectionAccuracyUpper = Pref.FaceDetectionAccuracyUpper
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("FaceDetectionAccuracyLower")) {
+                                                Pref.FaceDetectionAccuracyLower = response.getconfigure!![i].Value!!
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.FaceDetectionAccuracyLower = response.getconfigure?.get(i)?.Value!!
+                                                }
+                                                CustomStatic.FaceDetectionAccuracyLower = Pref.FaceDetectionAccuracyLower
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("DistributorGPSAccuracy")) {
+                                                Pref.DistributorGPSAccuracy = response.getconfigure!![i].Value!!
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.DistributorGPSAccuracy = response.getconfigure?.get(i)?.Value!!
+                                                }
+                                                if (Pref.DistributorGPSAccuracy.length == 0 || Pref.DistributorGPSAccuracy.equals("")) {
+                                                    Pref.DistributorGPSAccuracy = "500"
+                                                }
+                                                XLog.d("DistributorGPSAccuracy " + Pref.DistributorGPSAccuracy)
+                                            }
+
+
+                                            /*26-10-2021*/
+                                            else if (response.getconfigure?.get(i)?.Key.equals("BatterySetting", ignoreCase = true)) {
+                                                Pref.BatterySetting = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.BatterySetting = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("PowerSaverSetting", ignoreCase = true)) {
+                                                Pref.PowerSaverSetting = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.PowerSaverSetting = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }
+
+                                            /*16-12-2021*/
+                                            else if (response.getconfigure?.get(i)?.Key.equals("IsReturnEnableforParty", ignoreCase = true)) {
+                                                Pref.IsReturnEnableforParty = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsReturnEnableforParty = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }
+
+                                            /*06-01-2022*/
+                                            else if (response.getconfigure?.get(i)?.Key.equals("MRPInOrder", ignoreCase = true)) {
+                                                Pref.MRPInOrder = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.MRPInOrder = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }
+                                            else if (response.getconfigure?.get(i)?.Key.equals("FaceRegistrationFrontCamera", ignoreCase = true)) {
+                                                Pref.FaceRegistrationFrontCamera = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.FaceRegistrationFrontCamera = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }
+                                                /*18-01-2022*/
+                                            else if (response.getconfigure?.get(i)?.Key.equals("IslandlineforCustomer", ignoreCase = true)) {
+                                                Pref.IslandlineforCustomer = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IslandlineforCustomer = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }
+
+                                            else if (response.getconfigure?.get(i)?.Key.equals("IsprojectforCustomer", ignoreCase = true)) {
+                                                Pref.IsprojectforCustomer = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsprojectforCustomer = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }
+
+                                            else if (response.getconfigure?.get(i)?.Key.equals("Leaveapprovalfromsupervisor", ignoreCase = true)) {
+                                                Pref.Leaveapprovalfromsupervisor = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.Leaveapprovalfromsupervisor = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }
+
+                                            else if (response.getconfigure?.get(i)?.Key.equals("Leaveapprovalfromsupervisorinteam", ignoreCase = true)) {
+                                                Pref.Leaveapprovalfromsupervisorinteam = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.Leaveapprovalfromsupervisorinteam = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }
+
 
                                             /*else if (response.getconfigure?.get(i)?.Key.equals("isFingerPrintMandatoryForAttendance", ignoreCase = true)) {
                                                 if (!TextUtilsDash.isEmpty(response.getconfigure?.get(i)?.Value)) {
@@ -4445,7 +5252,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
                                 }
                             }
                             Log.e("Login", "willLeaveApprovalEnable================> " + Pref.willLeaveApprovalEnable)
-
+                            println("xyz - callUserConfigApi ended" + AppUtils.getCurrentDateTime());
                             progress_wheel.stopSpinning()
                             getConfigFetchApi()
                             //gotoHomeActivity()
@@ -4461,6 +5268,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
 
 
     private fun getSelectedRouteList() {
+        println("xyz - getSelectedRouteList started" + AppUtils.getCurrentDateTime());
         val repository = GetRouteListRepoProvider.routeListRepoProvider()
         progress_wheel.spin()
         BaseActivity.compositeDisposable.add(
@@ -4721,6 +5529,10 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
             else
                 shopObj.assigned_to_shop_id = shop_list[i].assigned_to_shop_id
 
+            shopObj.project_name=shop_list[i].project_name
+            shopObj.landline_number=shop_list[i].landline_number
+            shopObj.agency_name=shop_list[i].agency_name
+
 
             list.add(shopObj)
             AppDatabase.getDBInstance()!!.addShopEntryDao().insert(shopObj)
@@ -4823,6 +5635,9 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
                                             assignToDD.dd_phn_no = list[i].phn_no
                                             assignToDD.pp_id = list[i].assigned_to_pp_id
                                             assignToDD.type_id = list[i].type_id
+                                            assignToDD.dd_latitude = list[i].dd_latitude
+                                            assignToDD.dd_longitude = list[i].dd_longitude
+
                                             AppDatabase.getDBInstance()?.ddListDao()?.insert(assignToDD)
                                         }
 
@@ -4952,7 +5767,10 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
 
     }
 
+
     private fun gotoHomeActivity() {
+        login_TV.isEnabled = true
+
         progress_wheel.stopSpinning()
         setServiceAlarm(this, 1, 123)
 
@@ -4964,8 +5782,8 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
     }
 
 
-     fun getCurrentStockApi() {
-         progress_wheel.spin()
+    fun getCurrentStockApi() {
+        progress_wheel.spin()
         var shopAll = AppDatabase.getDBInstance()!!.shopCurrentStockEntryDao().getShopStockAll()
         if (shopAll != null && shopAll?.isNotEmpty()) {
             progress_wheel.stopSpinning()
@@ -5016,7 +5834,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
                                             progress_wheel.stopSpinning()
                                             getCompStockApi()
                                         }
-                                    }else{
+                                    } else {
                                         progress_wheel.stopSpinning()
                                         getCompStockApi()
                                     }
@@ -5039,8 +5857,8 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
         }
     }
 
-     fun getCompStockApi() {
-         progress_wheel.spin()
+    fun getCompStockApi() {
+        progress_wheel.spin()
         var comListAll = AppDatabase.getDBInstance()!!.competetorStockEntryDao().getCompetetorStockAll()
         if (comListAll != null && comListAll?.isNotEmpty()) {
             progress_wheel.stopSpinning()
@@ -5096,7 +5914,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
                                             progress_wheel.stopSpinning()
                                             getShopTypeStockVisibility()
                                         }
-                                    }else{
+                                    } else {
                                         progress_wheel.stopSpinning()
                                         getShopTypeStockVisibility()
                                     }
@@ -5119,8 +5937,9 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
         }
     }
 
-    fun getShopTypeStockVisibility(){
-        try{
+
+    fun getShopTypeStockVisibility() {
+        try {
             AppDatabase.getDBInstance()?.shopTypeStockViewStatusDao()?.deleteAll()
             val repository = ShopListRepositoryProvider.provideShopListRepository()
             progress_wheel.spin()
@@ -5148,29 +5967,199 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
 
                                             uiThread {
                                                 progress_wheel.stopSpinning()
-                                                gotoHomeActivity()
+                                                //gotoHomeActivity()
+                                                getNewOrderDataList()
                                             }
                                         }
                                     } else {
                                         progress_wheel.stopSpinning()
-                                        gotoHomeActivity()
+                                        //gotoHomeActivity()
+                                        getNewOrderDataList()
                                     }
                                 } else {
                                     progress_wheel.stopSpinning()
-                                    gotoHomeActivity()
+                                    //gotoHomeActivity()
+                                    getNewOrderDataList()
                                 }
 
                             }, { error ->
                                 progress_wheel.stopSpinning()
                                 error.printStackTrace()
-                                gotoHomeActivity()
+                                //gotoHomeActivity()
+                                getNewOrderDataList()
                             })
             )
 
-        }catch (ex:java.lang.Exception){
+        } catch (ex: java.lang.Exception) {
             ex.printStackTrace()
-            gotoHomeActivity()
+            //gotoHomeActivity()
+            getNewOrderDataList()
         }
+    }
+
+    //03-09-2021
+    fun getNewOrderDataList() {
+
+        try {
+            AppDatabase.getDBInstance()?.newOrderGenderDao()?.deleteAll()
+            AppDatabase.getDBInstance()?.newOrderProductDao()?.deleteAll()
+            AppDatabase.getDBInstance()?.newOrderColorDao()?.deleteAll()
+            AppDatabase.getDBInstance()?.newOrderSizeDao()?.deleteAll()
+
+            val repository = OrderDetailsListRepoProvider.provideOrderDetailsListRepository()
+            progress_wheel.spin()
+            BaseActivity.compositeDisposable.add(
+                    repository.getNewOrderData()
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe({ result ->
+                                val response = result as NewOrderDataModel
+                                if (response.status == NetworkConstant.SUCCESS) {
+                                    var list_gender = response.Gender_list
+                                    var list_product = response.Product_list
+                                    var list_color = response.Color_list
+                                    var list_size = response.size_list
+
+                                    if (list_gender != null && list_gender.isNotEmpty()) {
+                                        doAsync {
+
+                                            for (l in 0..list_gender.size - 1) {
+                                                if (list_gender.get(l).gender_id == 1) {
+                                                    Pref.new_ord_gender_male = list_gender.get(l).gender.toString().toUpperCase()
+                                                }
+                                                if (list_gender.get(l).gender_id == 2) {
+                                                    Pref.new_ord_gender_female = list_gender.get(l).gender.toString().toUpperCase()
+                                                }
+                                            }
+
+
+                                            AppDatabase.getDBInstance()?.newOrderGenderDao()?.insertAll(list_gender)
+                                            AppDatabase.getDBInstance()?.newOrderGenderDao()?.updateGendertoUpperCase()
+
+
+
+                                            if (list_product != null && list_product.isNotEmpty()) {
+                                                AppDatabase.getDBInstance()?.newOrderProductDao()?.insertAll(list_product)
+                                                AppDatabase.getDBInstance()?.newOrderProductDao()?.updateProducttoUpperCase()
+                                            }
+                                            if (list_color != null && list_color.isNotEmpty()) {
+                                                AppDatabase.getDBInstance()?.newOrderColorDao()?.insertAll(list_color)
+                                                AppDatabase.getDBInstance()?.newOrderColorDao()?.updateColorNametoUpperCase()
+
+                                            }
+                                            if (list_size != null && list_size.isNotEmpty()) {
+                                                AppDatabase.getDBInstance()?.newOrderSizeDao()?.insertAll(list_size)
+                                                AppDatabase.getDBInstance()?.newOrderSizeDao()?.updateSizeNametoUpperCase()
+                                            }
+
+
+                                            uiThread {
+                                                progress_wheel.stopSpinning()
+                                                //gotoHomeActivity()
+                                                getNewOrderHistory()
+                                            }
+                                        }
+                                    } else {
+                                        progress_wheel.stopSpinning()
+                                        //gotoHomeActivity()
+                                        getNewOrderHistory()
+                                    }
+                                } else {
+                                    progress_wheel.stopSpinning()
+                                    //gotoHomeActivity()
+                                    getNewOrderHistory()
+                                }
+
+                            }, { error ->
+                                progress_wheel.stopSpinning()
+                                error.printStackTrace()
+                                //gotoHomeActivity()
+                                getNewOrderHistory()
+                            })
+            )
+        } catch (ex: java.lang.Exception) {
+            ex.printStackTrace()
+            //gotoHomeActivity()
+            getNewOrderHistory()
+        }
+    }
+
+
+    private fun getNewOrderHistory() {
+
+        try {
+            val list = AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getAll()
+            if (list!!.size == 0) {
+                val repository = OrderDetailsListRepoProvider.provideOrderDetailsListRepository()
+                BaseActivity.compositeDisposable.add(
+                        //repository.getNewOrderHistoryData()
+                        repository.getNewOrderHistoryDataSimplefied()
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeOn(Schedulers.io())
+                                .subscribe({ result ->
+                                    val response = result as NewOdrScrOrderListModel
+                                    if (response.status == NetworkConstant.SUCCESS) {
+
+                                        doAsync {
+
+                                            AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.insertAll(response.order_list!!.asReversed())
+                                            AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.updateSizeNametoUpperCase()
+
+
+                                            /*for(i in 0..response.Shop_list!!.size-1){
+                                                var ordL=response.Shop_list!!.get(i).OrderList
+                                                for(j in 0..ordL.size!!-1){
+                                                    var prodList=ordL!!.get(j).product_list
+                                                    for(k in 0..prodList.size-1){
+                                                        var colorList=prodList.get(k).color_list
+                                                        for(l in 0..colorList.size-1){
+
+
+                                                            var obj:NewOrderScrOrderEntity= NewOrderScrOrderEntity()
+                                                            obj.order_id=ordL.get(j).order_id
+                                                            obj.product_id=prodList.get(k).product_id.toString()
+                                                            obj.product_name=prodList.get(k).product_name.toString()
+                                                            obj.gender=prodList.get(k).gender.toString()
+                                                            obj.size=colorList.get(l).size.toString()
+                                                            obj.qty=colorList.get(l).qty.toString()
+                                                            obj.order_date=ordL.get(j).order_date
+                                                            obj.shop_id= response.Shop_list!!.get(i).shop_id
+                                                            obj.color_id=colorList.get(l).color_id.toString()
+                                                            obj.color_name="cname"
+                                                            obj.isUploaded=true
+                                                            AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.insert(obj)
+
+                                                        }
+                                                    }
+                                                }
+                                            }*/
+
+                                            uiThread {
+                                                getQuestionApi()
+//                                            gotoHomeActivity()
+                                            }
+                                        }
+                                    } else {
+                                        getQuestionApi()
+//                                gotoHomeActivity()
+                                    }
+
+                                }, { error ->
+                                    progress_wheel.stopSpinning()
+                                    getQuestionApi()
+//                            gotoHomeActivity()
+                                })
+                )
+            } else {
+                getQuestionApi()
+//                gotoHomeActivity()
+            }
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            getQuestionApi()
+//            gotoHomeActivity()
+        }
+
     }
 
 
@@ -5224,6 +6213,13 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        println("login " + resultCode.toString());
+        if (requestCode == 777) {
+            println("login 777");
+            if (!Settings.canDrawOverlays(this@LoginActivity)) {
+                getOverlayPermission()
+            }
+        }
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == DRAW_OVER_OTHER_APP_PERMISSION) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -5272,6 +6268,11 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
                 val file = File(resultUri.path!!)
 
                 uploadSelfie(file)
+            } else if (requestCode == 777) {
+                println("login 777");
+                if (!Settings.canDrawOverlays(this@LoginActivity)) {
+                    getOverlayPermission()
+                }
             }
         }
     }
@@ -5281,14 +6282,18 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
 
         if (!AppUtils.isOnline(this)) {
             //showSnackMessage(getString(R.string.no_internet))
-            tv_internet_info.setBackgroundColor(resources.getColor(R.color.red))
-            tv_internet_info.text = getString(R.string.login_net_disconnected)
+//            tv_internet_info.setBackgroundColor(resources.getColor(R.color.color_custom_red))
+            tv_internet_info.setTextColor(resources.getColor(R.color.color_custom_red_1))
+            tv_internet_info.text = getString(R.string.login_net_disconnected1)
+            icon_internet.setImageDrawable(mContext.getDrawable(R.drawable.ic_wifi_connection_offline_new))
             return
         }
 
-        tv_internet_info.setBackgroundColor(resources.getColor(R.color.green))
-        tv_internet_info.text = getString(R.string.login_net_connected)
-
+//        tv_internet_info.setBackgroundColor(resources.getColor(R.color.color_custom_green))
+        tv_internet_info.setTextColor(resources.getColor(R.color.color_custom_white_1))
+        tv_internet_info.text = getString(R.string.login_net_connected1)
+        icon_internet.setImageDrawable(mContext.getDrawable(R.drawable.ic_internet_new))
+//        tv_internet_info.slideDown()
         val repository = LoginRepositoryProvider.provideLoginImgRepository()
         progress_wheel.spin()
         BaseActivity.compositeDisposable.add(
@@ -5317,7 +6322,6 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
     }
 
     private fun getCameraImage(data: Intent?) {
-
         val isCamera: Boolean
         isCamera = if (!AppUtils.isN) {
             if (data == null) {
@@ -5390,8 +6394,12 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
         val bytes = ByteArrayOutputStream()
         bm!!.compress(Bitmap.CompressFormat.JPEG, 90, bytes)
 
-        var destination = File(Environment.getExternalStorageDirectory(),
+        /*var destination = File(Environment.getExternalStorageDirectory(),
+                System.currentTimeMillis().toString() + ".jpg")*/
+//27-09-2021
+        var destination = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
                 System.currentTimeMillis().toString() + ".jpg")
+
         val camera_image_path = destination?.absolutePath
         val fo: FileOutputStream
         try {
@@ -5406,4 +6414,321 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
         }
         return destination
     }
+
+
+    private fun getQuestionApi() {
+        progress_wheel.spin()
+        try {
+            val list = AppDatabase.getDBInstance()?.questionMasterDao()?.getAll()
+            if (list!!.size == 0) {
+                val repository = ShopListRepositoryProvider.provideShopListRepository()
+                BaseActivity.compositeDisposable.add(
+                        repository.getQuestionList()
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeOn(Schedulers.io())
+                                .subscribe({ result ->
+                                    val response = result as QuesListResponseModel
+                                    XLog.d("GET PROS DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                                    if (response.status == NetworkConstant.SUCCESS) {
+
+                                        if (response.Question_list != null && response.Question_list!!.isNotEmpty()) {
+                                            doAsync {
+                                                AppDatabase.getDBInstance()?.questionMasterDao()?.insertAllBulk(response.Question_list!!)
+                                                uiThread {
+                                                    getProspectApi()
+//                                                    gotoHomeActivity()
+                                                }
+                                            }
+                                        } else {
+                                            progress_wheel.stopSpinning()
+                                        }
+                                    } else {
+                                        progress_wheel.stopSpinning()
+                                        getProspectApi()
+//                                        gotoHomeActivity()
+                                    }
+
+                                }, { error ->
+                                    progress_wheel.stopSpinning()
+                                    XLog.d("GET STAGE DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                                    error.printStackTrace()
+//                                    gotoHomeActivity()
+                                    getProspectApi()
+                                })
+                )
+            } else {
+                progress_wheel.stopSpinning()
+//                gotoHomeActivity()
+                getProspectApi()
+            }
+
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            progress_wheel.stopSpinning()
+//            gotoHomeActivity()
+            getProspectApi()
+        }
+    }
+
+    private fun getProspectApi() {
+        try {
+            val list = AppDatabase.getDBInstance()?.prosDao()?.getAll()
+            if (list!!.size == 0) {
+                val repository = ShopListRepositoryProvider.provideShopListRepository()
+                BaseActivity.compositeDisposable.add(
+                        repository.getProsList()
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeOn(Schedulers.io())
+                                .subscribe({ result ->
+                                    val response = result as ProsListResponseModel
+                                    XLog.d("GET PROS DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                                    if (response.status == NetworkConstant.SUCCESS) {
+                                        if (response.Prospect_list != null && response.Prospect_list!!.isNotEmpty()) {
+                                            doAsync {
+                                                AppDatabase.getDBInstance()?.prosDao()?.insertAll(response.Prospect_list!!)
+                                                uiThread {
+                                                    getQuestionAnswerSubmitDetails()
+                                                }
+                                            }
+                                        } else {
+                                            progress_wheel.stopSpinning()
+                                        }
+                                    } else {
+                                        getQuestionAnswerSubmitDetails()
+                                    }
+
+                                }, { error ->
+                                    progress_wheel.stopSpinning()
+                                    getQuestionAnswerSubmitDetails()
+                                })
+                )
+            } else {
+                getQuestionAnswerSubmitDetails()
+            }
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            getQuestionAnswerSubmitDetails()
+
+        }
+
+    }
+
+    private fun getQuestionAnswerSubmitDetails() {
+        progress_wheel.spin()
+        try {
+            val list = AppDatabase.getDBInstance()?.questionSubmitDao()?.getAll()
+            if (list!!.size == 0) {
+                val repository = ShopListRepositoryProvider.provideShopListRepository()
+                BaseActivity.compositeDisposable.add(
+                        repository.getQuestionAnsSubmitDetails()
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeOn(Schedulers.io())
+                                .subscribe({ result ->
+                                    val response = result as GetQtsAnsSubmitDtlsResponseModel
+                                    XLog.d("GET PROS DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                                    if (response.status == NetworkConstant.SUCCESS) {
+                                        if (response.Question_list != null && response.Question_list!!.isNotEmpty()) {
+                                            doAsync {
+                                                AppDatabase.getDBInstance()?.questionSubmitDao()?.insertAll(response.Question_list!! as ArrayList<QuestionSubmitEntity>)
+
+                                                AppDatabase.getDBInstance()?.questionSubmitDao()?.updateisUpdateToUploadedLogin(true)
+                                                AppDatabase.getDBInstance()?.questionSubmitDao()?.updateTrueTo1("1", "true")
+                                                AppDatabase.getDBInstance()?.questionSubmitDao()?.updateFalseTo0("0", "false")
+                                                uiThread {
+                                                    getSecImageToLogin()
+//                                                    gotoHomeActivity()
+                                                }
+                                            }
+                                        } else {
+                                            progress_wheel.stopSpinning()
+                                        }
+                                    } else {
+//                                        gotoHomeActivity()
+                                        getSecImageToLogin()
+                                    }
+
+                                }, { error ->
+                                    progress_wheel.stopSpinning()
+//                                    gotoHomeActivity()
+                                    getSecImageToLogin()
+                                })
+                )
+            } else {
+                progress_wheel.stopSpinning()
+//                gotoHomeActivity()
+                getSecImageToLogin()
+            }
+        } catch (ex: Exception) {
+            progress_wheel.stopSpinning()
+            ex.printStackTrace()
+//            gotoHomeActivity()
+            getSecImageToLogin()
+
+        }
+
+    }
+
+
+    private fun getSecImageToLogin() {
+        progress_wheel.spin()
+        try {
+            val list = AppDatabase.getDBInstance()?.addShopSecondaryImgDao()?.getAll()
+            if (list!!.size == 0) {
+                val repository = ShopListRepositoryProvider.provideShopListRepository()
+                BaseActivity.compositeDisposable.add(
+                        repository.getSecUploadImages()
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeOn(Schedulers.io())
+                                .subscribe({ result ->
+                                    val response = result as GetSecImageUploadResponseModel
+                                    XLog.d("GET Image Seconadray Upload  DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                                    if (response.status == NetworkConstant.SUCCESS) {
+                                        if (response.lead_shop_list != null && response.lead_shop_list!!.isNotEmpty()) {
+                                            doAsync {
+                                                var list = response.lead_shop_list as MutableList<AddShopSecondaryImgEntity>
+                                                for (i in 0..response.lead_shop_list!!.size - 1) {
+                                                    AppDatabase.getDBInstance()?.addShopSecondaryImgDao()?.updateListOfSecImages(list.get(i).lead_shop_id!!.toString(), list.get(i).rubylead_image1.toString()!!, list[i].rubylead_image2!!)
+                                                }
+                                                uiThread {
+                                                    getReturnList()
+//                                                    gotoHomeActivity()
+                                                }
+                                            }
+                                        } else {
+                                            progress_wheel.stopSpinning()
+                                        }
+                                    } else {
+                                        getReturnList()
+//                                        gotoHomeActivity()
+                                    }
+
+                                }, { error ->
+                                    progress_wheel.stopSpinning()
+                                    getReturnList()
+//                                    gotoHomeActivity()
+                                })
+                )
+            } else {
+                progress_wheel.stopSpinning()
+//                gotoHomeActivity()
+                getReturnList()
+            }
+        } catch (ex: Exception) {
+            progress_wheel.stopSpinning()
+            ex.printStackTrace()
+            getReturnList()
+//            gotoHomeActivity()
+
+        }
+
+    }
+
+    /*20-12-2021*/
+   private fun getReturnList() {
+        println("xyz - getReturnList started" + AppUtils.getCurrentDateTime());
+
+        var returnDtlsList=AppDatabase.getDBInstance()!!.returnDetailsDao().getAll()
+        if(returnDtlsList.size==0){
+            val repository = NewOrderListRepoProvider.provideOrderListRepository()
+            progress_wheel.spin()
+            BaseActivity.compositeDisposable.add(
+                    repository.getReturnList(Pref.session_token!!, Pref.user_id!!, "")
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe({ result ->
+                                val response = result as ReturnListResponseModel
+                                if (response.status == NetworkConstant.SUCCESS) {
+                                    val return_details_list = response.return_list
+
+                                    if (return_details_list != null && return_details_list.isNotEmpty()) {
+
+                                        doAsync {
+
+                                            for (i in return_details_list.indices) {
+                                                val returnDetailList = ReturnDetailsEntity()
+                                                returnDetailList.date = return_details_list[i].return_date_time!!.replace(" ", "T") //AppUtils.convertToCommonFormat(order_details_list[i].date!!)
+                                                if (!TextUtils.isEmpty(return_details_list[i].return_date_time))
+                                                    returnDetailList.only_date = AppUtils.convertDateTimeToCommonFormat(return_details_list[i].return_date_time!!.replace(" ", "T"))
+                                                returnDetailList.shop_id = return_details_list[i].shop_id
+                                                returnDetailList.description = ""
+
+                                                if (!TextUtils.isEmpty(return_details_list[i].return_amount)) {
+                                                    val finalAmount = String.format("%.2f", return_details_list[i].return_amount?.toFloat())
+                                                    returnDetailList.amount = finalAmount
+                                                }
+
+                                                returnDetailList.isUploaded = true
+                                                returnDetailList.return_id = return_details_list[i].return_id
+
+                                                if (!TextUtils.isEmpty(return_details_list[i].return_lat) && !TextUtils.isEmpty(return_details_list[i].return_long)) {
+                                                    returnDetailList.return_lat = return_details_list[i].return_lat
+                                                    returnDetailList.return_long = return_details_list[i].return_long
+                                                } else {
+                                                    returnDetailList.return_lat = return_details_list[i].shop_lat
+                                                    returnDetailList.return_long = return_details_list[i].shop_long
+                                                }
+
+
+                                                if (return_details_list[i].product_list != null && return_details_list[i].product_list?.size!! > 0) {
+                                                    for (j in return_details_list[i].product_list?.indices!!) {
+                                                        val productReturnList = ReturnProductListEntity()
+                                                        productReturnList.brand = return_details_list[i].product_list?.get(j)?.brand
+                                                        productReturnList.brand_id = return_details_list[i].product_list?.get(j)?.brand_id
+                                                        productReturnList.category_id = return_details_list[i].product_list?.get(j)?.category_id
+                                                        productReturnList.watt = return_details_list[i].product_list?.get(j)?.watt
+                                                        productReturnList.watt_id = return_details_list[i].product_list?.get(j)?.watt_id
+                                                        productReturnList.product_id = return_details_list[i].product_list?.get(j)?.id.toString()
+                                                        productReturnList.category = return_details_list[i].product_list?.get(j)?.category
+                                                        productReturnList.return_id = return_details_list[i].return_id
+                                                        productReturnList.product_name = return_details_list[i].product_list?.get(j)?.product_name
+
+                                                        if (!TextUtils.isEmpty(return_details_list[i].product_list?.get(j)?.rate)) {
+                                                            val finalRate = String.format("%.2f", return_details_list[i].product_list?.get(j)?.rate?.toFloat())
+                                                            productReturnList.rate = finalRate
+                                                        }
+
+                                                        productReturnList.qty = return_details_list[i].product_list?.get(j)?.qty
+
+                                                        if (!TextUtils.isEmpty(return_details_list[i].product_list?.get(j)?.total_price)) {
+                                                            val finalTotalPrice = String.format("%.2f", return_details_list[i].product_list?.get(j)?.total_price?.toFloat())
+                                                            productReturnList.total_price = finalTotalPrice
+                                                        }
+                                                        productReturnList.shop_id = return_details_list[i].shop_id
+
+                                                        AppDatabase.getDBInstance()!!.returnProductListDao().insert(productReturnList)
+                                                    }
+                                                }
+
+                                                AppDatabase.getDBInstance()!!.returnDetailsDao().insert(returnDetailList)
+                                            }
+
+                                            uiThread {
+                                                progress_wheel.stopSpinning()
+                                                gotoHomeActivity()
+                                            }
+                                        }
+                                    } else {
+                                        progress_wheel.stopSpinning()
+                                        gotoHomeActivity()
+
+                                    }
+                                } else {
+                                    progress_wheel.stopSpinning()
+                                    gotoHomeActivity()
+
+                                }
+
+                            }, { error ->
+                                progress_wheel.stopSpinning()
+                                gotoHomeActivity()
+                            })
+            )
+        }else{
+            gotoHomeActivity()
+        }
+
+    }
+
+
+
 }

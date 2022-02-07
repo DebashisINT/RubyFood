@@ -21,13 +21,13 @@
         android:padding="@dimen/_10sdp">
 
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="@dimen/_4sdp">
 
-            <android.support.v7.widget.SearchView
+            <androidx.appcompat.widget.SearchView
                 android:id="@+id/svSearchForShop"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
                 app:queryBackground="@color/white"
                 app:queryHint="Search For Shop"
                 app:searchIcon="@drawable/ic_search_black" />
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 
@@ -64,7 +64,7 @@
     </ScrollView>
 
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/near_by_shops_RCV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -1,11 +1,12 @@
 package com.rubyfood.features.member.presentation
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -112,6 +113,7 @@ class MemberPJPListFragment : BaseFragment(), View.OnClickListener {
         return view
     }
 
+    @SuppressLint("RestrictedApi")
     private fun initView(view: View) {
         view.apply {
             rv_pjp_list = findViewById(R.id.rv_pjp_list)
@@ -159,15 +161,15 @@ class MemberPJPListFragment : BaseFragment(), View.OnClickListener {
             if (isFloatingVisible) {
                 rv_pjp_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
-                    override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         if (dy < 0 && !it.isShown)
                             it.show()
                         else if (dy > 0 && it.isShown)
                             it.hide()
                     }
 
-                    override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
-                        super.onScrollStateChanged(recyclerView, newState)
+                    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                        super.onScrollStateChanged(recyclerView!!, newState)
                     }
                 })
             }

@@ -7,7 +7,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 import com.elvishew.xlog.XLog
 import com.rubyfood.app.utils.AppUtils
 import com.rubyfood.app.utils.FTStorageUtils
@@ -31,6 +31,10 @@ class NewAlarmReceiver : BroadcastReceiver() {
                     XLog.e("==========Service is stopped (NewAlarmReceiver)===========")
 
                     if (Pref.user_id != null && Pref.user_id!!.isNotEmpty()) {
+
+                        if(Pref.IsLeavePressed==true && Pref.IsLeaveGPSTrack == false){
+                            return
+                        }
 
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                             val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler

@@ -1,7 +1,9 @@
 package com.rubyfood.features.login.api.productlistapi
 
 import com.rubyfood.app.Pref
+import com.rubyfood.app.domain.ProductListEntity
 import com.rubyfood.features.login.model.productlistmodel.ProductListOfflineResponseModel
+import com.rubyfood.features.login.model.productlistmodel.ProductListOfflineResponseModelNew
 import com.rubyfood.features.login.model.productlistmodel.ProductListResponseModel
 import com.rubyfood.features.login.model.productlistmodel.ProductRateListResponseModel
 import io.reactivex.Observable
@@ -14,11 +16,17 @@ class ProductListRepo(val apiService: ProductListApi) {
         return apiService.getProductList(session_token, user_id, last_update_date)
     }
 
+
     fun getProductRateList(shop_id: String): Observable<ProductRateListResponseModel> {
         return apiService.getProductRateList(Pref.session_token!!, Pref.user_id!!, shop_id)
     }
 
     fun getProductRateOfflineList(): Observable<ProductListOfflineResponseModel> {
         return apiService.getOfflineProductRateList(Pref.session_token!!, Pref.user_id!!)
+    }
+
+
+    fun getProductRateOfflineListNew(): Observable<ProductListOfflineResponseModelNew> {
+        return apiService.getOfflineProductRateListNew(Pref.session_token!!, Pref.user_id!!)
     }
 }

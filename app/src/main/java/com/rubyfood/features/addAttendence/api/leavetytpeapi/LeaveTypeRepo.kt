@@ -1,7 +1,10 @@
 package com.rubyfood.features.addAttendence.api.leavetytpeapi
 
 import com.rubyfood.app.Pref
+import com.rubyfood.base.BaseResponse
+import com.rubyfood.features.addAttendence.model.ApprovalLeaveResponseModel
 import com.rubyfood.features.addAttendence.model.LeaveTypeResponseModel
+import com.rubyfood.features.leaveapplynew.model.ApprovalRejectReqModel
 import io.reactivex.Observable
 
 /**
@@ -10,5 +13,14 @@ import io.reactivex.Observable
 class LeaveTypeRepo(val apiService: LeaveTypeApi) {
     fun getLeaveTypeList(): Observable<LeaveTypeResponseModel> {
         return apiService.getLeaveTypeList(Pref.session_token!!, Pref.user_id!!)
+    }
+
+
+    fun getApprovalLeaveList(userId:String): Observable<ApprovalLeaveResponseModel> {
+        return apiService.getApprovalLeaveList(Pref.session_token!!,userId)
+    }
+
+    fun postApprovalRejectclick(ApprovalRejectReqModel: ApprovalRejectReqModel): Observable<BaseResponse> {
+        return apiService.postApprovalRejectclick(ApprovalRejectReqModel)
     }
 }

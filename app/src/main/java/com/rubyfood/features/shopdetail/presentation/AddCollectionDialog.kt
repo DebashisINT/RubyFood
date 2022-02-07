@@ -11,13 +11,13 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.support.annotation.RequiresApi
-import android.support.design.widget.TextInputLayout
-import android.support.v4.app.DialogFragment
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.CardView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.RequiresApi
+import com.google.android.material.textfield.TextInputLayout
+import androidx.fragment.app.DialogFragment
+import androidx.appcompat.app.AlertDialog
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.util.Log
 import android.view.*
@@ -95,6 +95,11 @@ class AddCollectionDialog : DialogFragment(), View.OnClickListener {
     private lateinit var rl_address: RelativeLayout
     private lateinit var rl_phone: RelativeLayout
 
+    private lateinit var rl_lab: RelativeLayout
+    private lateinit var rl_emailaddress: RelativeLayout
+    private lateinit var et_lab: AppCustomEditText
+    private lateinit var et_emailaddress: AppCustomEditText
+
     private var dateString = ""
     private var amount = ""
     private var permissionUtils: PermissionUtils? = null
@@ -149,8 +154,8 @@ class AddCollectionDialog : DialogFragment(), View.OnClickListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.window!!.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
+        dialog?.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.window!!.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
         val v = inflater?.inflate(R.layout.dialog_add_collection, container, false)
         //addShopData = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopDetail(shopId)
         isCancelable = false
@@ -198,6 +203,11 @@ class AddCollectionDialog : DialogFragment(), View.OnClickListener {
         rl_address = v.findViewById(R.id.rl_address)
         rl_phone = v.findViewById(R.id.rl_phone)
 
+        rl_lab = v.findViewById(R.id.rl_lab)
+        rl_emailaddress = v.findViewById(R.id.rl_emailaddress)
+        et_lab = v.findViewById(R.id.et_lab)
+        et_emailaddress = v.findViewById(R.id.et_emailaddress)
+
         et_date.setText(AppUtils.convertToCommonFormat(AppUtils.getFormattedDateForApi(myCalendar.time)))
 
         shop_name_TV.text = shopName
@@ -206,11 +216,17 @@ class AddCollectionDialog : DialogFragment(), View.OnClickListener {
             rl_patient.visibility = View.VISIBLE
             rl_address.visibility = View.VISIBLE
             rl_phone.visibility = View.VISIBLE
+
+            rl_lab.visibility = View.VISIBLE
+            rl_emailaddress.visibility = View.VISIBLE
         }
         else {
             rl_patient.visibility = View.GONE
             rl_address.visibility = View.GONE
             rl_phone.visibility = View.GONE
+
+            rl_lab.visibility = View.GONE
+            rl_emailaddress.visibility = View.GONE
         }
 
         if (!TextUtils.isEmpty(orderId)) {
@@ -229,6 +245,12 @@ class AddCollectionDialog : DialogFragment(), View.OnClickListener {
 
             if (!TextUtils.isEmpty(order?.patient_no))
                 et_phone.setText(order?.patient_no)
+
+            if (!TextUtils.isEmpty(order?.Hospital))
+                et_lab.setText(order?.Hospital)
+
+            if (!TextUtils.isEmpty(order?.Email_Address))
+                et_emailaddress.setText(order?.Email_Address)
         }
 
         if (!isAdd) {
@@ -242,6 +264,8 @@ class AddCollectionDialog : DialogFragment(), View.OnClickListener {
             et_patient.isEnabled = false
             et_address.isEnabled = false
             et_phone.isEnabled = false
+            et_lab.isEnabled = false
+            et_emailaddress.isEnabled = false
             et_date.setText(mAddShopDBModelEntity?.date)
 
             if (!TextUtils.isEmpty(mAddShopDBModelEntity?.bank))
@@ -273,6 +297,16 @@ class AddCollectionDialog : DialogFragment(), View.OnClickListener {
                 et_phone.setText(mAddShopDBModelEntity?.patient_no)
             else
                 et_phone.setText("N.A.")
+            /*06-01-2022*/
+            if (!TextUtils.isEmpty(mAddShopDBModelEntity?.Hospital))
+                et_lab.setText(mAddShopDBModelEntity?.Hospital)
+            else
+                et_lab.setText("N.A.")
+
+            if (!TextUtils.isEmpty(mAddShopDBModelEntity?.Email_Address))
+                et_emailaddress.setText(mAddShopDBModelEntity?.Email_Address)
+            else
+                et_emailaddress.setText("N.A.")
 
             val payment = AppDatabase.getDBInstance()?.paymenttDao()?.getSingleData(mAddShopDBModelEntity?.payment_id!!)
             if (payment != null && !TextUtils.isEmpty(payment.name))
@@ -350,7 +384,7 @@ class AddCollectionDialog : DialogFragment(), View.OnClickListener {
                     else -> {
                         addCollectionClickListener.onClick(et_collection.text.toString().trim(), et_date.text.toString().trim(), paymentId,
                                 et_instrument.text.toString().trim(), et_bank.text.toString().trim(), dataPath, et_feedback.text.toString().trim(),
-                                et_patient.text.toString().trim(), et_address.text.toString().trim(), et_phone.text.toString().trim())
+                                et_patient.text.toString().trim(), et_address.text.toString().trim(), et_phone.text.toString().trim(),et_lab.text.toString().trim(),et_emailaddress.text.toString().trim())
                         dismiss()
                     }
                 }
@@ -717,6 +751,6 @@ class AddCollectionDialog : DialogFragment(), View.OnClickListener {
 
     interface AddCollectionClickLisneter {
         fun onClick(collection: String, date: String, paymentId: String, instrument: String, bank: String, filePath: String, feedback: String,
-                    patientName: String, patientAddress: String, patinetNo: String)
+                    patientName: String, patientAddress: String, patinetNo: String,hospital:String,emailAddress:String)
     }
 }

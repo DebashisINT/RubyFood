@@ -4,7 +4,7 @@
     xmlns:wheel="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/smoke_white">
+    android:background="@color/color_silver">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
+            android:background="@color/color_silver"
             android:padding="@dimen/_10sdp">
 
             <LinearLayout
@@ -91,7 +91,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/deep_blue">
+            android:background="@drawable/custom_toolbar_back">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -278,7 +278,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
-                        <android.support.v7.widget.CardView
+                        <androidx.cardview.widget.CardView
                             android:id="@+id/cv_travel"
                             android:layout_width="@dimen/_70sdp"
                             android:layout_height="@dimen/_70sdp"
@@ -310,7 +310,7 @@
                                     android:textColor="@color/black"
                                     android:textSize="@dimen/_9sdp" />
                             </LinearLayout>
-                        </android.support.v7.widget.CardView>
+                        </androidx.cardview.widget.CardView>
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -319,7 +319,7 @@
                         android:layout_gravity="bottom"
                         android:layout_marginTop="@dimen/_57sdp">
 
-                        <android.support.v7.widget.CardView
+                        <androidx.cardview.widget.CardView
                             android:id="@+id/cv_travel_price"
                             android:layout_width="@dimen/_70sdp"
                             android:layout_height="@dimen/_20sdp"
@@ -351,7 +351,7 @@
                                     android:textSize="@dimen/_11sdp" />
                             </LinearLayout>
 
-                        </android.support.v7.widget.CardView>
+                        </androidx.cardview.widget.CardView>
                     </RelativeLayout>
                 </FrameLayout>
             </RelativeLayout>
@@ -372,7 +372,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
-                        <android.support.v7.widget.CardView
+                        <androidx.cardview.widget.CardView
                             android:id="@+id/cv_hotel"
                             android:layout_width="@dimen/_70sdp"
                             android:layout_height="@dimen/_70sdp"
@@ -404,7 +404,7 @@
                                     android:textColor="@color/black"
                                     android:textSize="@dimen/_9sdp" />
                             </LinearLayout>
-                        </android.support.v7.widget.CardView>
+                        </androidx.cardview.widget.CardView>
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -413,7 +413,7 @@
                         android:layout_gravity="bottom"
                         android:layout_marginTop="@dimen/_57sdp">
 
-                        <android.support.v7.widget.CardView
+                        <androidx.cardview.widget.CardView
                             android:id="@+id/cv_hotel_price"
                             android:layout_width="@dimen/_70sdp"
                             android:layout_height="@dimen/_20sdp"
@@ -444,7 +444,7 @@
                                     android:textColor="@color/reimbursement_text_color_selector"
                                     android:textSize="@dimen/_11sdp" />
                             </LinearLayout>
-                        </android.support.v7.widget.CardView>
+                        </androidx.cardview.widget.CardView>
                     </RelativeLayout>
                 </FrameLayout>
             </RelativeLayout>
@@ -464,7 +464,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
-                        <android.support.v7.widget.CardView
+                        <androidx.cardview.widget.CardView
                             android:id="@+id/cv_food"
                             android:layout_width="@dimen/_70sdp"
                             android:layout_height="@dimen/_70sdp"
@@ -496,7 +496,7 @@
                                     android:textColor="@color/black"
                                     android:textSize="@dimen/_9sdp" />
                             </LinearLayout>
-                        </android.support.v7.widget.CardView>
+                        </androidx.cardview.widget.CardView>
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -505,7 +505,7 @@
                         android:layout_gravity="bottom"
                         android:layout_marginTop="@dimen/_57sdp">
 
-                        <android.support.v7.widget.CardView
+                        <androidx.cardview.widget.CardView
                             android:id="@+id/cv_food_price"
                             android:layout_width="@dimen/_70sdp"
                             android:layout_height="@dimen/_20sdp"
@@ -536,7 +536,7 @@
                                     android:textColor="@color/reimbursement_text_color_selector"
                                     android:textSize="@dimen/_11sdp" />
                             </LinearLayout>
-                        </android.support.v7.widget.CardView>
+                        </androidx.cardview.widget.CardView>
                     </RelativeLayout>
                 </FrameLayout>
             </RelativeLayout>
@@ -551,7 +551,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_expense_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -575,7 +575,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/rl_expense_list">
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_reimbursment_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -598,7 +598,7 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

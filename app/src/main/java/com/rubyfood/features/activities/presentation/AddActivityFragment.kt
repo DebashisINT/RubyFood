@@ -9,7 +9,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.support.v7.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -559,8 +559,13 @@ class AddActivityFragment : BaseFragment(), View.OnClickListener {
 
                                 if (list != null && list.isNotEmpty()) {
 
+
                                     doAsync {
-                                        for (i in list.indices) {
+
+                                        AppDatabase.getDBInstance()?.productListDao()?.insertAll(list!!)
+
+
+                          /*              for (i in list.indices) {
                                             val productEntity = ProductListEntity()
                                             productEntity.id = list[i].id?.toInt()!!
                                             productEntity.product_name = list[i].product_name
@@ -572,7 +577,7 @@ class AddActivityFragment : BaseFragment(), View.OnClickListener {
                                             productEntity.category_id = list[i].category_id
                                             productEntity.date = AppUtils.getCurrentDateForShopActi()
                                             AppDatabase.getDBInstance()?.productListDao()?.insert(productEntity)
-                                        }
+                                        }*/
 
                                         uiThread {
                                             progress_wheel.stopSpinning()

@@ -17,16 +17,17 @@ import java.io.File
 
 class MyJobRepo(val apiService: MyJobApi) {
 
-    fun getCustomerListDateWise(date: String): Observable<CustomerListResponseModel> {
-        return apiService.getCustomerListDateWise(Pref.session_token!!, Pref.user_id!!, date)
+    fun getCustomerListDateWise(date: String,user_id:String): Observable<CustomerListResponseModel> {
+        return apiService.getCustomerListDateWise(Pref.session_token!!, user_id, date)
     }
 
     fun getCustomerList(): Observable<CustListResponseModel> {
         return apiService.getCustomerList(Pref.session_token!!, Pref.user_id!!)
     }
 
-    fun getStatus(id: String): Observable<CustomerStatusResponseModel> {
-        return apiService.getStatus(Pref.session_token!!, Pref.user_id!!, id)
+    fun getStatus(user_id:String,id: String): Observable<CustomerStatusResponseModel> {
+        //return apiService.getStatus(Pref.session_token!!, Pref.user_id!!, id)
+        return apiService.getStatus(Pref.session_token!!, user_id, id)
     }
 
     fun getWipSettings(id: String): Observable<CustomerWIPStatusModel> {

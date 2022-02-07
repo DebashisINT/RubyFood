@@ -4,8 +4,9 @@
     xmlns:wheel="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:clickable="true">
+    android:background="@color/color_silver"
+    android:clickable="true"
+    android:padding="@dimen/_3sdp">
 
 
     <RelativeLayout
@@ -131,7 +132,7 @@
 
     </RelativeLayout>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/date_CV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -168,10 +169,10 @@
                 android:textSize="@dimen/_10sdp"
                 android:textStyle="normal" />
         </RelativeLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/shop_list_RCV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

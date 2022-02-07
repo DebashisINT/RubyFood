@@ -25,6 +25,10 @@ class ShopActivityResponseShopList {
 
     var Key: String? = null
 
+    var agency_name: String? = null
+    var pros_id: String? = null
+    var approximate_1st_billing_value: Double? = 0.00
+
 //    "date": "2017-11-12",--------------yyyy-MM-dd
 //    "shopid": "378_1512478115504",
 //    "duration_spent": "17:00:08.0000000",

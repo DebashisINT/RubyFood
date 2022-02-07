@@ -13,12 +13,12 @@
         android:fillViewport="true"
         >-->
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -61,7 +61,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <android.support.v7.widget.AppCompatTextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:layout_width="0px"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -97,7 +97,7 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal">
 
-                                <android.support.v7.widget.AppCompatTextView
+                                <androidx.appcompat.widget.AppCompatTextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:ellipsize="end"
@@ -106,7 +106,7 @@
                                     android:textColor="@color/white"
                                     android:textSize="@dimen/_12sdp" />
 
-                                <android.support.v7.widget.AppCompatTextView
+                                <androidx.appcompat.widget.AppCompatTextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="@dimen/_4sdp"
@@ -123,7 +123,7 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal">
 
-                                <android.support.v7.widget.AppCompatTextView
+                                <androidx.appcompat.widget.AppCompatTextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:ellipsize="end"
@@ -132,7 +132,7 @@
                                     android:textColor="@color/white"
                                     android:textSize="@dimen/_12sdp" />
 
-                                <android.support.v7.widget.AppCompatTextView
+                                <androidx.appcompat.widget.AppCompatTextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="@dimen/_4sdp"
@@ -154,7 +154,7 @@
                             android:gravity="right"
                             android:orientation="vertical">
 
-                            <android.support.v7.widget.AppCompatTextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:ellipsize="end"
@@ -164,7 +164,7 @@
                                 android:textSize="@dimen/_14sdp"
                                 android:textStyle="bold" />
 
-                            <android.support.v7.widget.AppCompatTextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/tvOrderValueTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -185,7 +185,7 @@
 
             </FrameLayout>
 
-        </android.support.design.widget.AppBarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
 
         <LinearLayout
@@ -194,7 +194,7 @@
             android:orientation="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <android.support.design.widget.TabLayout
+            <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -208,7 +208,7 @@
                 app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
                 app:tabTextColor="@color/black" />
 
-            <android.support.v4.view.ViewPager
+            <androidx.viewpager.widget.ViewPager
                 android:id="@+id/vpShopPager"
                 android:layout_width="match_parent"
                 android:layout_height="0px"
@@ -218,7 +218,7 @@
         </LinearLayout>
 
 
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
     <!--   </android.support.v4.widget.NestedScrollView>-->
 
 

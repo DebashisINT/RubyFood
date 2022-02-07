@@ -151,7 +151,7 @@
                     android:layout_marginRight="@dimen/_2sdp"
                     android:background="@color/light_gray" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_attachment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -169,7 +169,7 @@
                         android:focusable="false"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.rubyfood.widgets.AppCustomTextView
                     android:id="@+id/tv_attachment_asterisk_mark"
@@ -202,7 +202,7 @@
                     android:layout_marginRight="@dimen/_2sdp"
                     android:background="@color/light_gray" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_photo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -220,7 +220,7 @@
                         android:focusable="false"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.rubyfood.widgets.AppCustomTextView
                     android:id="@+id/tv_photo_asterisk_mark"
@@ -251,7 +251,7 @@
                     android:layout_marginRight="@dimen/_2sdp"
                     android:background="@color/light_gray" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_remarks"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -271,7 +271,7 @@
                         android:textSize="@dimen/_13sdp"
                         android:scrollbars="vertical"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.rubyfood.widgets.AppCustomTextView
                     android:id="@+id/tv_details_asterisk_mark"
@@ -302,7 +302,7 @@
                     android:layout_marginRight="@dimen/_2sdp"
                     android:background="@color/light_gray" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_phn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -321,7 +321,7 @@
                         android:textSize="@dimen/_13sdp"
                         android:imeOptions="actionDone"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.rubyfood.widgets.AppCustomTextView
                     android:id="@+id/tv_phn_asterisk_mark"
@@ -345,7 +345,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/selector_order_history_bg"
+        android:background="@drawable/deselected_new_order_history"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center"

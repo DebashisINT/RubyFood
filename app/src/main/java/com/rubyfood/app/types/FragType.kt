@@ -30,5 +30,11 @@ enum class FragType {
     MyJobsFragment, JobsCustomerFragment, WorkInProgressFragment, WorkOnHoldFragment, WorkCompletedFragment, WorkCancelledFragment, UpdateReviewFragment,
     CustomerListFragment, ServiceHistoryFragment,ViewPermissionFragment,
     UpdateShopStockFragment,AddShopStockFragment,ViewStockDetailsFragment,
-    CompetetorStockFragment,AddCompetetorStockFragment,ViewComStockProductDetails
+    CompetetorStockFragment,AddCompetetorStockFragment,ViewComStockProductDetails,
+
+    ProtoRegistrationFragment,RegisTerFaceFragment,DocumentRepoFeatureNewFragment,FromOrganizationFragment,OwnfilesFragment,
+
+    NewOrderScrActiFragment,NeworderScrCartFragment,NewOrderScrOrderDetailsFragment,NewOdrScrListFragment,
+    PhotoAttendanceFragment,TeamAttendanceFragment,ViewAllReturnListFragment,ReturnTypeListFragment,ViewCartReturnFragment,NewReturnListFragment,CartReturnFragment,
+    LeaveHome,ApprovalPendFrag,LeaveStatusFrag
 }

@@ -3,7 +3,7 @@ package com.rubyfood.features.member.presentation
 import android.content.Context
 import android.location.Location
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
+import androidx.fragment.app.DialogFragment
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -55,8 +55,8 @@ class UpdateMemberShopAddressDialog : DialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.window?.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
+        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.window?.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
         val v = inflater.inflate(R.layout.dialog_update_shop_address, container, false)
 
         initView(v)
@@ -112,7 +112,7 @@ class UpdateMemberShopAddressDialog : DialogFragment() {
                         mLocalTeam?.shop_address = new_address_EDT.text.toString()
                         addressUpdateClickListener(mLocalTeam!!)
                     }
-                    dialog.dismiss()
+                    dialog?.dismiss()
                 }
             }
         }

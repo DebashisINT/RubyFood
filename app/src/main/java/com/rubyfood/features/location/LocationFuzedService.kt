@@ -16,14 +16,15 @@ import android.location.GpsStatus
 import android.location.Location
 import android.location.LocationManager
 import android.os.*
-import android.support.annotation.NonNull
-import android.support.annotation.Nullable
-import android.support.annotation.RequiresApi
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.NotificationCompat
-import android.support.v4.content.LocalBroadcastManager
+import androidx.annotation.NonNull
+import androidx.annotation.Nullable
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.text.TextUtils
 import android.util.Log
+import com.rubyfood.CustomStatic
 import com.rubyfood.MonitorBroadcast
 import com.elvishew.xlog.XLog
 import com.google.android.gms.common.ConnectionResult
@@ -148,6 +149,7 @@ class LocationFuzedService : Service(), GoogleApiClient.ConnectionCallbacks, Goo
             addAction("android.intent.action.AIRPLANE_MODE")
             addAction("android.intent.action.BOOT_COMPLETED")
             addAction("android.intent.action.ACTION_SHUTDOWN")
+            addAction("android.os.action.POWER_SAVE_MODE_CHANGED")
         })
 
 
@@ -548,9 +550,22 @@ class LocationFuzedService : Service(), GoogleApiClient.ConnectionCallbacks, Goo
             return
         }
 
+        if(Pref.IsLeavePressed==true && Pref.IsLeaveGPSTrack == false){
+            return
+        }
+
+
         checkForceLogoutNotification()
 
         calculateOrderCollectionAlertTime()
+
+        if(Pref.IsShowDayStart){
+            if(!Pref.DayStartMarked){
+                return
+            }
+        }
+
+
 
 
         /*try {
@@ -759,7 +774,6 @@ class LocationFuzedService : Service(), GoogleApiClient.ConnectionCallbacks, Goo
 
             lastLat = location.latitude
             lastLng = location.longitude
-
 
             return
         }
@@ -2727,6 +2741,30 @@ class LocationFuzedService : Service(), GoogleApiClient.ConnectionCallbacks, Goo
                     shopDurationData.out_location = shopActivity.out_loc
                     shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
 
+                    /*10-12-2021*/
+                    shopDurationData.updated_by = Pref.user_id
+                    try{
+                        shopDurationData.updated_on = shopActivity.updated_on!!
+                    }catch(ex:Exception){
+                        shopDurationData.updated_on = ""
+                    }
+
+
+                    if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                        shopDurationData.pros_id = shopActivity.pros_id!!
+                    else
+                        shopDurationData.pros_id = ""
+
+                    if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                        shopDurationData.agency_name =shopActivity.agency_name!!
+                    else
+                        shopDurationData.agency_name = ""
+
+                    if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                        shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+                    else
+                        shopDurationData.approximate_1st_billing_value = ""
+
                     shopDataList.add(shopDurationData)
 
 
@@ -2812,7 +2850,31 @@ class LocationFuzedService : Service(), GoogleApiClient.ConnectionCallbacks, Goo
                     shopDurationData.start_timestamp = it.startTimeStamp
                     shopDurationData.in_location = it.in_loc
                     shopDurationData.out_location = it.out_loc
-                    shopDurationData.shop_revisit_uniqKey=it.shop_revisit_uniqKey
+                    shopDurationData.shop_revisit_uniqKey=it.shop_revisit_uniqKey!!
+
+                    /*10-12-2021*/
+                    shopDurationData.updated_by = Pref.user_id
+                    try {
+                        shopDurationData.updated_on = it.updated_on!!
+                    }
+                    catch(ex:Exception){
+                        shopDurationData.updated_on = ""
+                    }
+
+                    if (!TextUtils.isEmpty(it.pros_id!!))
+                        shopDurationData.pros_id = it.pros_id!!
+                    else
+                        shopDurationData.pros_id = ""
+
+                    if (!TextUtils.isEmpty(it.agency_name!!))
+                        shopDurationData.agency_name =it.agency_name!!
+                    else
+                        shopDurationData.agency_name = ""
+
+                    if (!TextUtils.isEmpty(it.approximate_1st_billing_value))
+                        shopDurationData.approximate_1st_billing_value = it.approximate_1st_billing_value!!
+                    else
+                        shopDurationData.approximate_1st_billing_value = ""
 
                     shopDataList.add(shopDurationData)
 
@@ -3606,7 +3668,9 @@ class LocationFuzedService : Service(), GoogleApiClient.ConnectionCallbacks, Goo
         val bytes = ByteArrayOutputStream()
         bm!!.compress(Bitmap.CompressFormat.JPEG, 90, bytes)
         AppUtils.changeLanguage(this,"en")
-        var destination = File(Environment.getExternalStorageDirectory(), System.currentTimeMillis().toString() + ".jpg")
+        //var destination = File(Environment.getExternalStorageDirectory(), System.currentTimeMillis().toString() + ".jpg")
+        //27-09-2021
+        var destination = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), System.currentTimeMillis().toString() + ".jpg")
         changeLocale()
         val camera_image_path = destination?.absolutePath
         val fo: FileOutputStream
@@ -3681,15 +3745,20 @@ class LocationFuzedService : Service(), GoogleApiClient.ConnectionCallbacks, Goo
 
 
     fun sendGPSOffBroadcast(){
-        if(!gpsStatus) {
-            if (Pref.user_id.toString().length > 0) {
-                //var notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-                //notificationManager.cancel(monitorNotiID)
-                Pref.isLocFuzedBroadPlaying=true
-                val intent: Intent = Intent(this, MonitorBroadcast::class.java)
-                intent.putExtra("notiId", monitorNotiID)
-                intent.putExtra("fuzedLoc", "Fuzed Stop")
-                sendBroadcast(intent)
+        if(Pref.GPSAlertGlobal){
+            if(Pref.GPSAlert){
+                if(!gpsStatus) {
+                    if (Pref.user_id.toString().length > 0) {
+                        //var notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+                        //notificationManager.cancel(monitorNotiID)
+                        Pref.isLocFuzedBroadPlaying=true
+                        MonitorBroadcast.isSound=Pref.GPSAlertwithSound
+                        val intent: Intent = Intent(this, MonitorBroadcast::class.java)
+                        intent.putExtra("notiId", monitorNotiID)
+                        intent.putExtra("fuzedLoc", "Fuzed Stop")
+                        sendBroadcast(intent)
+                    }
+                }
             }
         }
     }
@@ -3697,6 +3766,9 @@ class LocationFuzedService : Service(), GoogleApiClient.ConnectionCallbacks, Goo
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun serviceStatusActionable() {
         try {
+            if(Pref.IsLeavePressed== true && Pref.IsLeaveGPSTrack == false){
+                return
+            }
             val serviceLauncher = Intent(this, LocationFuzedService::class.java)
             if (Pref.user_id != null && Pref.user_id!!.isNotEmpty()) {
 

@@ -7,4 +7,6 @@ object ShopVisitImageUploadRepoProvider {
     fun provideAddShopRepository(): ShopVisitImageUploadRepo {
         return ShopVisitImageUploadRepo(ShopVisitImageUploadApi.create())
     }
+
+
 }

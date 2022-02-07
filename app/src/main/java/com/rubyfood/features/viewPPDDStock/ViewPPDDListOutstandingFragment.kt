@@ -8,11 +8,11 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.support.annotation.RequiresApi
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.AppCompatTextView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -1616,8 +1616,12 @@ class ViewPPDDListOutstandingFragment : BaseFragment(), View.OnClickListener {
         val bytes = ByteArrayOutputStream()
         bm!!.compress(Bitmap.CompressFormat.JPEG, 90, bytes)
 
-        var destination = File(Environment.getExternalStorageDirectory(),
+      /*  var destination = File(Environment.getExternalStorageDirectory(),
+                System.currentTimeMillis().toString() + ".jpg")*/
+//27-09-2021
+        var destination = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
                 System.currentTimeMillis().toString() + ".jpg")
+
         val camera_image_path = destination?.absolutePath
         val fo: FileOutputStream
         try {

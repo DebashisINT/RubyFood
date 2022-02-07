@@ -10,19 +10,19 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.support.annotation.NonNull
-import android.support.annotation.RequiresApi
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.CoordinatorLayout
-import android.support.design.widget.TabLayout
-import android.support.design.widget.TextInputLayout
-import android.support.v4.content.ContextCompat
-import android.support.v4.widget.NestedScrollView
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.AppCompatImageView
-import android.support.v7.widget.AppCompatTextView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.NonNull
+import androidx.annotation.RequiresApi
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.textfield.TextInputLayout
+import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -854,7 +854,7 @@ class ReimbursementFragment : BaseFragment(), DateAdapter.onPetSelectedListener,
                     et_food_loc.setText(genericObj?.loc_name)
             }
 
-        }).show(fragmentManager, "")
+        }).show(fragmentManager!!, "")
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -976,7 +976,7 @@ class ReimbursementFragment : BaseFragment(), DateAdapter.onPetSelectedListener,
                         }
                     }
 
-                }).show(fragmentManager, "")
+                }).show(fragmentManager!!, "")
             }
         }
     }

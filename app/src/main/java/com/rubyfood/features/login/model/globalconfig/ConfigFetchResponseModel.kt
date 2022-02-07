@@ -58,4 +58,31 @@ class ConfigFetchResponseModel : BaseResponse() {
     var isDDFieldEnabled: Boolean? = null
     var isActivatePJPFeature: Boolean? = null
     var willReimbursementShow: Boolean? = null
+
+    var GPSAlert: Boolean? = null
+
+    //02-11-2021
+    var IsDuplicateShopContactnoAllowedOnline: Boolean? = null
+
+    //26-11-2021
+    var BatterySetting: Boolean? = null
+    var PowerSaverSetting: Boolean? = null
+    /*1-12-2021*/
+    var IsnewleadtypeforRuby: Boolean? = null
+
+    /*16-12-2021 return features*/
+    var IsReturnActivatedforPP: Boolean? = null
+    var IsReturnActivatedforDD: Boolean? = null
+    var IsReturnActivatedforSHOP: Boolean? = null
+
+
+    var FaceRegistrationFrontCamera: Boolean? = null
+    var MRPInOrder: Boolean? = null
+
+
+
+
+
+
+
 }

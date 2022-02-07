@@ -5,9 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -122,7 +122,7 @@ class MicroLearningListFragment : BaseFragment() {
 
         rv_micro_learning_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 /*if (dy > 0 || dy < 0 && fab.isShown)
                     fab.hide()*/
 
@@ -132,11 +132,11 @@ class MicroLearningListFragment : BaseFragment() {
                     fab.hide()
             }
 
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 /*if (newState == RecyclerView.SCROLL_STATE_IDLE)
                     fab.show()*/
 
-                super.onScrollStateChanged(recyclerView, newState)
+                super.onScrollStateChanged(recyclerView!!, newState)
             }
         })
 

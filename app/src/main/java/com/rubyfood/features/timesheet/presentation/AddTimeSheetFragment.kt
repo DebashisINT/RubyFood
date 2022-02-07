@@ -8,11 +8,11 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.support.annotation.RequiresApi
-import android.support.design.widget.TextInputLayout
-import android.support.v7.widget.AppCompatImageView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.RequiresApi
+import com.google.android.material.textfield.TextInputLayout
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
@@ -291,7 +291,7 @@ class AddTimeSheetFragment : BaseFragment(), DateAdapter.onPetSelectedListener, 
 
                         iv_client_cross_icon.visibility = View.VISIBLE
 
-                    }).show(fragmentManager, "")
+                    }).show(fragmentManager!!, "")
                 } else
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_available))
             }
@@ -305,7 +305,7 @@ class AddTimeSheetFragment : BaseFragment(), DateAdapter.onPetSelectedListener, 
 
                         iv_client_cross_icon.visibility = View.VISIBLE
 
-                    }).show(fragmentManager, "")
+                    }).show(fragmentManager!!, "")
                 } else
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_available))
             }
@@ -319,7 +319,7 @@ class AddTimeSheetFragment : BaseFragment(), DateAdapter.onPetSelectedListener, 
 
                         iv_project_cross_icon.visibility = View.VISIBLE
 
-                    }).show(fragmentManager, "")
+                    }).show(fragmentManager!!, "")
                 } else
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_available))
             }
@@ -333,7 +333,7 @@ class AddTimeSheetFragment : BaseFragment(), DateAdapter.onPetSelectedListener, 
 
                         iv_project_cross_icon.visibility = View.VISIBLE
 
-                    }).show(fragmentManager, "")
+                    }).show(fragmentManager!!, "")
                 } else
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_available))
             }
@@ -347,7 +347,7 @@ class AddTimeSheetFragment : BaseFragment(), DateAdapter.onPetSelectedListener, 
 
                         iv_project_cross_icon.visibility = View.VISIBLE
 
-                    }).show(fragmentManager, "")
+                    }).show(fragmentManager!!, "")
                 } else
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_available))
             }
@@ -359,7 +359,7 @@ class AddTimeSheetFragment : BaseFragment(), DateAdapter.onPetSelectedListener, 
                         tv_activity_dropdown.text = activity.activity_name
                         activityId = activity.activity_id!!
 
-                    }).show(fragmentManager, "")
+                    }).show(fragmentManager!!, "")
                 } else
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_available))
             }
@@ -373,7 +373,7 @@ class AddTimeSheetFragment : BaseFragment(), DateAdapter.onPetSelectedListener, 
 
                         iv_product_cross_icon.visibility = View.VISIBLE
 
-                    }).show(fragmentManager, "")
+                    }).show(fragmentManager!!, "")
                 } else
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_available))
             }
@@ -387,7 +387,7 @@ class AddTimeSheetFragment : BaseFragment(), DateAdapter.onPetSelectedListener, 
 
                         iv_product_cross_icon.visibility = View.VISIBLE
 
-                    }).show(fragmentManager, "")
+                    }).show(fragmentManager!!, "")
                 } else
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_available))
             }

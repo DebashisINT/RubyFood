@@ -1,9 +1,10 @@
 package com.rubyfood.app.domain
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.rubyfood.app.AppConstant
+import com.rubyfood.app.utils.AppUtils
 
 /**
  * Created by Saikat on 08-11-2018.
@@ -16,7 +17,7 @@ class ProductListEntity {
     var id: Int = 0
 
     @ColumnInfo(name = "date")
-    var date: String? = null
+    var date: String? = AppUtils.getCurrentDateForShopActi()
 
     @ColumnInfo(name = "product_name")
     var product_name: String? = null

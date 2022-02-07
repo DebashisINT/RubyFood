@@ -1,7 +1,7 @@
 package com.rubyfood.features.averageshop.presentation
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -12,12 +12,17 @@ import com.amulyakhare.textdrawable.util.ColorGenerator
 import com.rubyfood.R
 import com.rubyfood.app.AppDatabase
 import com.rubyfood.app.Pref
+import com.rubyfood.app.domain.AddShopDao
+import com.rubyfood.app.domain.OrderDetailsListEntity
 import com.rubyfood.app.domain.ShopActivityEntity
 import com.rubyfood.app.types.FragType
 import com.rubyfood.app.uiaction.IntentActionable
 import com.rubyfood.app.utils.AppUtils
+import com.rubyfood.app.utils.Toaster
+import com.rubyfood.features.commondialogsinglebtn.AddFeedbackSingleBtnDialog
 import com.rubyfood.features.dashboard.presentation.DashboardActivity
 import kotlinx.android.synthetic.main.inflate_avg_shop_item.view.*
+import kotlinx.android.synthetic.main.inflate_nearby_shops.view.*
 import kotlinx.android.synthetic.main.inflate_registered_shops.view.*
 import kotlinx.android.synthetic.main.inflate_registered_shops.view.add_order_ll
 import kotlinx.android.synthetic.main.inflate_registered_shops.view.add_quot_ll
@@ -52,6 +57,7 @@ import java.util.*
 class AverageShopListAdapter(context: Context, userLocationDataEntity: List<ShopActivityEntity>, val listener: AverageShopListClickListener) : RecyclerView.Adapter<AverageShopListAdapter.MyViewHolder>() {
     private val layoutInflater: LayoutInflater
     private var context: Context
+    private var shopType = ""
     var userLocationDataEntity: List<ShopActivityEntity> = userLocationDataEntity
 
     init {
@@ -254,8 +260,14 @@ class AverageShopListAdapter(context: Context, userLocationDataEntity: List<Shop
                 }
 
                 itemView.add_order_ll.setOnClickListener {
-                    (context as DashboardActivity).loadFragment(FragType.ViewAllOrderListFragment, true, shop!!)
+                    if(Pref.IsActivateNewOrderScreenwithSize){
+                        (context as DashboardActivity).loadFragment(FragType.NewOrderScrOrderDetailsFragment, true, shop!!.shop_id)
+                    }else{
+                        (context as DashboardActivity).loadFragment(FragType.ViewAllOrderListFragment, true, shop!!)
+                    }
+
                 }
+
 
                 itemView.ll_activity.setOnClickListener {
                     when (shop?.type) {
@@ -296,6 +308,81 @@ class AverageShopListAdapter(context: Context, userLocationDataEntity: List<Shop
                     (context as DashboardActivity).loadFragment(FragType.QuotationListFragment, true, shop?.shop_id!!)
                 }
 
+                /* 12-12-2021*/
+                itemView.lead_new_question_lll.setOnClickListener {
+                    listener.onQuestionnarieClick(userLocationDataEntity[adapterPosition].shopid!!)
+                }
+
+                if(Pref.IsnewleadtypeforRuby && shop?.type!!.equals("16")){
+                    itemView.lead_new_questions_view.visibility = View.VISIBLE
+                    itemView.lead_new_question_lll.visibility = View.VISIBLE
+                }
+                else{
+                    itemView.lead_new_questions_view.visibility = View.GONE
+                    itemView.lead_new_question_lll.visibility = View.GONE
+                }
+
+                /*21-12-2021*/
+                if(Pref.IsReturnEnableforParty) {
+                    if(Pref.IsReturnActivatedforPP){
+                        if(shop?.type!!.equals("2")){
+                            itemView.lead_return_lll.visibility = View.VISIBLE
+                            itemView.lead_return_vview.visibility =  View.VISIBLE
+                        }
+                        else{
+                            itemView.lead_return_lll.visibility = View.GONE
+                            itemView.lead_return_vview.visibility = View.GONE
+                        }
+                    }
+                    else if(Pref.IsReturnActivatedforDD){
+                        if(shop?.type!!.equals("4")){
+                            itemView.lead_return_lll.visibility = View.VISIBLE
+                            itemView.lead_return_vview.visibility =  View.VISIBLE
+                        }
+                        else{
+                            itemView.lead_return_lll.visibility = View.GONE
+                            itemView.lead_return_vview.visibility = View.GONE
+                        }
+                    }
+                    else if(Pref.IsReturnActivatedforSHOP){
+                        if(shop?.type!!.equals("1")){
+                            itemView.lead_return_lll.visibility = View.VISIBLE
+                            itemView.lead_return_vview.visibility =  View.VISIBLE
+                        }
+                        else{
+                            itemView.lead_return_lll.visibility = View.GONE
+                            itemView.lead_return_vview.visibility = View.GONE
+                        }
+                    }
+                }
+                else{
+                    itemView.lead_return_lll.visibility = View.GONE
+                    itemView.lead_return_vview.visibility = View.GONE
+                }
+                /*21-12-2021*/
+    /*            val OrderavalibleByShopId = AppDatabase.getDBInstance()?.orderDetailsListDao()?.getListAccordingToShopId(userLocationDataEntity[adapterPosition].shopid!!) as ArrayList<OrderDetailsListEntity>
+                if(OrderavalibleByShopId.size>0){
+                    itemView.lead_return_lll.setOnClickListener {
+                        listener.onReturnClick(adapterPosition)
+                    }
+                }
+                else{
+                    itemView.lead_return_lll.setOnClickListener {
+                        Toaster.msgShort(context,"No Minimum Order Avalible to return.")
+                    }
+                }*/
+                itemView.lead_return_lll.setOnClickListener {
+                    val OrderavalibleByShopId = AppDatabase.getDBInstance()?.orderDetailsListDao()?.getListAccordingToShopId(userLocationDataEntity[adapterPosition].shopid!!) as ArrayList<OrderDetailsListEntity>
+                    if(OrderavalibleByShopId.size>0){
+                        listener.onReturnClick(adapterPosition)
+                    }else{
+                        Toaster.msgShort(context,"No Minimum Order Avalible to return.")
+                    }
+
+                }
+
+
+
                 if (!TextUtils.isEmpty(userLocationDataEntity[adapterPosition].device_model))
                     itemView.tv_device_model.text = userLocationDataEntity[adapterPosition].device_model
 
@@ -314,7 +401,6 @@ class AverageShopListAdapter(context: Context, userLocationDataEntity: List<Shop
 
 
                 //////////////////
-
 
                 var currentViewSt=AppDatabase.getDBInstance()?.shopTypeStockViewStatusDao()?.getShopCurrentStockViewStatus(shop?.type!!)
                 var competitorViewSt=AppDatabase.getDBInstance()?.shopTypeStockViewStatusDao()?.getShopCompetitorStockViewStatus(shop?.type!!)
@@ -344,7 +430,7 @@ class AverageShopListAdapter(context: Context, userLocationDataEntity: List<Shop
                         }
                     }
                 }
-///////////////////////////////////////////////
+
 
 
                 itemView.ll_current_stock.setOnClickListener{
@@ -353,6 +439,13 @@ class AverageShopListAdapter(context: Context, userLocationDataEntity: List<Shop
                 itemView.ll_competetor_stock.setOnClickListener{
                     (context as DashboardActivity).loadFragment(FragType.CompetetorStockFragment, true, userLocationDataEntity[adapterPosition].shopid!!)
                 }
+
+
+                var shopNameByID=""
+                var type_id=AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(userLocationDataEntity[adapterPosition].shopid).type
+                var type_name=AppDatabase.getDBInstance()!!.shopTypeDao().getShopNameById(type_id)
+
+                itemView.myyshop_Type_TV.text = type_name
 
             } catch (e: Exception) {
                 e.printStackTrace()

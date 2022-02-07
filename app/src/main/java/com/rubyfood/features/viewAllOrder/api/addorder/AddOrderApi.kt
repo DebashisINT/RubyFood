@@ -2,9 +2,11 @@ package com.rubyfood.features.viewAllOrder.api.addorder
 
 import com.rubyfood.app.NetworkConstant
 import com.rubyfood.base.BaseResponse
+import com.rubyfood.features.returnsOrder.ReturnRequest
 import com.rubyfood.features.timesheet.api.TimeSheetApi
 import com.rubyfood.features.timesheet.model.EditDeleteTimesheetResposneModel
 import com.rubyfood.features.viewAllOrder.model.AddOrderInputParamsModel
+import com.rubyfood.features.viewAllOrder.model.NewOrderSaveApiModel
 import io.reactivex.Observable
 import okhttp3.MultipartBody
 import retrofit2.Retrofit
@@ -24,6 +26,11 @@ interface AddOrderApi {
             Observable<BaseResponse>
 
 
+    @POST("RubyFoodLead/OrderReturnSave")
+    fun addReturn(@Body ReturnRequest: ReturnRequest?): Observable<BaseResponse>
+
+
+
     @POST("Order/AddOrder")
     fun addNewOrder(@Body addOrder: AddOrderInputParamsModel): Observable<BaseResponse>
 
@@ -31,6 +38,10 @@ interface AddOrderApi {
     @POST("FileUpload/OrderSignature")
     fun addNewOrderWithImage(@Query("data") addOrder: String, @Part logo_img_data: MultipartBody.Part?): Observable<BaseResponse>
 
+
+
+    @POST("OrderWithProductAttribute/OrderWithProductAttribute")
+    fun addOrderNewOrderScr(@Body addOrder: NewOrderSaveApiModel): Observable<BaseResponse>
 
     /**
      * Companion object to create the GithubApiService

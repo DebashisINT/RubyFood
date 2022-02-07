@@ -2,8 +2,8 @@ package com.rubyfood.features.member.presentation
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import com.elvishew.xlog.XLog
 import com.rubyfood.R
+import com.rubyfood.app.AppDatabase
 import com.rubyfood.app.NetworkConstant
 import com.rubyfood.app.Pref
 import com.rubyfood.app.SearchListener
@@ -218,7 +219,7 @@ class MemberListFragment : BaseFragment() {
 
             override fun onShopClick(team: TeamListDataModel) {
                 //(mContext as DashboardActivity).loadFragment(FragType.MemberShopListFragment, true, member_list[adapterPosition].user_id)
-                CommonDialog.getInstance(AppUtils.hiFirstNameText(), "What you like to do?", getString(R.string.total_shops), getString(R.string.new_visit_shop), false, false, true, object : CommonDialogClickListener {
+                CommonDialog.getInstance(AppUtils.hiFirstNameText()+"!", "What you like to do?", getString(R.string.total_shops), getString(R.string.new_visit_shop), false, false, true, object : CommonDialogClickListener {
                     override fun onLeftClick() {
                         checkTeamHierarchyList(team.user_name)
                         if (Pref.isShowPartyInAreaWiseTeam) {
@@ -240,7 +241,6 @@ class MemberListFragment : BaseFragment() {
 
                 }).show((mContext as DashboardActivity).supportFragmentManager, "")
             }
-
             override fun onTeamClick(team: TeamListDataModel) {
                 //(mContext as DashboardActivity).isAddBackStack = true
 
@@ -256,6 +256,10 @@ class MemberListFragment : BaseFragment() {
                     loadFragment(FragType.MemberListFragment, true, team.user_id)
                 }
             }
+            override fun onLeaveClick(team: TeamListDataModel) {
+                (mContext as DashboardActivity).loadFragment(FragType.LeaveHome, true, team.user_id)
+            }
+
         })
         rv_member_list.adapter = adapter
     }
@@ -293,4 +297,9 @@ class MemberListFragment : BaseFragment() {
             setHierarchyData()
         }
     }
+
+    fun updateItem() {
+        getTeamList()
+    }
+
 }

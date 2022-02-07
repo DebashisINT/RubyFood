@@ -1,8 +1,8 @@
 package com.rubyfood.app.domain
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.rubyfood.app.AppConstant
 
 /**
@@ -53,4 +53,17 @@ class OrderProductListEntity {
 
     @ColumnInfo(name = "shop_id")
     var shop_id: String? = null
+
+    /*28-12-2021*/
+    @ColumnInfo(name = "scheme_qty")
+    var scheme_qty: String? = null
+
+    @ColumnInfo(name = "scheme_rate")
+    var scheme_rate: String? = null
+
+    @ColumnInfo(name = "total_scheme_price")
+    var total_scheme_price: String? = null
+
+    @ColumnInfo(name = "MRP")
+    var MRP: String? = null
 }

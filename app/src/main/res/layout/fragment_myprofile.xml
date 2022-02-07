@@ -3,12 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:wheel="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/color_silver">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layerType="software">
+        android:layerType="software"
+        android:background="@color/color_silver">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_picture_IV"
@@ -85,7 +87,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:src="@drawable/ic_add_shop_address_icon" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/address_TL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -106,7 +108,7 @@
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
 
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
             </RelativeLayout>
 
@@ -127,7 +129,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:src="@drawable/ic_add_shop_pin_icon" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/pincode_TL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -150,9 +152,9 @@
                         android:textSize="@dimen/_13sdp"
                         android:background="@android:color/transparent"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_apply"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -189,7 +191,7 @@
                     android:focusable="false"
                     android:src="@drawable/ic_city_icon" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/city_TL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -215,7 +217,7 @@
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
 
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -246,7 +248,7 @@
                     android:focusable="false"
                     android:src="@drawable/ic_state_icon" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/state_TL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -271,7 +273,7 @@
                         android:singleLine="true"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -302,7 +304,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:src="@drawable/ic_country_icon" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/country_TL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -322,7 +324,7 @@
                         android:singleLine="true"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
             </RelativeLayout>
 
@@ -335,7 +337,7 @@
                 android:layout_marginLeft="@dimen/_60sdp"
                 android:layout_marginRight="@dimen/_60sdp"
                 android:layout_marginTop="@dimen/_20sdp"
-                android:background="@drawable/selector_blue_botton_bg"
+                android:background="@drawable/shape_custom_border_blue_button"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"

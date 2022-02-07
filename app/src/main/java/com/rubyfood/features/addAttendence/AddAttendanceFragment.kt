@@ -2,52 +2,73 @@ package com.rubyfood.features.addAttendence
 
 import android.Manifest
 import android.app.Activity
+import android.app.ActivityManager
+import android.app.Dialog
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
+import android.content.Intent
+import android.graphics.*
+import android.graphics.drawable.ColorDrawable
+import android.location.Location
+import android.os.*
 import android.speech.tts.TextToSpeech
-import android.support.design.widget.FloatingActionButton
-import android.support.v4.app.Fragment
-import android.support.v7.widget.CardView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import android.text.Editable
 import android.text.TextUtils
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.AuthFailureError
+import com.android.volley.Response
+import com.android.volley.VolleyError
+import com.android.volley.toolbox.JsonObjectRequest
 import com.borax12.materialdaterangepicker.date.DatePickerDialog
-import com.elvishew.xlog.XLog
-import com.rubyfood.R
+import com.rubyfood.*
+import com.rubyfood.Customdialog.CustomDialog
+import com.rubyfood.Customdialog.OnDialogCustomClickListener
 import com.rubyfood.app.AppDatabase
 import com.rubyfood.app.NetworkConstant
 import com.rubyfood.app.Pref
 import com.rubyfood.app.Pref.willShowUpdateDayPlan
 import com.rubyfood.app.domain.*
 import com.rubyfood.app.types.FragType
-import com.rubyfood.app.utils.AppUtils
-import com.rubyfood.app.utils.FTStorageUtils
-import com.rubyfood.app.utils.NotificationUtils
-import com.rubyfood.app.utils.PermissionUtils
+import com.rubyfood.app.utils.*
+import com.rubyfood.app.utils.AppUtils.Companion.hiFirstNameText
 import com.rubyfood.base.BaseResponse
 import com.rubyfood.base.presentation.BaseActivity
+import com.rubyfood.faceRec.DetectorActivity
+import com.rubyfood.faceRec.FaceStartActivity
+import com.rubyfood.faceRec.FaceStartActivity.detector
+import com.rubyfood.faceRec.tflite.SimilarityClassifier.Recognition
+import com.rubyfood.faceRec.tflite.TFLiteObjectDetectionAPIModel
 import com.rubyfood.features.addAttendence.api.WorkTypeListRepoProvider
 import com.rubyfood.features.addAttendence.api.addattendenceapi.AddAttendenceRepoProvider
 import com.rubyfood.features.addAttendence.api.leavetytpeapi.LeaveTypeRepoProvider
 import com.rubyfood.features.addAttendence.api.routeapi.RouteRepoProvider
 import com.rubyfood.features.addAttendence.model.*
+import com.rubyfood.features.commondialogsinglebtn.CommonDialogSingleBtn
+import com.rubyfood.features.commondialogsinglebtn.OnDialogClickListener
 import com.rubyfood.features.dashboard.presentation.DashboardActivity
+import com.rubyfood.features.geofence.GeofenceService
+import com.rubyfood.features.location.LocationFuzedService
 import com.rubyfood.features.location.LocationWizard
+import com.rubyfood.features.location.SingleShotLocationProvider
 import com.rubyfood.features.login.UserLoginDataEntity
 import com.rubyfood.features.login.model.LoginStateListDataModel
+import com.rubyfood.features.photoReg.api.GetUserListPhotoRegProvider
+import com.rubyfood.features.photoReg.model.UserFacePicUrlResponse
 import com.rubyfood.widgets.AppCustomEditText
 import com.rubyfood.widgets.AppCustomTextView
+import com.elvishew.xlog.XLog
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -55,12 +76,26 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.face.Face
+import com.google.mlkit.vision.face.FaceDetection
+import com.google.mlkit.vision.face.FaceDetector
+import com.google.mlkit.vision.face.FaceDetectorOptions
 import com.themechangeapp.pickimage.PermissionHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.doAsyncResult
 import org.jetbrains.anko.uiThread
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.File
+import java.io.IOException
+import java.io.InputStream
+import java.net.URL
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -286,6 +321,39 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
 
         //setLeaveTypeAdapter(AppDatabase.getDBInstance()?.leaveTypeDao()?.getAll())
         //setRouteAdapter()
+
+        if(Pref.IsShowLeaveInAttendance){
+            ll_on_leave.visibility=View.VISIBLE
+        }else{
+            ll_on_leave.visibility=View.GONE
+        }
+
+
+        faceDetectorSetUp()
+
+        if(Pref.BatterySettingGlobal && Pref.BatterySetting ){
+            if(AppUtils.getBatteryPercentage(mContext).toInt()<=15){
+                CustomDialog.getInstance(hiFirstNameText(),getString(R.string.battery_setting_message),"OK","", "0",object : OnDialogCustomClickListener {
+                    override fun onOkClick() {
+                        //Toaster.msgShort(mContext, "OK")
+                    }
+                    override fun onYesClick() {
+
+                    }
+                    override fun onNoClick() {
+                    }
+                }).show((mContext as DashboardActivity).supportFragmentManager, "CustomDialog")
+            }
+        }
+
+
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+       // faceDetectorSetUp()
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
@@ -940,11 +1008,454 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
         }*/
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 171) {
+            if (resultCode == Activity.RESULT_OK) {
+                CustomStatic.FaceDetectionAccuracyLower=Pref.FaceDetectionAccuracyLower
+                if (data != null) {
+                    //var faceMatchStatus:Boolean = data.getBooleanExtra("value",false)
+                    var faceMatchStatus:Boolean = data.getBooleanExtra("valueD",false)
+                    if(faceMatchStatus){
+                        //visibilityCheck()
+                        (mContext as DashboardActivity).showSnackMessage(getString(R.string.face_match_success))
+
+
+                        if(AppUtils.getSharedPreferencesIsFaceDetectionWithCaptcha(mContext)){
+                            captchaCheck()
+                        }else{
+                            //31-08-2021
+                            BaseActivity.isApiInitiated=true
+                            prepareAddAttendanceInputParams()
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+
+    fun captchaCheck() {
+        val simpleDialogg = Dialog(mContext)
+        simpleDialogg.setCancelable(false)
+        simpleDialogg.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        simpleDialogg.setContentView(R.layout.attendance_captcha_check)
+        val tv_captcha_no = simpleDialogg.findViewById(R.id.tv_captcha_no) as AppCustomTextView
+        tv_captcha_no.text = getRandomNumberString().toString()
+
+        val tv_submit_captcha = simpleDialogg.findViewById(R.id.tv_submit_captcha) as AppCustomTextView
+
+        val e1 = simpleDialogg.findViewById(R.id.et_captcha1) as EditText
+        val e2 = simpleDialogg.findViewById(R.id.et_captcha2) as EditText
+        val e3 = simpleDialogg.findViewById(R.id.et_captcha3) as EditText
+        val e4 = simpleDialogg.findViewById(R.id.et_captcha4) as EditText
+
+        tv_submit_captcha.isEnabled=false
+
+        e1.addTextChangedListener(object : TextWatcher {
+
+            override fun afterTextChanged(p0: Editable?) {
+                if (!TextUtils.isEmpty(e1.text.toString().trim())) {
+                    e2.requestFocus()
+                } else {
+
+                }
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+        })
+
+        e2.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                if (!TextUtils.isEmpty(e2.text.toString().trim())) {
+                    e3.requestFocus()
+                } else {
+
+                }
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+        })
+
+        e3.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                if (!TextUtils.isEmpty(e3.text.toString().trim())) {
+                    e4.requestFocus()
+                } else {
+
+                }
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+        })
+
+        e4.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                if (!TextUtils.isEmpty(e4.text.toString().trim())) {
+                    tv_submit_captcha.isEnabled=true
+                    e4.clearFocus()
+                } else {
+
+                }
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+        })
+
+        tv_submit_captcha.setOnClickListener({ view ->
+
+            if (AppUtils.isOnline(mContext)) {
+                if(tv_captcha_no.text.toString().equals(e1.text.toString()+e2.text.toString()+e3.text.toString()+e4.text.toString())){
+                    //Toast.makeText(mContext,"",Toast.LENGTH_SHORT).show()
+                    simpleDialogg.cancel()
+                    prepareAddAttendanceInputParams()
+                }else{
+                    //Toast.makeText(mContext,"Invalid  captcha",Toast.LENGTH_SHORT).show()
+                    (mContext as DashboardActivity).showSnackMessage(getString(R.string.not_match))
+                }
+            } else {
+                (mContext as DashboardActivity).showSnackMessage(getString(R.string.not_match))
+            }
+
+
+        })
+
+        simpleDialogg.show()
+
+    }
+
+    fun getRandomNumberString(): String? {
+        // It will generate 6 digit random Number.
+        // from 0 to 999999
+        val rnd = Random()
+        val number = rnd.nextInt(9999)
+
+        // this will convert any number sequence into 6 character.
+        return String.format("%04d", number)
+    }
+
+    fun getLocforStart() {
+            if (AppUtils.isOnline(mContext)) {
+                if (AppUtils.mLocation != null) {
+                    if (AppUtils.mLocation!!.accuracy <= Pref.gpsAccuracy.toInt()) {
+                        if (AppUtils.mLocation!!.accuracy <= Pref.shopLocAccuracy.toFloat()) {
+                            getNearyShopListDD(AppUtils.mLocation!!)
+                        } else {
+                            //getDDList(AppUtils.mLocation!!)
+                            singleLocationDD()
+                        }
+                    } else {
+                        XLog.d("=====Inaccurate current location (Local Shop List)=====")
+                        singleLocationDD()
+                    }
+                } else {
+                    XLog.d("=====null location (Local Shop List)======")
+                    singleLocationDD()
+                }
+            } else
+                (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
+
+
+    }
+
+    private fun singleLocationDD() {
+        progress_wheel.spin()
+        var isGetLocation = -1
+        SingleShotLocationProvider.requestSingleUpdate(mContext,
+                object : SingleShotLocationProvider.LocationCallback {
+                    override fun onStatusChanged(status: String) {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+
+                    override fun onProviderEnabled(status: String) {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+
+                    override fun onProviderDisabled(status: String) {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+
+                    override fun onNewLocationAvailable(location: Location) {
+                        if (isGetLocation == -1) {
+                            isGetLocation = 0
+                            if (location.accuracy > Pref.gpsAccuracy.toInt()) {
+                                (mContext as DashboardActivity).showSnackMessage("Unable to fetch accurate GPS data. Please try again.")
+                                progress_wheel.stopSpinning()
+                            } else
+                                getNearyShopListDD(location)
+                        }
+                    }
+
+                })
+
+        val t = Timer()
+        t.schedule(object : TimerTask() {
+            override fun run() {
+                try {
+                    if (isGetLocation == -1) {
+                        isGetLocation = 1
+                        progress_wheel.stopSpinning()
+                        (mContext as DashboardActivity).showSnackMessage("GPS data to show nearby party is inaccurate. Please stop " +
+                                "internet, stop GPS/Location service, and then restart internet and GPS services to get nearby party list.")
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }, 15000)
+    }
+
+    fun getNearyShopListDD(location: Location) {
+        var nearestDist=5000
+        //var nearBy: Double = Pref.shopLocAccuracy.toDouble()
+        //var nearBy: Double = 4000.00
+        var nearBy: Double = 500.0
+        try {
+             nearBy = Pref.DistributorGPSAccuracy.toDouble()
+        }catch (e:java.lang.Exception){
+             nearBy = 500.0
+            Pref.DistributorGPSAccuracy="500"
+        }
+
+        var shop_id: String = ""
+        var finalNearByShop: AddShopDBModelEntity = AddShopDBModelEntity()
+        var finalNearByDD: AssignToDDEntity = AssignToDDEntity()
+
+        val allShopList = AppDatabase.getDBInstance()!!.addShopEntryDao().all
+        val newList = java.util.ArrayList<AddShopDBModelEntity>()
+        for (i in allShopList.indices) {
+            newList.add(allShopList[i])
+        }
+
+        if (newList != null && newList.size > 0) {
+            for (i in 0 until newList.size) {
+                val shopLat: Double = newList[i].shopLat
+                val shopLong: Double = newList[i].shopLong
+                if (shopLat != null && shopLong != null) {
+                    val shopLocation = Location("")
+                    shopLocation.latitude = shopLat
+                    shopLocation.longitude = shopLong
+                    //val isShopNearby = FTStorageUtils.checkShopPositionWithinRadious(location, shopLocation, LocationWizard.NEARBY_RADIUS)
+                    val isShopNearby = FTStorageUtils.checkShopPositionWithinRadious(location, shopLocation, Pref.DistributorGPSAccuracy.toInt())
+                    var dist=location.distanceTo(shopLocation).toInt()  //21-10-2021
+                    if (isShopNearby) {
+                        if ((location.distanceTo(shopLocation)) < nearBy) {
+                            nearBy = location.distanceTo(shopLocation).toDouble()
+                            finalNearByShop = newList[i]
+                        }
+                        //startDay(newList[i], location)
+                        //break
+                    }else{
+                        if(dist<nearestDist){
+                            nearestDist=dist
+                        }
+                    }
+                }
+            }
+
+        } else {
+            //(mContext as DashboardActivity).showSnackMessage("No Shop Found")
+        }
+
+        val allDDList = AppDatabase.getDBInstance()!!.ddListDao().getAll()
+        val newDDList = java.util.ArrayList<AssignToDDEntity>()
+        for (i in allDDList.indices) {
+            newDDList.add(allDDList[i])
+        }
+
+        if (newDDList != null && newDDList.size > 0) {
+            for (i in 0 until newDDList.size) {
+                val ddLat: Double = newDDList[i].dd_latitude!!.toDouble()
+                val ddLong: Double = newDDList[i].dd_longitude!!.toDouble()
+                if (ddLat != null && ddLong != null) {
+                    val ddLocation = Location("")
+                    ddLocation.latitude = ddLat
+                    ddLocation.longitude = ddLong
+                    //val isShopNearby = FTStorageUtils.checkShopPositionWithinRadious(location, ddLocation, LocationWizard.NEARBY_RADIUS)
+                    val isShopNearby = FTStorageUtils.checkShopPositionWithinRadious(location, ddLocation, Pref.DistributorGPSAccuracy.toInt())
+                    var dist=location.distanceTo(ddLocation).toInt()  //21-10-2021
+                    if (isShopNearby) {
+                        if ((location.distanceTo(ddLocation)) < nearBy) {
+                            nearBy = location.distanceTo(ddLocation).toDouble()
+                            finalNearByDD = newDDList[i]
+                        }
+                        //startDay(newList[i], location)
+                        //break
+                    }else{
+                        if(dist<nearestDist){
+                            nearestDist=dist
+                        }
+                    }
+                }
+            }
+
+        } else {
+            //(mContext as DashboardActivity).showSnackMessage("No Shop Found")
+        }
+        //visibilityCheck()
+        if (finalNearByDD.dd_id != null && finalNearByDD.dd_id!!.length > 1) {
+            //attendance given
+            visibilityCheck()
+            //callAddAttendanceApi(addAttendenceModel)
+        } else if (finalNearByShop.shop_id != null && finalNearByShop.shop_id!!.length > 1) {
+            //attendance given
+            visibilityCheck()
+            // callAddAttendanceApi(addAttendenceModel)
+        } else {
+            progress_wheel.stopSpinning()
+            val simpleDialog = Dialog(mContext)
+            simpleDialog.setCancelable(false)
+            simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            simpleDialog.setContentView(R.layout.dialog_message_broad)
+            val dialogHeader = simpleDialog.findViewById(R.id.dialog_message_header_TV) as AppCustomTextView
+            val dialog_yes_no_headerTV = simpleDialog.findViewById(R.id.dialog_message_headerTV) as AppCustomTextView
+            //dialog_yes_no_headerTV.text = "Hi "+Pref.user_name?.substring(0, Pref.user_name?.indexOf(" ")!!)+"!"
+            dialog_yes_no_headerTV.text = "Hi "+Pref.user_name!!+"!"
+            if(nearestDist==5000){
+                dialogHeader.text = "You must be either in Distributor or Outlet point to mark your attendance"+
+                        ". Current location has been detected "+nearestDist.toString() +" mtr or more distance from the Distributor or Retail point from your handset GPS."
+            }else{
+                dialogHeader.text = "You must be either in Distributor or Outlet point to mark your attendance"+
+                        ". Current location has been detected "+nearestDist.toString() +" mtr distance from the Distributor or Retail point from your handset GPS."
+            }
+
+            val dialogYes = simpleDialog.findViewById(R.id.tv_message_ok) as AppCustomTextView
+            dialogYes.setOnClickListener({ view ->
+                simpleDialog.cancel()
+            })
+            simpleDialog.show()
+            //(mContext as DashboardActivity).showSnackMessage("You must be either in Distributor or Outlet point to mark your attendance"+
+            //". Current location has been detected "+nearestDist.toString() +" mtr distance from the Distributor or Retail point from your handset GPS." )
+        }
+
+    }
+
+    /*fun getNearyShopListDD(location: Location) {
+        var nearBy: Double = Pref.shopLocAccuracy.toDouble()
+        var shop_id: String = ""
+        var finalNearByShop: AddShopDBModelEntity = AddShopDBModelEntity()
+        var finalNearByDD: AssignToDDEntity = AssignToDDEntity()
+
+        val allShopList = AppDatabase.getDBInstance()!!.addShopEntryDao().all
+        val newList = java.util.ArrayList<AddShopDBModelEntity>()
+        for (i in allShopList.indices) {
+            newList.add(allShopList[i])
+        }
+
+        if (newList != null && newList.size > 0) {
+            for (i in 0 until newList.size) {
+                val shopLat: Double = newList[i].shopLat
+                val shopLong: Double = newList[i].shopLong
+                if (shopLat != null && shopLong != null) {
+                    val shopLocation = Location("")
+                    shopLocation.latitude = shopLat
+                    shopLocation.longitude = shopLong
+                    val isShopNearby = FTStorageUtils.checkShopPositionWithinRadious(location, shopLocation, LocationWizard.NEARBY_RADIUS)
+                    if (isShopNearby) {
+                        if ((location.distanceTo(shopLocation)) < nearBy) {
+                            nearBy = location.distanceTo(shopLocation).toDouble()
+                            finalNearByShop = newList[i]
+                        }
+                        //startDay(newList[i], location)
+                        //break
+                    }
+                }
+            }
+
+        } else {
+            //(mContext as DashboardActivity).showSnackMessage("No Shop Found")
+        }
+
+        val allDDList = AppDatabase.getDBInstance()!!.ddListDao().getAll()
+        val newDDList = java.util.ArrayList<AssignToDDEntity>()
+        for (i in allDDList.indices) {
+            newDDList.add(allDDList[i])
+        }
+
+        if (newDDList != null && newDDList.size > 0) {
+            for (i in 0 until newDDList.size) {
+                val ddLat: Double = newDDList[i].dd_latitude!!.toDouble()
+                val ddLong: Double = newDDList[i].dd_longitude!!.toDouble()
+                if (ddLat != null && ddLong != null) {
+                    val ddLocation = Location("")
+                    ddLocation.latitude = ddLat
+                    ddLocation.longitude = ddLong
+                    val isShopNearby = FTStorageUtils.checkShopPositionWithinRadious(location, ddLocation, LocationWizard.NEARBY_RADIUS)
+                    if (isShopNearby) {
+                        if ((location.distanceTo(ddLocation)) < nearBy) {
+                            nearBy = location.distanceTo(ddLocation).toDouble()
+                            finalNearByDD = newDDList[i]
+                        }
+                        //startDay(newList[i], location)
+                        //break
+                    }
+                }
+            }
+
+        } else {
+            //(mContext as DashboardActivity).showSnackMessage("No Shop Found")
+        }
+
+        if (finalNearByDD.dd_id != null && finalNearByDD.dd_id!!.length > 1) {
+            //attendance given
+            visibilityCheck()
+            //callAddAttendanceApi(addAttendenceModel)
+        } else if (finalNearByShop.shop_id != null && finalNearByShop.shop_id!!.length > 1) {
+            //attendance given
+            visibilityCheck()
+           // callAddAttendanceApi(addAttendenceModel)
+        } else {
+            progress_wheel.stopSpinning()
+            (mContext as DashboardActivity).showSnackMessage("You must be either in Distributor or Outlet point to mark your attendance")
+        }
+
+    }*/
+
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.tv_attendance_submit -> {
                 AppUtils.hideSoftKeyboard(mContext as DashboardActivity)
-                visibilityCheck()
+                if(Pref.IsShowDayStart){
+                    getLocforStart()
+                }
+                else{
+                    visibilityCheck()
+                }
+
+
+
+          /*      if(AppUtils.getSharedPreferencesIsFaceDetection(mContext) ||true){
+                    getPicUrl()
+                }else{
+                    //visibilityCheck()
+                }
+*/
+
+//                startActivity(Intent(mContext,FaceStartActivity::class.java))
+                //startActivity(Intent(mContext,DetectorActivity::class.java))
+
+
+
             }
 
             R.id.ll_on_leave -> {
@@ -1065,6 +1576,7 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
         }
     }
 
+
     private fun showAreaDialog(isFromLoc: Boolean) {
         LocationListDialog.newInstance(loc_list) {
             if (isFromLoc) {
@@ -1086,7 +1598,7 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
                     callDistanceApi()
             }
 
-        }.show(fragmentManager, "")
+        }.show(fragmentManager!!, "")
     }
 
     private fun callDistanceApi() {
@@ -1336,10 +1848,23 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
             }*/
 
             if (!Pref.willLeaveApprovalEnable)
-                prepareAddAttendanceInputParams()
+                if(AppUtils.getSharedPreferencesIsFaceDetection(mContext) && isOnLeave!=true){
+                    progress_wheel.spin()
+                    getPicUrl()
+                }else{
+                    prepareAddAttendanceInputParams()
+                }
+
+                //prepareAddAttendanceInputParams()
             else {
                 if (!isOnLeave)
-                    prepareAddAttendanceInputParams()
+                    if(AppUtils.getSharedPreferencesIsFaceDetection(mContext)){
+                        progress_wheel.spin()
+                        getPicUrl()
+                    }else{
+                        prepareAddAttendanceInputParams()
+                    }
+                    //prepareAddAttendanceInputParams()
                 else
                     callLeaveApprovalApi()
         }
@@ -1496,12 +2021,13 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
 
                                 Pref.prevOrderCollectionCheckTimeStamp = 0L
 
-                                (mContext as DashboardActivity).showSnackMessage(response.message!!)
-                                voiceAttendanceMsg("Hi, your leave applied successfully.")
+                                //(mContext as DashboardActivity).showSnackMessage(response.message!!)
+                                openPopupshowMessage(response.message!!)
+                                //voiceAttendanceMsg("Hi, your leave applied successfully.")
 
-                                Handler().postDelayed(Runnable {
+                            /*    Handler().postDelayed(Runnable {
                                     (mContext as DashboardActivity).onBackPressed()
-                                }, 500)
+                                }, 500)*/
 
                             } else {
                                 (mContext as DashboardActivity).showSnackMessage(response.message!!)
@@ -1515,6 +2041,135 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
                         })
         )
     }
+
+    private fun openPopupshowMessage(message:String) {
+        val simpleDialog = Dialog(mContext)
+        simpleDialog.setCancelable(false)
+        simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        simpleDialog.setContentView(R.layout.dialog_message)
+        val dialogHeader = simpleDialog.findViewById(R.id.dialog_message_headerTV) as AppCustomTextView
+        val dialogBody = simpleDialog.findViewById(R.id.dialog_message_header_TV) as AppCustomTextView
+        val obBtn = simpleDialog.findViewById(R.id.tv_message_ok) as AppCustomTextView
+        dialogHeader.text="Hi "+Pref.user_name+"!"
+        dialogBody.text = message
+        obBtn.setOnClickListener({ view ->
+            simpleDialog.cancel()
+            voiceAttendanceMsg("Hi, your leave applied successfully.")
+            //(mContext as DashboardActivity).loadFragment(FragType.LeaveListFragment, false, "")
+            Handler().postDelayed(Runnable {
+                if(Pref.Leaveapprovalfromsupervisor){
+                    getSupervisorIDInfo()
+                }else{
+                    (mContext as DashboardActivity).onBackPressed()
+                }
+            }, 800)
+
+        })
+        simpleDialog.show()
+
+    }
+
+    private fun getSupervisorIDInfo(){
+        try{
+            val repository = AddAttendenceRepoProvider.addAttendenceRepo()
+            BaseActivity.compositeDisposable.add(
+                    repository.getReportToUserID(Pref.user_id.toString(),Pref.session_token.toString())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe({ result ->
+                                val response = result as GetReportToResponse
+
+                                if (response.status == NetworkConstant.SUCCESS) {
+                                    getSupervisorFCMInfo(response.report_to_user_id!!)
+                                }
+
+                            }, { error ->
+                                XLog.d("Apply Leave Response ERROR=========> " + error.message)
+                                BaseActivity.isApiInitiated = false
+                                progress_wheel.stopSpinning()
+                                (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                            })
+            )
+        }catch (ex:Exception){
+            ex.printStackTrace()
+        }
+    }
+    private fun getSupervisorFCMInfo(usrID:String){
+        try{
+            val repository = AddAttendenceRepoProvider.addAttendenceRepo()
+            BaseActivity.compositeDisposable.add(
+                    repository.getReportToFCMInfo(usrID,Pref.session_token.toString())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe({ result ->
+                                val response = result as GetReportToFCMResponse
+
+                                if (response.status == NetworkConstant.SUCCESS) {
+                                    sendFCMNotiSupervisor(response.device_token!!)
+                                }
+
+                            }, { error ->
+                                XLog.d("Apply Leave Response ERROR=========> " + error.message)
+                                BaseActivity.isApiInitiated = false
+                                progress_wheel.stopSpinning()
+                                (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                            })
+            )
+        }catch (ex:Exception){
+            ex.printStackTrace()
+        }
+
+    }
+
+    private fun sendFCMNotiSupervisor(superVisor_fcmToken:String){
+        if (superVisor_fcmToken != "") {
+            try {
+                val jsonObject = JSONObject()
+                val notificationBody = JSONObject()
+                notificationBody.put("body","Leave applied by : "+Pref.user_name!!)
+                notificationBody.put("flag", "flag")
+                notificationBody.put("applied_user_id",Pref.user_id)
+                notificationBody.put("leave_from_date",startDate)
+                notificationBody.put("leave_to_date",endDate)
+                notificationBody.put("leave_reason",et_leave_reason_text.text.toString().trim())
+                notificationBody.put("leave_type",tv_leave_type)
+                notificationBody.put("leave_type_id",leaveId)
+                jsonObject.put("data", notificationBody)
+                val jsonArray = JSONArray()
+                jsonArray.put(0,superVisor_fcmToken)
+                jsonObject.put("registration_ids", jsonArray)
+                sendCustomNotification(jsonObject)
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+        }
+
+    }
+
+    fun sendCustomNotification(notification: JSONObject) {
+        val jsonObjectRequest: JsonObjectRequest = object : JsonObjectRequest("https://fcm.googleapis.com/fcm/send", notification,
+                object : Response.Listener<JSONObject?> {
+                    override fun onResponse(response: JSONObject?) {
+                        (mContext as DashboardActivity).onBackPressed()
+                    }
+                },
+                object : Response.ErrorListener {
+                    override fun onErrorResponse(error: VolleyError?) {
+
+                    }
+                }) {
+            @Throws(AuthFailureError::class)
+            override fun getHeaders(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["Authorization"] = "key=AAAAIoWfCpc:APA91bEMOPyfjsyziPC1WYJiPHjzdmTQJmAOKP0fM24iXI9BgrmyhH4uLY6Jd-6Lpjp8mvSdpSp-zm20ApTOYQ3Ean4m6LicJ5CoECS_v5u2PUAwA8E6FLsu2ZC6_WxuSYnTTLzlUi4E"
+                params["Content-Type"] = "application/json"
+                return params
+            }
+        }
+
+        MySingleton.getInstance(mContext)!!.addToRequestQueue(jsonObjectRequest)
+    }
+
 
     private fun voiceAttendanceMsg(msg: String) {
         if (Pref.isVoiceEnabledForAttendanceSubmit) {
@@ -1537,6 +2192,10 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
     }
 
     private fun prepareAddAttendanceInputParams() {
+        progress_wheel.stopSpinning()
+
+        //(mContext as DashboardActivity).showSnackMessage("prepareAddAttendanceInputParams")
+        //Toast.makeText(mContext,"prepareAddAttendanceInputParams",Toast.LENGTH_SHORT).show()
         try {
             addAttendenceModel.session_token = Pref.session_token!!
             addAttendenceModel.user_id = Pref.user_id!!
@@ -1633,6 +2292,7 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
             addAttendenceModel.from_id = fromID
             addAttendenceModel.to_id = toID
 
+
             if (!TextUtils.isEmpty(fromLat) && !TextUtils.isEmpty(toLat))
                 addAttendenceModel.distance = LocationWizard.getDistance(fromLat.toDouble(), fromLong.toDouble(), toLat.toDouble(), toLong.toDouble()).toString()
 
@@ -1727,6 +2387,36 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
 
                         if (AppDatabase.getDBInstance()?.selectedRouteShopListDao()?.getAll() != null)
                             AppDatabase.getDBInstance()?.selectedRouteShopListDao()?.deleteData()*/
+
+                                if(isOnLeave && Pref.IsLeaveGPSTrack==false){
+                                    try {
+
+                                        Pref.IsLeavePressed=true
+
+                                        if (isLocationServiceRunning(LocationFuzedService::class.java)) {
+                                            mContext.stopService(Intent(mContext, LocationFuzedService::class.java))
+                                        }
+
+                                        if(isGeofenceServiceRunning()){
+                                            lateinit var geofenceService: Intent
+                                            Pref.isGeoFenceAdded = false
+                                            geofenceService = Intent(mContext, GeofenceService::class.java)
+                                            mContext.stopService(geofenceService)
+                                        }
+
+                                        if(isMonitorServiceRunning()){
+                                            var intent = Intent(mContext, MonitorService::class.java)
+                                            intent.action = CustomConstants.STOP_MONITOR_SERVICE
+                                            mContext.stopService(intent)
+                                        }
+
+                                    } catch (e: java.lang.Exception) {
+                                        e.printStackTrace()
+                                    }
+                                }else{
+                                    Pref.IsLeavePressed=false
+                                }
+
 
                                 Pref.visitDistance = (mContext as DashboardActivity).visitDistance
 
@@ -1858,4 +2548,367 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
         )
 
     }
+
+
+
+
+    fun getPicUrl(){
+        //31-08-2021
+        BaseActivity.isApiInitiated=false
+        val repository = GetUserListPhotoRegProvider.provideUserListPhotoReg()
+        BaseActivity.compositeDisposable.add(
+                repository.getUserFacePicUrlApi(Pref.user_id!!,Pref.session_token!!)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            val response = result as UserFacePicUrlResponse
+                            if(response.status== NetworkConstant.SUCCESS){
+
+                                CustomStatic.FaceUrl=response.face_image_link
+
+                                //val intent = Intent(mContext, FaceStartActivity::class.java)
+                                //startActivityForResult(intent, 111)
+
+
+                                //var bitmap :Bitmap? = null
+                                //registerFace(bitmap);
+                                GetImageFromUrl().execute(CustomStatic.FaceUrl)
+
+                                XLog.d(" AddAttendanceFragment : FaceRegistration/FaceMatch" +response.status.toString() +", : "  + ", Success: ")
+                            }else{
+                                BaseActivity.isApiInitiated = false
+                                (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_reg_face))
+                                progress_wheel.stopSpinning()
+                                XLog.d("AddAttendanceFragment : FaceRegistration/FaceMatch : " + response.status.toString() +", : "  + ", Failed: ")
+                            }
+                        },{
+                            error ->
+                            if (error != null) {
+                                XLog.d("AddAttendanceFragment : FaceRegistration/FaceMatch : " + " : "  + ", ERROR: " + error.localizedMessage)
+                            }
+                            BaseActivity.isApiInitiated = false
+                        })
+        )
+    }
+
+
+
+
+
+
+    ///////////////////////////////
+    var cropToFrameTransform: Matrix? = Matrix()
+     var faceDetector: FaceDetector? = null
+    private val TF_OD_API_MODEL_FILE = "mobile_face_net.tflite"
+     val TF_OD_API_IS_QUANTIZED = false
+     val TF_OD_API_LABELS_FILE = "file:///android_asset/labelmap.txt"
+     val TF_OD_API_INPUT_SIZE = 112
+
+    private var rgbFrameBitmap: Bitmap? = null
+    private var faceBmp: Bitmap? = null
+    protected var previewWidth = 0
+    protected var previewHeight = 0
+    private var portraitBmp: Bitmap? = null
+
+    fun faceDetectorSetUp(){
+        try {
+            detector = TFLiteObjectDetectionAPIModel.create(
+                    mContext.getAssets(),
+                    TF_OD_API_MODEL_FILE,
+                    TF_OD_API_LABELS_FILE,
+                    TF_OD_API_INPUT_SIZE,
+                    TF_OD_API_IS_QUANTIZED)
+            //cropSize = TF_OD_API_INPUT_SIZE;
+        } catch (e: IOException) {
+            e.printStackTrace()
+            //LOGGER.e(e, "Exception initializing classifier!");
+            val toast = Toast.makeText(mContext, "Classifier could not be initialized", Toast.LENGTH_SHORT)
+            toast.show()
+            //finish()
+        }
+        val options = FaceDetectorOptions.Builder()
+                .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
+                .setContourMode(FaceDetectorOptions.LANDMARK_MODE_NONE)
+                .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
+                .build()
+
+        val detector = FaceDetection.getClient(options)
+
+        faceDetector = detector
+    }
+
+    private fun registerFace(mBitmap: Bitmap?) {
+        try {
+            if (mBitmap == null) {
+                //Toast.makeText(this, "No File", Toast.LENGTH_SHORT).show()
+                return
+            }
+            //ivFace.setImageBitmap(mBitmap)
+            previewWidth = mBitmap.width
+            previewHeight = mBitmap.height
+            rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
+            portraitBmp = mBitmap
+            val image = InputImage.fromBitmap(mBitmap, 0)
+            faceBmp = Bitmap.createBitmap(TF_OD_API_INPUT_SIZE, TF_OD_API_INPUT_SIZE, Bitmap.Config.ARGB_8888)
+            faceDetector?.process(image)?.addOnSuccessListener(OnSuccessListener<List<Face>> { faces ->
+                if (faces.size == 0) {
+                    return@OnSuccessListener
+                }
+                Handler().post {
+                    object : Thread() {
+                        override fun run() {
+                            //action
+                            onFacesDetected(1, faces, true) //no need to add currtime
+                        }
+                    }.start()
+                }
+            })
+
+
+
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun createTransform(srcWidth: Int, srcHeight: Int, dstWidth: Int, dstHeight: Int, applyRotation: Int): Matrix? {
+        val matrix = Matrix()
+        if (applyRotation != 0) {
+            if (applyRotation % 90 != 0) {
+                // LOGGER.w("Rotation of %d % 90 != 0", applyRotation);
+            }
+
+            // Translate so center of image is at origin.
+            matrix.postTranslate(-srcWidth / 2.0f, -srcHeight / 2.0f)
+
+            // Rotate around origin.
+            matrix.postRotate(applyRotation.toFloat())
+        }
+
+//        // Account for the already applied rotation, if any, and then determine how
+//        // much scaling is needed for each axis.
+//        final boolean transpose = (Math.abs(applyRotation) + 90) % 180 == 0;
+//        final int inWidth = transpose ? srcHeight : srcWidth;
+//        final int inHeight = transpose ? srcWidth : srcHeight;
+        if (applyRotation != 0) {
+
+            // Translate back from origin centered reference to destination frame.
+            matrix.postTranslate(dstWidth / 2.0f, dstHeight / 2.0f)
+        }
+        return matrix
+    }
+
+    fun onFacesDetected(currTimestamp: Long, faces: List<Face>, add: Boolean) {
+        val paint = Paint()
+        paint.color = Color.RED
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = 2.0f
+        val mappedRecognitions: MutableList<Recognition> = LinkedList()
+
+
+        //final List<Classifier.Recognition> results = new ArrayList<>();
+
+        // Note this can be done only once
+        val sourceW = rgbFrameBitmap!!.width
+        val sourceH = rgbFrameBitmap!!.height
+        val targetW = portraitBmp!!.width
+        val targetH = portraitBmp!!.height
+        val transform = createTransform(
+                sourceW,
+                sourceH,
+                targetW,
+                targetH,
+                90)
+        val mutableBitmap = portraitBmp!!.copy(Bitmap.Config.ARGB_8888, true)
+        val cv = Canvas(mutableBitmap)
+
+        // draws the original image in portrait mode.
+        cv.drawBitmap(rgbFrameBitmap!!, transform!!, null)
+        val cvFace = Canvas(faceBmp!!)
+        val saved = false
+        for (face in faces) {
+            //results = detector.recognizeImage(croppedBitmap);
+            val boundingBox = RectF(face.boundingBox)
+
+            //final boolean goodConfidence = result.getConfidence() >= minimumConfidence;
+            val goodConfidence = true //face.get;
+            if (boundingBox != null && goodConfidence) {
+
+                // maps crop coordinates to original
+                cropToFrameTransform?.mapRect(boundingBox)
+
+                // maps original coordinates to portrait coordinates
+                val faceBB = RectF(boundingBox)
+                transform.mapRect(faceBB)
+
+                // translates portrait to origin and scales to fit input inference size
+                //cv.drawRect(faceBB, paint);
+                val sx = TF_OD_API_INPUT_SIZE.toFloat() / faceBB.width()
+                val sy = TF_OD_API_INPUT_SIZE.toFloat() / faceBB.height()
+                val matrix = Matrix()
+                matrix.postTranslate(-faceBB.left, -faceBB.top)
+                matrix.postScale(sx, sy)
+                cvFace.drawBitmap(portraitBmp!!, matrix, null)
+
+                //canvas.drawRect(faceBB, paint);
+                var label = ""
+                var confidence = -1f
+                var color = Color.BLUE
+                var extra: Any? = null
+                var crop: Bitmap? = null
+                if (add) {
+                    try {
+                        crop = Bitmap.createBitmap(portraitBmp!!,
+                                faceBB.left.toInt(),
+                                faceBB.top.toInt(),
+                                faceBB.width().toInt(),
+                                faceBB.height().toInt())
+                    } catch (eon: java.lang.Exception) {
+                        //runOnUiThread(Runnable { Toast.makeText(mContext, "Failed to detect", Toast.LENGTH_LONG) })
+                    }
+                }
+                val startTime = SystemClock.uptimeMillis()
+                val resultsAux = FaceStartActivity.detector.recognizeImage(faceBmp, add)
+                val lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime
+                if (resultsAux.size > 0) {
+                    val result = resultsAux[0]
+                    extra = result.extra
+                    //          Object extra = result.getExtra();
+//          if (extra != null) {
+//            LOGGER.i("embeeding retrieved " + extra.toString());
+//          }
+                    val conf = result.distance
+                    if (conf < 1.0f) {
+                        confidence = conf
+                        label = result.title
+                        color = if (result.id == "0") {
+                            Color.GREEN
+                        } else {
+                            Color.RED
+                        }
+                    }
+                }
+                val flip = Matrix()
+                flip.postScale(1f, -1f, previewWidth / 2.0f, previewHeight / 2.0f)
+
+                //flip.postScale(1, -1, targetW / 2.0f, targetH / 2.0f);
+                flip.mapRect(boundingBox)
+                val result = Recognition(
+                        "0", label, confidence, boundingBox)
+                result.color = color
+                result.location = boundingBox
+                result.extra = extra
+                result.crop = crop
+                mappedRecognitions.add(result)
+            }
+        }
+
+        //    if (saved) {
+//      lastSaved = System.currentTimeMillis();
+//    }
+
+        Log.e("xc", "startabc" )
+        val rec = mappedRecognitions[0]
+        FaceStartActivity.detector.register("", rec)
+        val intent = Intent(mContext, DetectorActivity::class.java)
+        startActivityForResult(intent, 171)
+//        startActivity(new Intent(this,DetectorActivity.class));
+//        finish();
+
+        // detector.register("Sakil", rec);
+        /*   runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ivFace.setImageBitmap(rec.getCrop());
+                //showAddFaceDialog(rec);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                LayoutInflater inflater = getLayoutInflater();
+                View dialogLayout = inflater.inflate(R.layout.image_edit_dialog, null);
+                ImageView ivFace = dialogLayout.findViewById(R.id.dlg_image);
+                TextView tvTitle = dialogLayout.findViewById(R.id.dlg_title);
+                EditText etName = dialogLayout.findViewById(R.id.dlg_input);
+
+                tvTitle.setText("Register Your Face");
+                ivFace.setImageBitmap(rec.getCrop());
+                etName.setHint("Please tell your name");
+                detector.register("sam", rec); //for register a face
+
+                //button.setPressed(true);
+                //button.performClick();
+            }
+
+        });*/
+
+        // updateResults(currTimestamp, mappedRecognitions);
+    }
+
+    inner class GetImageFromUrl : AsyncTask<String?, Void?, Bitmap?>() {
+        fun GetImageFromUrl() {
+            //this.imageView = img;
+        }
+        override fun doInBackground(vararg url: String?): Bitmap {
+            var bitmappppx: Bitmap? = null
+            val stringUrl = url[0]
+            bitmappppx = null
+            val inputStream: InputStream
+            try {
+                inputStream = URL(stringUrl).openStream()
+                bitmappppx = BitmapFactory.decodeStream(inputStream)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            return bitmappppx!!
+        }
+
+        override fun onPostExecute(result: Bitmap?) {
+            super.onPostExecute(result)
+            registerFace(result)
+        }
+
+    }
+
+
+    private fun isLocationServiceRunning(serviceClass: Class<*>): Boolean {
+        val manager = mContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
+    }
+
+    fun isMonitorServiceRunning(): Boolean {
+        val activityManager = mContext.getSystemService(AppCompatActivity.ACTIVITY_SERVICE) as ActivityManager
+        if (activityManager != null) {
+            val servicesList = activityManager.getRunningServices(Int.MAX_VALUE)
+            for (serviceInfo in servicesList) {
+                if (MonitorService::class.java.getName() == serviceInfo.service.className) {
+                    //if (serviceInfo.foreground) {
+                        return true
+                    //}
+                }
+            }
+            return false
+        }
+        return false
+    }
+
+    fun isGeofenceServiceRunning(): Boolean {
+        val activityManager =  mContext.getSystemService(AppCompatActivity.ACTIVITY_SERVICE) as ActivityManager
+        if (activityManager != null) {
+            val servicesList = activityManager.getRunningServices(Int.MAX_VALUE)
+            for (serviceInfo in servicesList) {
+                if (GeofenceService::class.java.getName() == serviceInfo.service.className) {
+                    //if (serviceInfo.foreground) {
+                        return true
+                    //}
+                }
+            }
+            return false
+        }
+        return false
+    }
+
+
 }

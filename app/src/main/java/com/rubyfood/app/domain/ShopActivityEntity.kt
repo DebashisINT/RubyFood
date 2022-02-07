@@ -1,8 +1,8 @@
 package com.rubyfood.app.domain
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.rubyfood.app.AppConstant.SHOP_ACTIVITY
 
 /**
@@ -99,9 +99,19 @@ class ShopActivityEntity {
     @ColumnInfo(name = "shop_revisit_uniqKey")
     var shop_revisit_uniqKey: String? = null
 
-    /*@ColumnInfo(name = "assigned_to_dd_id")
-    var assigned_to_dd_id = ""
+    @ColumnInfo(name = "updated_by")
+    var updated_by: String? = null
 
-    @ColumnInfo(name = "assigned_to_pp_id")
-    var assigned_to_pp_id = ""*/
+    @ColumnInfo(name = "updated_on")
+    var updated_on: String? = null
+
+    @ColumnInfo(name = "approximate_1st_billing_value")
+    var approximate_1st_billing_value: String? = null
+
+    @ColumnInfo(name = "agency_name")
+    var agency_name: String? = null
+
+    @ColumnInfo(name = "pros_id") // pros_id used as stage_id in pref.IsnewleadtypeforRuby and type of shop = 16
+    var pros_id: String? = null
+
 }

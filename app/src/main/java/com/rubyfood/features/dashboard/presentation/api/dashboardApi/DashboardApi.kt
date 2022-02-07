@@ -28,6 +28,11 @@ interface DashboardApi {
     fun submitLogoutReason(@Field("session_token") session_token: String, @Field("user_id") user_id: String, @Field("reason") reason: String): Observable<BaseResponse>
 
 
+
+    @Multipart
+    @POST("DayStartEndImageSave/DayStartEndImage")
+    fun dayStartEndWithImage(@Query("data") addAttendence: String, @Part logo_img_data: MultipartBody.Part?): Observable<BaseResponse>
+
     /**
      * Companion object to create the GithubApiService
      */

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:wheel="http://schemas.android.com/tools"
     android:id="@+id/cv_meeting_type_main"
@@ -56,7 +56,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_account_holder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -77,9 +77,9 @@
                         android:inputType="text"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_account_no"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -101,9 +101,9 @@
                         android:imeOptions="actionNext"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_bank_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -125,9 +125,9 @@
                         android:imeOptions="actionNext"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_ifsc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -149,9 +149,9 @@
                         android:imeOptions="actionNext"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_upi"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -173,7 +173,7 @@
                         android:imeOptions="actionDone"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
             </RelativeLayout>
 
             <LinearLayout
@@ -189,7 +189,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/selector_order_history_bg"
+                    android:background="@drawable/selected_new_order_history"
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center"
@@ -197,12 +197,16 @@
                     android:textColor="@drawable/selector_text_clor_blue_white"
                     android:textSize="@dimen/_13sdp" />
 
+                <Space
+                    android:layout_width="@dimen/_2sdp"
+                    android:layout_height="match_parent"/>
+
                 <com.rubyfood.widgets.AppCustomTextView
                     android:id="@+id/ok_TV"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/selector_order_history_bg"
+                    android:background="@drawable/deselected_new_order_history"
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center"
@@ -224,4 +228,4 @@
             wheel:matProg_progressIndeterminate="true" />
 
     </RelativeLayout>
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

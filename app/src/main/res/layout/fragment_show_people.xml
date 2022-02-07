@@ -22,7 +22,7 @@
             android:textSize="@dimen/_12sdp"
             android:textColor="@color/black"/>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_user_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -49,7 +49,7 @@
         android:textSize="@dimen/_13sdp"
         android:textStyle="normal" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

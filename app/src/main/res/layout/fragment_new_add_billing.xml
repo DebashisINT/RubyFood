@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/smoke_white">
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/ll_footer">
@@ -306,7 +306,7 @@
                                 android:layout_marginLeft="@dimen/_5sdp"
                                 android:orientation="vertical">
 
-                                <android.support.design.widget.TextInputLayout
+                                <com.google.android.material.textfield.TextInputLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:textColorHint="@color/black"
@@ -322,7 +322,7 @@
                                         android:textSize="@dimen/_12sdp"
                                         android:maxLength="50"
                                         android:imeOptions="actionNext"/>
-                                </android.support.design.widget.TextInputLayout>
+                                </com.google.android.material.textfield.TextInputLayout>
                             </LinearLayout>
                         </LinearLayout>
 
@@ -345,7 +345,7 @@
                                 android:layout_marginLeft="@dimen/_5sdp"
                                 android:orientation="vertical">
 
-                                <android.support.design.widget.TextInputLayout
+                                <com.google.android.material.textfield.TextInputLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:textColorHint="@color/black"
@@ -361,7 +361,7 @@
                                         android:textColor="@color/black"
                                         android:textSize="@dimen/_12sdp"
                                         android:imeOptions="actionNext"/>
-                                </android.support.design.widget.TextInputLayout>
+                                </com.google.android.material.textfield.TextInputLayout>
                             </LinearLayout>
                         </LinearLayout>
 
@@ -384,7 +384,7 @@
                                 android:layout_marginLeft="@dimen/_5sdp"
                                 android:orientation="vertical">
 
-                                <android.support.design.widget.TextInputLayout
+                                <com.google.android.material.textfield.TextInputLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:textColorHint="@color/black"
@@ -400,10 +400,89 @@
                                         android:textColor="@color/black"
                                         android:textSize="@dimen/_12sdp"
                                         android:imeOptions="actionNext"/>
-                                </android.support.design.widget.TextInputLayout>
+                                </com.google.android.material.textfield.TextInputLayout>
                             </LinearLayout>
                         </LinearLayout>
 
+                        <!--06-01-2022-->
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_10sdp">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:contentDescription="@null"
+                                android:src="@drawable/ic_hospital_building_new" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/_5sdp"
+                                android:orientation="vertical">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textColorHint="@color/black"
+                                    app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+
+                                    <com.rubyfood.widgets.AppCustomEditText
+                                        android:id="@+id/et_lab"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="Hospital/Lab"
+                                        android:inputType="number"
+                                        android:maxLength="10"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/_12sdp"
+                                        android:imeOptions="actionNext"/>
+                                </com.google.android.material.textfield.TextInputLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_10sdp">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:contentDescription="@null"
+                                android:src="@drawable/ic_email_new" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/_5sdp"
+                                android:orientation="vertical">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textColorHint="@color/black"
+                                    app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+
+                                    <com.rubyfood.widgets.AppCustomEditText
+                                        android:id="@+id/et_emailaddress"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="Email Address"
+                                        android:inputType="number"
+                                        android:maxLength="10"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/_12sdp"
+                                        android:imeOptions="actionNext"/>
+                                </com.google.android.material.textfield.TextInputLayout>
+                            </LinearLayout>
+                        </LinearLayout>
                     </LinearLayout>
 
                     <LinearLayout
@@ -429,7 +508,7 @@
                                 android:layout_marginLeft="@dimen/_5sdp"
                                 android:orientation="vertical">
 
-                                <android.support.design.widget.TextInputLayout
+                                <com.google.android.material.textfield.TextInputLayout
                                     android:id="@+id/til_amount"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
@@ -446,7 +525,7 @@
                                         android:imeOptions="actionNext"
                                         android:textColor="@color/colorPrimary"
                                         android:textSize="@dimen/_12sdp" />
-                                </android.support.design.widget.TextInputLayout>
+                                </com.google.android.material.textfield.TextInputLayout>
                             </LinearLayout>
                         </LinearLayout>
 
@@ -514,7 +593,7 @@
                             android:layout_marginLeft="@dimen/_5sdp"
                             android:orientation="vertical">
 
-                            <android.support.design.widget.TextInputLayout
+                            <com.google.android.material.textfield.TextInputLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textColorHint="@color/black"
@@ -529,7 +608,7 @@
                                     android:textColor="@color/black"
                                     android:textSize="@dimen/_12sdp"
                                     android:imeOptions="actionNext"/>
-                            </android.support.design.widget.TextInputLayout>
+                            </com.google.android.material.textfield.TextInputLayout>
                         </LinearLayout>
                     </LinearLayout>
 
@@ -581,7 +660,7 @@
                             android:layout_marginLeft="@dimen/_5sdp"
                             android:orientation="vertical">
 
-                            <android.support.design.widget.TextInputLayout
+                            <com.google.android.material.textfield.TextInputLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textColorHint="@color/black"
@@ -600,7 +679,7 @@
                                     android:scrollbars="vertical"
                                     app:theme="@style/EvoEditTextTheme"/>
 
-                            </android.support.design.widget.TextInputLayout>
+                            </com.google.android.material.textfield.TextInputLayout>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -670,7 +749,7 @@
 
         </LinearLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <com.rubyfood.widgets.AppCustomTextView
         android:id="@+id/tv_submit_btn"

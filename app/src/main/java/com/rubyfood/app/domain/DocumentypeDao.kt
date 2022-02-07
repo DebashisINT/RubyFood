@@ -1,8 +1,8 @@
 package com.rubyfood.app.domain
 
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.Query
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
 import com.rubyfood.app.AppConstant
 
 @Dao
@@ -16,4 +16,10 @@ interface DocumentypeDao {
 
     @Query("DELETE FROM " + AppConstant.DOCUMENT_TYPE_TABLE)
     fun delete()
+
+    @Query("SELECT * FROM " + AppConstant.DOCUMENT_TYPE_TABLE + " where IsForOrganization= 1")
+    fun getOrganizationList(): List<DocumentypeEntity>
+
+    @Query("SELECT * FROM " + AppConstant.DOCUMENT_TYPE_TABLE + " where IsForOwn= 1")
+    fun getOwnList(): List<DocumentypeEntity>
 }

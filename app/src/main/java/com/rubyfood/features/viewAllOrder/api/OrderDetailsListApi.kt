@@ -1,6 +1,9 @@
 package com.rubyfood.features.viewAllOrder.api
 
 import com.rubyfood.app.NetworkConstant
+import com.rubyfood.features.login.model.productlistmodel.NewOdrScrOrderListModel
+import com.rubyfood.features.viewAllOrder.model.NewOrderDataModel
+import com.rubyfood.features.viewAllOrder.model.NewOrderOrderHistoryModel
 import com.rubyfood.features.viewAllOrder.model.ViewAllOrderListResponseModel
 import io.reactivex.Observable
 import retrofit2.Retrofit
@@ -18,6 +21,20 @@ interface OrderDetailsListApi {
     @POST("Order/OrderDetailsList")
     fun getOrderDetailsList(@Field("session_token") session_token: String, @Field("user_id") user_id: String, @Field("shop_id") shop_id: String,
                             @Field("order_id") order_id: String): Observable<ViewAllOrderListResponseModel>
+
+    //03-09-2021
+    @FormUrlEncoded
+    @POST("OrderWithProductAttribute/ListForOrderedProduct")
+    fun getNewOrderData(@Field("session_token") session_token: String, @Field("user_id") user_id: String): Observable<NewOrderDataModel>
+
+    @FormUrlEncoded
+    @POST("OrderWithProductAttribute/NewListForOrderedProduct")
+    fun getNewOrderHistoryData(@Field("session_token") session_token: String, @Field("user_id") user_id: String): Observable<NewOrderOrderHistoryModel>
+
+
+    @FormUrlEncoded
+    @POST("OrderWithProductAttribute/NewProductOrderList")
+    fun getNewOrderHistoryDataSimplefied(@Field("session_token") session_token: String, @Field("user_id") user_id: String): Observable<NewOdrScrOrderListModel>
 
     /**
      * Companion object to create the GithubApiService

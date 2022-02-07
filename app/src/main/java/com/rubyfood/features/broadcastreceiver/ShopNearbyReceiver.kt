@@ -27,7 +27,7 @@ class ShopNearbyReceiver : BroadcastReceiver() {
             val shopId = extras.getString("shopId")
             val localShopId = extras.getString("localShopId")
 
-            if (shoulIBotherToNotify(shopId))
+            if (shoulIBotherToNotify(shopId!!))
                 return
 
 

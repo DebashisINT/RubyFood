@@ -18,12 +18,13 @@ import android.net.Uri
 import android.os.BatteryManager
 import android.os.Build
 import android.os.Environment
+import android.os.SystemClock
 import android.provider.CalendarContract
 import android.provider.MediaStore
 import android.provider.Settings
 import android.provider.Settings.SettingNotFoundException
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import android.telephony.TelephonyManager
 import android.text.Spannable
 import android.text.SpannableStringBuilder
@@ -102,6 +103,10 @@ class AppUtils {
         //var tempDistance = 0.0
         //var totalS2SDistance = 0.0  // Shop to shop distance
         //var mGoogleAPIClient: GoogleApiClient? = null
+
+        private var mLastClickTime: Long = 0
+
+        const val CLICK_MIN_INTERVAL: Long = 700
 
         fun convertTime(date: Date): String {
             val df = SimpleDateFormat("h:mm a", Locale.ENGLISH)
@@ -193,8 +198,10 @@ class AppUtils {
         fun createImageFile(): File {
             // Create an image file name
             val imageFileName = "fieldtrackingsystem" +  /*Calendar.getInstance(Locale.ENGLISH).time*/ java.util.UUID.randomUUID()
-            val storageDir = File(Environment.getExternalStorageDirectory().toString()
-                    + File.separator + "fieldtrackingsystem" + File.separator)
+            //val storageDir = File(Environment.getExternalStorageDirectory().toString()
+                    //+ File.separator + "fieldtrackingsystem" + File.separator)
+            //27-09-2021
+            val storageDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + File.separator + "fieldtrackingsystem" + File.separator)
             storageDir.mkdirs()
 
             // Save a file: path for use with ACTION_VIEW intents
@@ -420,6 +427,11 @@ class AppUtils {
             return df.format(Date()).toString()
         }
 
+        fun getCurrentDateTimeDDMMYY(): String {
+            val df = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.ENGLISH)
+            return df.format(Date()).toString()
+        }
+
         fun getCurrentTime(): String {
             val df = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
             return df.format(Date()).toString()
@@ -454,6 +466,13 @@ class AppUtils {
             return f.format(convertedDate)
         }
 
+        @Throws(ParseException::class)
+        fun getFormatedDateNew(date: String?, initDateFormat: String?, endDateFormat: String?): String? {
+            val initDate: Date = SimpleDateFormat(initDateFormat).parse(date)
+            val formatter = SimpleDateFormat(endDateFormat)
+            return formatter.format(initDate)
+        }
+
         fun convertLoginTimeToAutoLogoutTimeFormat(loginDate: String): String {
             val dateFormat = SimpleDateFormat("dd-MMM-yy", Locale.ENGLISH)
             var convertedDate = Date()
@@ -464,6 +483,19 @@ class AppUtils {
                 e.printStackTrace()
             }
             val f = SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH)
+            return f.format(convertedDate)
+        }
+
+        fun convertLoginTimeToAutoLogoutTimeFormatyymmdd(loginDate: String): String {
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+            var convertedDate = Date()
+            try {
+                convertedDate = dateFormat.parse(loginDate) //"20130526160000"
+            } catch (e: ParseException) {
+                // TODO Auto-generated catch block
+                e.printStackTrace()
+            }
+            val f = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
             return f.format(convertedDate)
         }
 
@@ -489,6 +521,15 @@ class AppUtils {
             System.out.println("Current time => " + c.time)
 
             val df = SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH)
+            val formattedDate = df.format(c.time)
+            return formattedDate.toString()
+        }
+
+        fun getCurrentDateyymmdd(): String {
+            val c = Calendar.getInstance(Locale.ENGLISH)
+            System.out.println("Current time => " + c.time)
+
+            val df = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
             val formattedDate = df.format(c.time)
             return formattedDate.toString()
         }
@@ -1761,7 +1802,9 @@ class AppUtils {
         }
 
         fun getHiddenAppFolder(context: Context): String {
-            val destinationFolder = Environment.getExternalStorageDirectory().path + File.separator + context.resources.getString(R.string.app_name)
+            //val destinationFolder = Environment.getExternalStorageDirectory().path + File.separator + context.resources.getString(R.string.app_name)
+            //27-09-2021
+            val destinationFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path + File.separator + context.resources.getString(R.string.app_name)
             val destinationFolderFile = File(destinationFolder)
             if (!destinationFolderFile.exists())
                 destinationFolderFile.mkdir()
@@ -2111,6 +2154,56 @@ class AppUtils {
         }
 
 
+        fun saveSharedPreferencesIsFaceDetectionOn(context: Context,value:Boolean){
+            val mPrefs = context.getSharedPreferences("IsFaceDetectionOn_STATUS", Context.MODE_PRIVATE)
+            val prefsEditor = mPrefs.edit()
+            prefsEditor.putBoolean("IsFaceDetectionOn", value)
+            prefsEditor.apply()
+        }
+
+        fun getSharedPreferencesIsFaceDetectionOn(context: Context):Boolean{
+            val mPrefs = context.getSharedPreferences("IsFaceDetectionOn_STATUS", Context.MODE_PRIVATE)
+            return mPrefs.getBoolean("IsFaceDetectionOn",false)
+        }
+
+        fun saveSharedPreferencesIsFaceDetection(context: Context,value:Boolean){
+            val mPrefs = context.getSharedPreferences("IsFaceDetection_STATUS", Context.MODE_PRIVATE)
+            val prefsEditor = mPrefs.edit()
+            prefsEditor.putBoolean("IsFaceDetection", value)
+            prefsEditor.apply()
+        }
+
+        fun getSharedPreferencesIsFaceDetection(context: Context):Boolean{
+            val mPrefs = context.getSharedPreferences("IsFaceDetection_STATUS", Context.MODE_PRIVATE)
+            return mPrefs.getBoolean("IsFaceDetection",false)
+        }
+
+
+        fun saveSharedPreferencesIsFaceDetectionWithCaptcha(context: Context,value:Boolean){
+            val mPrefs = context.getSharedPreferences("IsFaceDetectionWithCaptcha_STATUS", Context.MODE_PRIVATE)
+            val prefsEditor = mPrefs.edit()
+            prefsEditor.putBoolean("IsFaceDetectionWithCaptcha", value)
+            prefsEditor.apply()
+        }
+
+        fun getSharedPreferencesIsFaceDetectionWithCaptcha(context: Context):Boolean{
+            val mPrefs = context.getSharedPreferences("IsFaceDetectionWithCaptcha_STATUS", Context.MODE_PRIVATE)
+            return mPrefs.getBoolean("IsFaceDetectionWithCaptcha",false)
+        }
+
+
+
+        fun saveSharedPreferencesIsScreenRecorderEnable(context: Context,value:Boolean){
+            val mPrefs = context.getSharedPreferences("IsScreenRecorderEnable_STATUS", Context.MODE_PRIVATE)
+            val prefsEditor = mPrefs.edit()
+            prefsEditor.putBoolean("IsScreenRecorderEnable", value)
+            prefsEditor.apply()
+        }
+
+        fun getSharedPreferencesIsScreenRecorderEnable(context: Context):Boolean{
+            val mPrefs = context.getSharedPreferences("IsScreenRecorderEnable_STATUS", Context.MODE_PRIVATE)
+            return mPrefs.getBoolean("IsScreenRecorderEnable",false)
+        }
 
 
 
@@ -2275,7 +2368,7 @@ class AppUtils {
                         }
                     }
                 } catch (e: PackageManager.NameNotFoundException) {
-                    Log.e("Got exception ", e.message)
+                    Log.e("Got exception ", e.message!!)
                 }
 
             }
@@ -2390,8 +2483,13 @@ class AppUtils {
         }
 
         fun hiFirstNameText() : String {
-            val firstName = Pref.user_name?.substring(0, Pref.user_name?.indexOf(" ")!!)
-            return "Hi $firstName"
+            try{
+                val firstName = Pref.user_name?.substring(0, Pref.user_name?.indexOf(" ")!!)
+                return "Hi $firstName"
+            }catch (ex:Exception){
+                return "Hi $Pref.user_name"
+            }
+
         }
 
         fun getAndroidVersion(): String {
@@ -2456,6 +2554,44 @@ class AppUtils {
             }
         }
 
+        /*06-09-2021 Click on Single handle*/
+        fun isSingleClick(): Boolean {
+            val currentClickTime = SystemClock.uptimeMillis()
+            val elapsedTime = currentClickTime - mLastClickTime
+            mLastClickTime = currentClickTime
+            return elapsedTime > CLICK_MIN_INTERVAL
+        }
+
+        fun getRandomNumber(digit:Int):String{
+            val rnd = Random()
+            var number =  0
+            if(digit==1){
+                number = rnd.nextInt(9)
+                return String.format("%01d", number)
+            }
+            if(digit==2){
+                number = rnd.nextInt(99)
+                return String.format("%02d", number)
+            }
+            if(digit==3){
+                number = rnd.nextInt(999)
+                return String.format("%03d", number)
+            }
+            if(digit==4){
+                number = rnd.nextInt(9999)
+                return String.format("%04d", number)
+            }
+            if(digit==5){
+                number = rnd.nextInt(99999)
+                return String.format("%05d", number)
+            }
+            if(digit==6){
+                number = rnd.nextInt(999999)
+                return String.format("%06d", number)
+            }
+            return ""
+        }
+
         /*fun getDurationFromOnlineVideoLink(link: String) : String {
             val retriever = MediaMetadataRetriever()
             retriever.setDataSource(link, HashMap<String, String>())
@@ -2478,5 +2614,6 @@ class AppUtils {
                 String.format("%02d:%02d", minute, second)
             }
         }*/
+             var isFromOrderToshowSchema = false
     }
 }

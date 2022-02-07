@@ -2,7 +2,7 @@ package com.rubyfood.features.document.presentation
 
 import android.content.Context
 import android.graphics.Paint
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -42,7 +42,6 @@ class DocumentTypeAdapter(private val mContext: Context, private val docTypeList
         fun bindItems() {
 
             itemView.apply {
-
                 tv_type_name.text = docTypeList[adapterPosition].type_name
 
                /* Glide.with(mContext)

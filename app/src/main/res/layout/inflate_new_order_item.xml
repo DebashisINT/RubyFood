@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/_5sdp"
-            android:background="@drawable/top_rounded_corner_gray_bg"
+            android:background="@drawable/shape_cursor_one"
             android:padding="@dimen/_5sdp">
 
             <com.rubyfood.widgets.AppCustomTextView
@@ -47,7 +47,7 @@
                 android:singleLine="true"
                 android:text="117732509200001"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_8sdp" />
+                android:textSize="@dimen/_9sdp" />
 
             <com.rubyfood.widgets.AppCustomTextView
                 android:id="@+id/tv_order_date"
@@ -60,7 +60,7 @@
                 android:singleLine="true"
                 android:text="22 Oct, 2018"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_7sdp" />
+                android:textSize="@dimen/_9sdp" />
 
 
             <ImageView
@@ -73,7 +73,7 @@
                 android:paddingRight="@dimen/_3sdp"
                 android:src="@drawable/ic_registered_shop_direction_select"/>
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/collection_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
                 android:paddingLeft="@dimen/_3sdp"
                 android:paddingRight="@dimen/_3sdp"/>
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/download_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -232,7 +232,7 @@
                 android:textColor="@color/light_gray"
                 android:textSize="@dimen/_11sdp" />
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_create_qr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

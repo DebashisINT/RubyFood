@@ -1,6 +1,7 @@
 package com.rubyfood.features.document.presentation
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -11,16 +12,17 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.FileProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.rubyfood.CustomStatic
 import com.rubyfood.R
 import com.rubyfood.app.AppDatabase
 import com.rubyfood.app.NetworkConstant
@@ -47,6 +49,7 @@ import com.downloader.Error
 import com.downloader.OnDownloadListener
 import com.downloader.PRDownloader
 import com.elvishew.xlog.XLog
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.pnikosis.materialishprogress.ProgressWheel
 import com.themechangeapp.pickimage.PermissionHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -72,6 +75,12 @@ class DocumentListFragment : BaseFragment() {
     private var docId = ""
     private var docList:  ArrayList<DocumentListEntity>?= null
 
+    private var type =""
+    private lateinit var file_name: AppCustomTextView
+    private var documentName = ""
+
+
+
     companion object {
         fun newInstance(objects: Any): DocumentListFragment {
             val fragment = DocumentListFragment()
@@ -93,11 +102,29 @@ class DocumentListFragment : BaseFragment() {
         typeId = arguments?.getString("typeId").toString()
     }
 
+    @SuppressLint("RestrictedApi")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         val view = inflater.inflate(R.layout.fragment_document_list, container, false)
 
         initView(view)
+
+//        file_name =(AppCustomTextView)findviewById(R.id.file_name)
+
+
+        if(CustomStatic.IsDocZero){
+            var type = "oraganizer"
+            tv_add_document.visibility = View.GONE
+            file_name.visibility = View.VISIBLE
+
+        }
+        else{
+            var type = "own"
+            tv_add_document.visibility = View.VISIBLE
+            file_name.visibility = View.GONE
+        }
+
+
 
         val list = AppDatabase.getDBInstance()?.documentListDao()?.getAll()
         if (list != null && list.isNotEmpty()) {
@@ -118,7 +145,12 @@ class DocumentListFragment : BaseFragment() {
             tv_add_document = findViewById(R.id.tv_add_document)
             tv_no_data = findViewById(R.id.tv_no_data)
             rl_doc_list_main = findViewById(R.id.rl_doc_list_main)
+            file_name = findViewById(R.id.file_name)
+
+
         }
+
+
 
         progress_wheel.stopSpinning()
         rv_document_list.layoutManager = LinearLayoutManager(mContext)
@@ -148,6 +180,7 @@ class DocumentListFragment : BaseFragment() {
             }
         }
     }
+
 
     private fun initPermissionCheck() {
         permissionUtils = PermissionUtils(mContext as Activity, object : PermissionUtils.OnPermissionListener {
@@ -285,6 +318,7 @@ class DocumentListFragment : BaseFragment() {
             date_time = AppUtils.getCurrentISODateTime()
             attachment = filePath
             isUploaded = false
+            document_name = documentName
         })
 
         if (AppUtils.isOnline(mContext))
@@ -323,8 +357,7 @@ class DocumentListFragment : BaseFragment() {
                                 if (isAdd) {
                                     docList = AppDatabase.getDBInstance()?.documentListDao()?.getDataTypeWise(typeId) as ArrayList<DocumentListEntity>?
                                     initAdapter()
-                                }
-                                else {
+                                } else {
                                     AppDatabase.getDBInstance()?.documentListDao()?.update(docListEntity)
                                     docList = AppDatabase.getDBInstance()?.documentListDao()?.getDataTypeWise(typeId) as ArrayList<DocumentListEntity>?
                                     initAdapter()
@@ -364,7 +397,7 @@ class DocumentListFragment : BaseFragment() {
         val repository = DocumentRepoProvider.documentRepoProvider()
         progress_wheel.spin()
         BaseActivity.compositeDisposable.add(
-                repository.getDocList()
+                repository.getDocList(typeId)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
@@ -382,6 +415,7 @@ class DocumentListFragment : BaseFragment() {
                                                 date_time = it.date_time
                                                 attachment = it.attachment
                                                 isUploaded = true
+                                                document_name = it.document_name
                                             })
                                         }
 
@@ -433,7 +467,8 @@ class DocumentListFragment : BaseFragment() {
                 shareDoc(doc.attachment!!)
         }, {
             syncDocApi(it)
-        }/*, { document, fileName ->
+        },
+                /*, { document, fileName ->
             val file = File(document.attachment!!)
             if (document.attachment?.startsWith("http")!!) {
                 val mimeType = NewFileUtils.getMemeTypeFromFile(file.absolutePath + "." + NewFileUtils.getExtension(file))
@@ -445,7 +480,48 @@ class DocumentListFragment : BaseFragment() {
             }
             else
                 openFile(file)
-        }*/)
+        }*/{ document ->
+            val fileName: String = document.attachment!!
+            if (document.attachment!!.startsWith("http")) {
+                var strFileName = File(document.attachment!!).name
+                downloadFile(document.attachment!!, strFileName, document)
+                //downloadFile(document.attachment!!, fileName, document)
+            } else {
+                (mContext as DashboardActivity).showSnackMessage(getString(R.string.already_download))
+                Log.e("Attachment", "Attachment downloading=======> " + "Already Downloading..")
+            }
+        },
+                { doc ->
+//                    val file = File(FTStorageUtils.getFolderPath(mContext) + "/" + doc.attachment)
+                    val file = File(doc.attachment)
+                    var strFileName = ""
+                    if (!doc.attachment!!.startsWith("http")) {
+                        strFileName = file.name
+                        openFile(file = file)
+                    } else {
+                        strFileName = doc.attachment!!.substring(doc.attachment!!.lastIndexOf("/")!! + 1)
+                        downloadFile(doc.attachment, strFileName)
+                    }
+
+//                    openFile(file)
+
+                },
+                { doc, fileName ->
+                    //19-10-2021  file open
+                    val file = File(doc.attachment!!)
+                    var strFileName = ""
+                    if (!doc.attachment!!.startsWith("http")) {
+                        strFileName = file.name
+                        openFile(file = file)
+                    } else {
+                        strFileName = doc.attachment!!.substring(doc.attachment!!.lastIndexOf("/")!! + 1)
+                        downloadFile(doc.attachment, strFileName)
+                    }
+
+                    //val file = File(doc.attachment)
+                    //openFile(file = file)
+                }
+        )
     }
 
     private fun showDeleterAlert(document: DocumentListEntity) {
@@ -527,7 +603,7 @@ class DocumentListFragment : BaseFragment() {
 
         val docInfo = DocumentAttachmentModel(docListEntity.attachment!!, docListEntity.list_id!!, docListEntity.type_id!!,
                 docListEntity.date_time!!)
-
+        println("upload_doc"+docInfo.toString());
         val docInfoList = ArrayList<DocumentAttachmentModel>()
         docInfoList.add(docInfo)
 
@@ -569,7 +645,11 @@ class DocumentListFragment : BaseFragment() {
 
             progress_wheel.spin()
 
-            PRDownloader.download(downloadUrl, Environment.getExternalStorageDirectory().toString() + File.separator, fileName)
+
+
+            //PRDownloader.download(downloadUrl, Environment.getExternalStorageDirectory().toString() + File.separator, fileName)
+            //27-09-2021
+            PRDownloader.download(downloadUrl, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + File.separator, fileName)
                     .build()
                     .setOnProgressListener {
                         Log.e("Document List", "Attachment Download Progress======> $it")
@@ -578,8 +658,11 @@ class DocumentListFragment : BaseFragment() {
                         override fun onDownloadComplete() {
 
                             doAsync {
-                                AppDatabase.getDBInstance()?.documentListDao()?.updateAttachment(Environment.getExternalStorageDirectory().toString() + File.separator + fileName, document.list_id!!)
-
+                                /* AppDatabase.getDBInstance()?.documentListDao()?.updateAttachment(
+                                        Environment.getExternalStorageDirectory().toString() + File.separator + fileName, document.list_id!!)*/
+                                //27-09-2021
+                                AppDatabase.getDBInstance()?.documentListDao()?.updateAttachment(
+                                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + File.separator + fileName, document.list_id!!)
                                 uiThread {
                                     progress_wheel.stopSpinning()
                                     /*val file = File(Environment.getExternalStorageDirectory().toString() + File.separator + fileName)
@@ -588,8 +671,11 @@ class DocumentListFragment : BaseFragment() {
                                     docList = AppDatabase.getDBInstance()?.documentListDao()?.getDataTypeWise(typeId) as ArrayList<DocumentListEntity>?
                                     initAdapter()
 
-                                    val doc_ = AppDatabase.getDBInstance()?.documentListDao()?.getSingleData(document.list_id!!)
-                                    shareDoc(doc_?.attachment!!)
+
+                                    (mContext as DashboardActivity).showSnackMessage("File Downloaded")
+
+                                    //val doc_ = AppDatabase.getDBInstance()?.documentListDao()?.getSingleData(document.list_id!!)
+                                    //shareDoc(doc_?.attachment!!)
                                 }
                             }
                         }
@@ -688,7 +774,8 @@ class DocumentListFragment : BaseFragment() {
                 (mContext as DashboardActivity).showSnackMessage("No Application Available to View Excel")
             }
         } else if (mimeType == "image/jpeg" || mimeType == "image/png") {
-            FullImageDialog.getInstance(file.absolutePath).show((mContext as DashboardActivity).supportFragmentManager, "")
+            FullImageDialog.getInstance(file.path).show((mContext as DashboardActivity).supportFragmentManager, "")
+//            FullImageDialog.getInstance(file.absolutePath).show((mContext as DashboardActivity).supportFragmentManager, "")
         }
     }
 
@@ -727,10 +814,104 @@ class DocumentListFragment : BaseFragment() {
             return
         }
 
-        val uri = Uri.fromFile(file)
+//        val uri = Uri.fromFile(file)
+        val uri:Uri= FileProvider.getUriForFile(mContext, context!!.applicationContext.packageName.toString() + ".provider", file)
         intent.putExtra(Intent.EXTRA_STREAM, uri)
         intent.type = mimeType
         startActivity(Intent.createChooser(intent, "Share document via..."))
 
     }
+
+
+    private fun downloadFile(downloadUrl: String?, fileName: String) {
+        try {
+            if (!AppUtils.isOnline(mContext)){
+                (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
+                return
+            }
+
+            progress_wheel.spin()
+
+            val folder = File(FTStorageUtils.getFolderPath(mContext) + "/", fileName)
+            if (folder.exists()) {
+                folder.delete()
+                if (folder.exists()) {
+                    folder.canonicalFile.delete()
+                    if (folder.exists()) {
+                        mContext.deleteFile(folder.getName())
+                    }
+                }
+            }
+
+            PRDownloader.download(downloadUrl, FTStorageUtils.getFolderPath(mContext) + "/", fileName)
+                    .build()
+                    .setOnProgressListener {
+                        Log.e("Micro Learning Details", "Attachment Download Progress======> $it")
+                    }
+                    .start(object : OnDownloadListener {
+                        override fun onDownloadComplete() {
+                            progress_wheel.stopSpinning()
+                            val file = File(FTStorageUtils.getFolderPath(mContext) + "/" + fileName)
+
+
+                            openFile(file)
+
+//                            if (!isVideo) {
+//                                tempList.filter {
+//                                    it.id == id
+//                                }.map {
+//                                    it.isDownloaded = true
+//                                }
+//
+//                                list?.filter {
+//                                    it.id == id
+//                                }?.map {
+//                                    it.isDownloaded = true
+//                                }
+//                                microLearningAdapter?.refreshList(list!!)
+//                                openFile(file)
+//                            }
+//                            else {
+//                                /*for (i in tempList.indices) {
+//                                    if (tempList[i].id == id) {
+//                                        tempList[i].url = file.absolutePath
+//                                        break
+//                                    }
+//                                }*/
+//
+//                                tempList.filter {
+//                                    it.id == id
+//                                }.map {
+//                                    it.url = file.absolutePath
+//                                    it.isDownloaded = true
+//                                }
+//
+//                                list?.filter {
+//                                    it.id == id
+//                                }?.map {
+//                                    it.url = file.absolutePath
+//                                    it.isDownloaded = true
+//                                }
+//
+//                                microLearningAdapter?.refreshList(list!!)
+//                                //initAdapter()
+//                            }
+                        }
+
+                        override fun onError(error: Error) {
+                            progress_wheel.stopSpinning()
+                            (mContext as DashboardActivity).showSnackMessage("Download failed")
+                            Log.e("Micro Learning Details", "Attachment download error msg=======> " + error.serverErrorMessage)
+                        }
+                    })
+
+        } catch (e: Exception) {
+            (mContext as DashboardActivity).showSnackMessage("Download failed")
+            progress_wheel.stopSpinning()
+            e.printStackTrace()
+        }
+    }
+
+
+
 }

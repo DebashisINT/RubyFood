@@ -4,7 +4,7 @@
     xmlns:wheel="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/smoke_white">
+    android:background="@color/color_silver">
 
     <com.rubyfood.widgets.AppCustomTextView
         android:id="@+id/tv_pick_date"
@@ -87,7 +87,7 @@
         </LinearLayout>
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_task_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -114,7 +114,7 @@
         wheel:matProg_barColor="@color/default_text_color"
         wheel:matProg_progressIndeterminate="true" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

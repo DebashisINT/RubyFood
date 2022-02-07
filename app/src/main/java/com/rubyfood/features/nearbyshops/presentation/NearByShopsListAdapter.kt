@@ -2,7 +2,7 @@ package com.rubyfood.features.nearbyshops.presentation
 
 import android.content.Context
 import android.graphics.Color
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Html
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import com.amulyakhare.textdrawable.TextDrawable
 import com.amulyakhare.textdrawable.util.ColorGenerator
 import com.rubyfood.R
@@ -24,6 +25,7 @@ import com.rubyfood.app.domain.AddShopDBModelEntity
 import com.rubyfood.app.domain.OrderDetailsListEntity
 import com.rubyfood.app.types.FragType
 import com.rubyfood.app.utils.AppUtils
+import com.rubyfood.app.utils.Toaster
 import com.rubyfood.features.dashboard.presentation.DashboardActivity
 import com.rubyfood.features.location.LocationWizard
 import com.rubyfood.features.nearbyshops.model.NewOrderModel
@@ -191,6 +193,73 @@ class NearByShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>,
                     listener.onShareClick(adapterPosition)
                 }
 
+                itemView.lead_new_question_ll.setOnClickListener {
+                    listener.onQuestionnarieClick(list[adapterPosition].shop_id!!)
+                }
+                /*17-12-2021 modify*/
+                if(Pref.IsReturnEnableforParty) {
+                    if(Pref.IsReturnActivatedforPP){
+                        if(list[adapterPosition].type!!.equals("2")){
+                            itemView.lead_return_ll.visibility = View.VISIBLE
+                            itemView.lead_return_view.visibility =  View.VISIBLE
+                        }
+                        else{
+                            itemView.lead_return_ll.visibility = View.GONE
+                            itemView.lead_return_view.visibility = View.GONE
+                        }
+                    }
+                    else if(Pref.IsReturnActivatedforDD){
+                        if(list[adapterPosition].type!!.equals("4")){
+                            itemView.lead_return_ll.visibility = View.VISIBLE
+                            itemView.lead_return_view.visibility =  View.VISIBLE
+                        }
+                        else{
+                            itemView.lead_return_ll.visibility = View.GONE
+                            itemView.lead_return_view.visibility = View.GONE
+                        }
+                    }
+                    else if(Pref.IsReturnActivatedforSHOP){
+                        if(list[adapterPosition].type!!.equals("1")){
+                            itemView.lead_return_ll.visibility = View.VISIBLE
+                            itemView.lead_return_view.visibility =  View.VISIBLE
+                        }
+                        else{
+                            itemView.lead_return_ll.visibility = View.GONE
+                            itemView.lead_return_view.visibility = View.GONE
+                        }
+                    }
+                }
+                else{
+                    itemView.lead_return_ll.visibility = View.GONE
+                    itemView.lead_return_view.visibility = View.GONE
+                }
+                /*20-12-2021*/
+                val OrderavalibleByShopId = AppDatabase.getDBInstance()?.orderDetailsListDao()?.getListAccordingToShopId(list[adapterPosition].shop_id) as ArrayList<OrderDetailsListEntity>
+                if(OrderavalibleByShopId.size>0){
+                    //itemView.lead_return_ll.isEnabled=true
+                    itemView.lead_return_ll.setOnClickListener {
+                        listener.onReturnClick(adapterPosition)
+                    }
+                }
+                else{
+                    itemView.lead_return_ll.setOnClickListener {
+                        Toaster.msgShort(context,"No Minimum Order Avalible to return.")
+                    }
+                    //itemView.lead_return_ll.isEnabled=false
+                }
+
+
+                if(Pref.IsnewleadtypeforRuby && list[adapterPosition].type.equals("16")){
+                    itemView.lead_new_question_view.visibility = View.VISIBLE
+                    itemView.lead_new_question_ll.visibility = View.VISIBLE
+                }
+                else{
+                    itemView.lead_new_question_view.visibility = View.GONE
+                    itemView.lead_new_question_ll.visibility = View.GONE
+                }
+
+
+
                 if (list[adapterPosition].is_otp_verified.equals("true", ignoreCase = true)) {
                     itemView.call_tv.text = context.getString(R.string.verified)
                     itemView.call_tv.setTextColor(context.resources.getColor(R.color.colorPrimary))
@@ -350,7 +419,8 @@ class NearByShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>,
                     str12.setSpan(ForegroundColorSpan(Color.BLACK), 0, str12.length, 0)
                     builder.append(str12)
                     itemView.low_value_month_tv.setText(builder, TextView.BufferType.SPANNABLE)
-                } else {
+                }
+                else {
                     /*itemView.order_amount_tv.visibility = View.GONE
                     itemView.highest_order_amount_tv.visibility = View.GONE
                     itemView.avg_order_amount_tv.visibility = View.GONE

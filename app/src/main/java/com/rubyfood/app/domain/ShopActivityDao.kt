@@ -1,8 +1,8 @@
 package com.rubyfood.app.domain
 
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.Query
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
 import com.rubyfood.app.AppConstant
 
 /**
@@ -173,5 +173,15 @@ interface ShopActivityDao {
     @Query("Select * from shop_activity where shopId=:shopId and isUploaded=:isUploaded")
     fun getNewShopActivityKey(shopId: String,isUploaded: Boolean): ShopActivityEntity
 
+
+    @Query("Select pros_id from shop_activity where shopid=:shopid and shopActivityId=(SELECT MAX(shopActivityId) FROM shop_activity where shopid=:shopid) ")
+    fun getProsId(shopid: String): String
+
+    @Query("Select agency_name from shop_activity where shopid=:shopid and shopActivityId=(SELECT MAX(shopActivityId) FROM shop_activity where shopid=:shopid) ")
+    fun getAgencyName(shopid: String): String
+
+
+    @Query("update shop_activity set pros_id=:pros_id  ")
+    fun trash(pros_id:String)
 
 }

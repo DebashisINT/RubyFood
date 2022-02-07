@@ -27,8 +27,8 @@ class DocumentRepo(val apiService: DocumentApi) {
         return apiService.getDocType(Pref.session_token!!, Pref.user_id!!)
     }
 
-    fun getDocList(): Observable<DocumentListResponseModel> {
-        return apiService.getDocList(Pref.session_token!!, Pref.user_id!!)
+    fun getDocList(typeId:String): Observable<DocumentListResponseModel> {
+        return apiService.getDocList(Pref.session_token!!, Pref.user_id!!,typeId)
     }
 
     fun addEditDoc(docInput: AddEditDocumentInputParams, documentList: ArrayList<DocumentAttachmentModel>, context: Context): Observable<BaseResponse> {

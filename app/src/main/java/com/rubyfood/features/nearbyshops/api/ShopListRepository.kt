@@ -1,6 +1,9 @@
 package com.rubyfood.features.nearbyshops.api
 
 import com.rubyfood.app.Pref
+import com.rubyfood.features.login.model.GetQtsAnsSubmitDtlsResponseModel
+import com.rubyfood.features.login.model.GetSecImageUploadResponseModel
+import com.rubyfood.features.login.model.productlistmodel.ModelListResponse
 import com.rubyfood.features.nearbyshops.model.*
 import io.reactivex.Observable
 
@@ -24,6 +27,10 @@ class ShopListRepository(val apiService: ShopListApi) {
         return apiService.getModelList(Pref.session_token!!, Pref.user_id!!)
     }
 
+    fun getModelListNew(): Observable<ModelListResponse> {
+        return apiService.getModelListNew(Pref.session_token!!, Pref.user_id!!)
+    }
+
     fun getPrimaryAppList(): Observable<PrimaryAppListResponseModel> {
         return apiService.getPrimaryAppList(Pref.session_token!!, Pref.user_id!!)
     }
@@ -42,5 +49,22 @@ class ShopListRepository(val apiService: ShopListApi) {
 
     fun getFunnelStageList(): Observable<FunnelStageListResponseModel> {
         return apiService.getFunnelStageList(Pref.session_token!!, Pref.user_id!!)
+    }
+
+    fun getProsList(): Observable<ProsListResponseModel> {
+        return apiService.getProsList(Pref.session_token!!, Pref.user_id!!)
+    }
+
+
+    fun getQuestionAnsSubmitDetails(): Observable<GetQtsAnsSubmitDtlsResponseModel> {
+        return apiService.getQuestionAnsSubmitDetails(Pref.session_token!!, Pref.user_id!!)
+    }
+
+    fun getSecUploadImages(): Observable<GetSecImageUploadResponseModel> {
+        return apiService.getSecImageUpload(Pref.session_token!!, Pref.user_id!!)
+    }
+
+    fun getQuestionList(): Observable<QuesListResponseModel> {
+        return apiService.getQuesList(Pref.session_token!!, Pref.user_id!!)
     }
 }

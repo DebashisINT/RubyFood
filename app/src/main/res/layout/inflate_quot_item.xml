@@ -230,7 +230,7 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/sms_iv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -264,7 +264,7 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/mail_iv"
                     android:layout_width="@dimen/_25sdp"
                     android:layout_height="@dimen/_25sdp"

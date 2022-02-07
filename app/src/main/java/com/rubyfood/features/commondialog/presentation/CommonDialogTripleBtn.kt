@@ -2,8 +2,8 @@ package com.hahnemann.features.commondialog.presentation
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v7.widget.AppCompatImageView
+import androidx.fragment.app.DialogFragment
+import androidx.appcompat.widget.AppCompatImageView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -62,8 +62,8 @@ class CommonDialogTripleBtn : DialogFragment(), View.OnClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.window!!.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
+        dialog?.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.window!!.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
         val v = inflater.inflate(R.layout.dialog_fragment_triplebtn, container, false)
         isCancelable = mIsCancelable
         initView(v)

@@ -4,7 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Environment;
-import android.support.v4.app.Fragment;
+
+import androidx.fragment.app.Fragment;
 
 import cafe.adriel.androidaudiorecorder.model.AudioChannel;
 import cafe.adriel.androidaudiorecorder.model.AudioSampleRate;
@@ -23,7 +24,9 @@ public class AndroidAudioRecorder {
     private Activity activity;
     private Fragment fragment;
 
-    private String filePath = Environment.getExternalStorageDirectory() + "/recorded_audio.wav";
+    //private String filePath = Environment.getExternalStorageDirectory() + "/recorded_audio.wav";
+    //27-09-2021
+    private String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/recorded_audio.wav";
     private AudioSource source = AudioSource.MIC;
     private AudioChannel channel = AudioChannel.STEREO;
     private AudioSampleRate sampleRate = AudioSampleRate.HZ_44100;

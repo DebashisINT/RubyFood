@@ -2,8 +2,8 @@ package com.rubyfood.features.myorder.presentation
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +18,7 @@ import com.rubyfood.features.dashboard.presentation.DashboardActivity
  */
 class MyOrderListFragment : BaseFragment() {
     private lateinit var mMyOrderListAdapter:MyOrderListAdapter
-    private lateinit var myOrderRecyclerView:RecyclerView
+    private lateinit var myOrderRecyclerView: RecyclerView
     private lateinit var mContext:Context
     private lateinit var layoutManager: RecyclerView.LayoutManager
 

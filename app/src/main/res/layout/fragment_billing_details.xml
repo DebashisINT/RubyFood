@@ -5,7 +5,7 @@
     android:id="@+id/rl_bill_details_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/smoke_white">
+    android:background="@color/color_silver">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -56,7 +56,7 @@
                         android:layout_marginLeft="@dimen/_5sdp"
                         android:orientation="vertical">
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColorHint="@color/black"
@@ -73,7 +73,7 @@
                                 android:textSize="@dimen/_12sdp"
                                 android:maxLength="50"
                                 android:imeOptions="actionNext"/>
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -96,7 +96,7 @@
                         android:layout_marginLeft="@dimen/_5sdp"
                         android:orientation="vertical">
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColorHint="@color/black"
@@ -113,7 +113,7 @@
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/_12sdp"
                                 android:imeOptions="actionNext"/>
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -136,7 +136,7 @@
                         android:layout_marginLeft="@dimen/_5sdp"
                         android:orientation="vertical">
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColorHint="@color/black"
@@ -153,7 +153,89 @@
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/_12sdp"
                                 android:imeOptions="actionNext"/>
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!--06-01-2022-->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_add_shop_owner_contact_number" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_5sdp"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColorHint="@color/black"
+                            app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+
+                            <com.rubyfood.widgets.AppCustomEditText
+                                android:id="@+id/et_lab"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="Hospital/Lab"
+                                android:inputType="number"
+                                android:maxLength="10"
+                                android:text="N.A."
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sdp"
+                                android:imeOptions="actionNext"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_add_shop_owner_contact_number" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_5sdp"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColorHint="@color/black"
+                            app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+
+                            <com.rubyfood.widgets.AppCustomEditText
+                                android:id="@+id/et_emailaddress"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="Email Address"
+                                android:inputType="number"
+                                android:maxLength="10"
+                                android:text="N.A."
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sdp"
+                                android:imeOptions="actionNext"/>
+                        </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -183,7 +265,7 @@
                         android:layout_marginLeft="@dimen/_5sdp"
                         android:orientation="vertical">
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_amount"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -202,7 +284,7 @@
                                 android:textSize="@dimen/_12sdp"
                                 android:enabled="false"
                                 android:background="@android:color/transparent"/>
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                         <View
                             android:layout_width="match_parent"
@@ -276,7 +358,7 @@
                     android:layout_marginLeft="@dimen/_5sdp"
                     android:orientation="vertical">
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColorHint="@color/black"
@@ -293,7 +375,7 @@
                             android:enabled="false"
                             android:text="212.5"
                             android:background="@android:color/transparent"/>
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <View
                         android:layout_width="match_parent"
@@ -350,7 +432,7 @@
                     android:layout_marginLeft="@dimen/_5sdp"
                     android:orientation="vertical">
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColorHint="@color/black"
@@ -367,7 +449,7 @@
                             android:enabled="false"
                             android:text="jdjsd"
                             android:background="@android:color/transparent"/>
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <View
                         android:layout_width="match_parent"
@@ -379,7 +461,7 @@
         </LinearLayout>
         <!--</android.support.v7.widget.CardView>-->
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_cart_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

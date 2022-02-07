@@ -7,4 +7,5 @@ object OrderDetailsListRepoProvider {
     fun provideOrderDetailsListRepository(): OrderDetailsListRepo {
         return OrderDetailsListRepo(OrderDetailsListApi.create())
     }
+
 }

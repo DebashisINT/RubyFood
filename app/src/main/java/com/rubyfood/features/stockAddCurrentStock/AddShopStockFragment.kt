@@ -6,8 +6,8 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -53,7 +53,7 @@ class AddShopStockFragment: BaseFragment(), View.OnClickListener {
 
     private lateinit var mContext: Context
     private lateinit var progress_wheel: ProgressWheel
-    private lateinit var mRv_productList:RecyclerView
+    private lateinit var mRv_productList: RecyclerView
     private var productRateList: ArrayList<ProductRateDataModel>? = null
     private var productRateListDb: ArrayList<ProductRateEntity>? = null
     private var productList: ArrayList<ProductListEntity>? = null
@@ -265,8 +265,6 @@ class AddShopStockFragment: BaseFragment(), View.OnClickListener {
         if(p0!=null){
             when(p0.id){
                 R.id.tv_save_shop_stock ->{
-
-
                     for(i in 0..productListWithQTY!!.size-1){
                         if(roundOffDecimal(productListWithQTY!!.get(i).toDouble())!=0.0)
                         {
@@ -354,6 +352,99 @@ class AddShopStockFragment: BaseFragment(), View.OnClickListener {
                     simpleDialogg.show()
 
                 }
+
+                // off 11-01-2022 ruby issues
+              /*  R.id.tv_save_shop_stock ->{
+
+
+                    for(i in 0..productListWithQTY!!.size-1){
+                        if(roundOffDecimal(productListWithQTY!!.get(i).toDouble())!=0.0)
+                        {
+                            total+= roundOffDecimal(productListWithQTY!!.get(i).toDouble())
+                        }
+                    }
+                    if(total == 0.0){
+                        (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_value))
+                        return
+                    }
+
+
+                    val simpleDialogg = Dialog(mContext)
+                    simpleDialogg.setCancelable(false)
+                    simpleDialogg.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                    simpleDialogg.setContentView(R.layout.dialog_yes_no)
+                    val dialogHeader = simpleDialogg.findViewById(R.id.dialog_cancel_order_header_TV) as AppCustomTextView
+                    dialogHeader.text="Do you want to submit ?"
+                    val dialogYes = simpleDialogg.findViewById(R.id.tv_dialog_yes_no_yes) as AppCustomTextView
+                    val dialogNo = simpleDialogg.findViewById(R.id.tv_dialog_yes_no_no) as AppCustomTextView
+
+                    dialogYes.setOnClickListener( { view ->
+                        simpleDialogg.cancel()
+
+                        qtyList.clear()
+                        idList.clear()
+                        total=0.0
+                        for(i in 0..productListWithQTY!!.size-1){
+                            if(roundOffDecimal(productListWithQTY!!.get(i).toDouble())!=0.0)
+                            {
+                                qtyList.add(roundOffDecimal(productListWithQTY!!.get(i).toDouble()))
+                                idList.add(productList!!.get(i).id)
+                                total+= roundOffDecimal(productListWithQTY!!.get(i).toDouble())
+                            }
+                        }
+                        if(total == 0.0){
+                            (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_value))
+                        }
+                        else{
+                            var obj = CurrentStockEntryModelEntity()
+                            var shopAll=AppDatabase.getDBInstance()!!.shopCurrentStockEntryDao().getShopStockAll()
+                            if(shopAll==null || shopAll.isEmpty()){
+                                obj.stock_id = Pref.user_id+AppUtils.getCurrentDateMonth()+"90001"
+                            }else{
+                                if(shopAll[shopAll.size-1].stock_id != null && shopAll[shopAll.size-1].stock_id!!.length >=1){
+
+                                    val lastId = shopAll[shopAll.size - 1].stock_id?.toLong()
+                                    val finalId = lastId!! + 1
+                                    obj.stock_id=finalId.toString()
+                                    //obj.stock_id=(shopAll[shopAll.size-1].stock_id!!.toLong()+1).toString()
+                                }
+                                else
+                                    obj.stock_id = Pref.user_id+AppUtils.getCurrentDateMonth()+"90001"
+                            }
+                            obj.shop_id=mAddShopDataObj!!.shop_id
+                            obj.visited_datetime=AppUtils.getCurrentDateTime()
+                            //obj.visited_date=AppUtils.getCurrentDate()
+                            obj.visited_date=obj?.visited_datetime?.take(10)
+                            obj.user_id=Pref.user_id
+                            obj.total_product_stock_qty=total.toString()
+                            obj.isUploaded=false
+                            AppDatabase.getDBInstance()?.shopCurrentStockEntryDao()!!.insert(obj)
+
+                            for(i in 0..qtyList.size-1){
+                                var objjj = CurrentStockEntryProductModelEntity()
+                                objjj.stock_id=obj.stock_id
+                                objjj.shop_id=mAddShopDataObj!!.shop_id
+                                objjj.product_id=idList[i].toString()
+                                objjj.product_stock_qty=qtyList[i].toString()
+                                objjj.user_id=Pref.user_id
+                                objjj.isUploaded=false
+                                AppDatabase.getDBInstance()?.shopCurrentStockProductsEntryDao()!!.insert(objjj)
+                            }
+                            if(AppUtils.isOnline(mContext)){
+                                apiCall(obj?.stock_id.toString())
+                            }
+                            else{
+                                simpleDialog("Saved Successfully")
+                            }
+                        }
+
+                    })
+                    dialogNo.setOnClickListener( { view ->
+                        simpleDialogg.cancel()
+                    })
+                    simpleDialogg.show()
+
+                }*/
             }
         }
     }
@@ -393,7 +484,11 @@ class AddShopStockFragment: BaseFragment(), View.OnClickListener {
                                     AppDatabase.getDBInstance()?.shopCurrentStockProductsEntryDao()!!.syncShopProductsStock(currentStock.stock_id.toString())
                                     simpleDialog("Uploaded Successfully")
                                 }
-                            },{error ->
+                                else if(result.status == NetworkConstant.SESSION_MISMATCH){
+                                    simpleDialog("Uploaded Unable"+currentStock.stock_id)
+                                }
+                            }
+                                    ,{error ->
                                 if (error == null) {
                                     XLog.d("Stock/AddCurrentStock : ERROR " + "UNEXPECTED ERROR IN Add Stock ACTIVITY API")
                                 } else {

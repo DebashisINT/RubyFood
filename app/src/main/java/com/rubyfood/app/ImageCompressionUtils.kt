@@ -109,7 +109,7 @@ class ImageCompressionUtils {
             var result: String
             var cursor = context.getContentResolver().query(contentURI, null, null, null, null);
             if (cursor == null) { // Source is Dropbox or other similar local file path
-                result = contentURI.getPath();
+                result = contentURI.getPath().toString();
             } else {
                 cursor.moveToFirst();
                 var idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);

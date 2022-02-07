@@ -67,4 +67,15 @@ class AddShopRequestData {
 
     var shop_revisit_uniqKey: String?= null
 
+
+    var update_by: String?= null
+    var update_on: String?= null
+    var agency_name: String?= null
+    var pros_id: String?= null
+    var lead_contact_number: String?= null
+    var landline_number: String?= null
+    var project_name: String?= null
+
+
+
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -65,7 +65,7 @@
             android:focusableInTouchMode="true"
             android:visibility="visible" />
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/_45sdp"
             android:textColorHint="@color/light_gray"
@@ -83,7 +83,7 @@
                 android:textSize="@dimen/_13sdp"
                 app:theme="@style/EvoEditTextTheme" />
 
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.rubyfood.widgets.AppCustomTextView
             android:id="@+id/tv_cancel_order_submit_remarks"
@@ -93,7 +93,7 @@
             android:textSize="@dimen/_13sdp"
             android:gravity="center"
             android:layout_gravity="center"
-            android:background="@drawable/selector_order_history_bg"
+            android:background="@drawable/deselected_new_order_history"
             android:textColor="@drawable/selector_text_clor_blue_white"
             android:clickable="true"
             android:focusable="true"
@@ -102,4 +102,4 @@
     </LinearLayout>
 
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

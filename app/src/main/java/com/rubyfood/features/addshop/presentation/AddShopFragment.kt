@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
+import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -17,20 +18,24 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
-import android.support.design.widget.TextInputLayout
-import android.support.v4.content.ContextCompat
-import android.support.v4.widget.NestedScrollView
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import android.speech.tts.TextToSpeech
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.DisplayMetrics
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import cafe.adriel.androidaudiorecorder.AndroidAudioRecorder
+import com.rubyfood.CustomStatic
 import com.rubyfood.R
 import com.rubyfood.app.AppDatabase
 import com.rubyfood.app.NetworkConstant
@@ -50,6 +55,7 @@ import com.rubyfood.features.addshop.api.assignedToDDList.AssignToDDListRepoProv
 import com.rubyfood.features.addshop.api.typeList.TypeListRepoProvider
 import com.rubyfood.features.addshop.model.*
 import com.rubyfood.features.addshop.model.assigntoddlist.AssignToDDListResponseModel
+import com.rubyfood.features.addshop.model.assigntopplist.AddShopUploadImg
 import com.rubyfood.features.addshop.model.assigntopplist.AssignToPPListResponseModel
 import com.rubyfood.features.commondialog.presentation.CommonDialog
 import com.rubyfood.features.commondialog.presentation.CommonDialogClickListener
@@ -66,13 +72,17 @@ import com.rubyfood.features.location.UserLocationDataEntity
 import com.rubyfood.features.location.model.ShopDurationRequest
 import com.rubyfood.features.location.model.ShopDurationRequestData
 import com.rubyfood.features.location.shopdurationapi.ShopDurationRepositoryProvider
+import com.rubyfood.features.login.model.GetQtsAnsSubmitDtlsResponseModel
+import com.rubyfood.features.login.model.productlistmodel.ModelListResponse
 import com.rubyfood.features.login.presentation.LoginActivity
 import com.rubyfood.features.nearbyshops.api.ShopListRepositoryProvider
 import com.rubyfood.features.nearbyshops.model.*
 import com.rubyfood.features.shopdetail.presentation.api.EditShopRepoProvider
+import com.rubyfood.features.viewAllOrder.interf.QaOnCLick
 import com.rubyfood.widgets.AppCustomEditText
 import com.rubyfood.widgets.AppCustomTextView
 import com.elvishew.xlog.XLog
+import com.google.android.material.textfield.TextInputLayout
 import com.squareup.picasso.Picasso
 import com.themechangeapp.pickimage.PermissionHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -94,6 +104,10 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
     private lateinit var saveTV: AppCustomTextView
     private var imagePath: String = ""
     private var imagePathCompetitor: String = ""
+    private var imagePathupload: String = ""
+    private var imagePathupload2: String = ""
+
+
     private var shopDataModel = AddShopDBModelEntity()
 
     private lateinit var shopName: AppCustomEditText
@@ -101,6 +115,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
     private lateinit var shopPin: AppCustomEditText
     private lateinit var ownerName: AppCustomEditText
     private lateinit var ownerNumber: AppCustomEditText
+    private lateinit var leadContactNumber: AppCustomEditText
     private lateinit var ownerEmail: AppCustomEditText
     private lateinit var shopLargeImg: ImageView
     lateinit var layer_image_vw_IMG: ImageView
@@ -124,6 +139,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
     var myCalendar = Calendar.getInstance(Locale.ENGLISH)
     private lateinit var progress_wheel: com.pnikosis.materialishprogress.ProgressWheel
     private var dialog: AccuracyIssueDialog? = null
+
     //    val compositeDisposable: CompositeDisposable = CompositeDisposable()
     var addShop: AddShopRequest = AddShopRequest()
     var addShopData = AddShopRequestData()
@@ -245,8 +261,60 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
     private var beatId = ""
     private var assignedToShopId = ""
     private var actualAddress = ""
+    private var ProsId = ""
 
-    var finalUniqKey:String ? = null
+    var finalUniqKey: String? = null
+
+
+    private lateinit var tv_header_prospect_lead: AppCustomTextView
+    private lateinit var tv_hint_TV_shop_Name: AppCustomTextView
+    private lateinit var tv_hint_TV_agency_Name: RelativeLayout
+    private lateinit var rl_contact_lead: RelativeLayout
+    private lateinit var edt_contact_lead: AppCustomEditText
+    private lateinit var prospect_head: AppCustomTextView
+    private lateinit var prospect_main: RelativeLayout
+    private lateinit var questionnaire: AppCustomTextView
+    private lateinit var contactHeader: AppCustomTextView
+
+    private lateinit var owneremailLL: LinearLayout
+
+    private lateinit var ownerNumberLL: RelativeLayout
+
+    var rv_qaList: ArrayList<QuestionEntity> = ArrayList()
+
+    private var adapterqaList: AdapterQuestionList? = null
+
+    private lateinit var rl_upload: RelativeLayout
+
+    private lateinit var rl_upload_image1: RelativeLayout
+
+    private lateinit var tv_upload_images: AppCustomTextView
+
+    private lateinit var iv_image_cross_icon_1: AppCompatImageView
+    private lateinit var iv_image_cross_icon_2: AppCompatImageView
+
+
+
+    private var isLeadRubyType:Boolean=false
+    private var isLeadRubyTypeFrontImage:Boolean=false
+
+//    private lateinit var rv_upload_list: RecyclerView
+//    private lateinit var rv_upload_listVV: View
+
+    private lateinit var iv_name_icon: ImageView
+    private lateinit var category_IV: ImageView
+
+    private lateinit var agency_name_EDT: AppCustomEditText
+
+    private lateinit var project_name_Rl: RelativeLayout
+    private lateinit var  landLineNumberRL: RelativeLayout
+    private lateinit var project_name_EDT: AppCustomEditText
+    private lateinit var landLineNumberRL_EDT: AppCustomEditText
+
+
+
+
+    var quesAnsList:ArrayList<QuestionAns> = ArrayList()
 
     private val mTess: TessOCR by lazy {
         TessOCR(mContext)
@@ -266,9 +334,9 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
 
     companion object {
         private var mlocationInfoModel: locationInfoModel? = null
-        var isOrderEntryPressed:Boolean = false
-        var isNewShop:Boolean = false
-        var newShopID:String = ""
+        var isOrderEntryPressed: Boolean = false
+        var isNewShop: Boolean = false
+        var newShopID: String = ""
         fun getInstance(mObj: Any): AddShopFragment {
             val mAddShopFragment = AddShopFragment()
             if (mObj is locationInfoModel) {
@@ -313,6 +381,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         val view = inflater.inflate(R.layout.fragment_add_shop, container, false)
+        CustomStatic.IsquestionnaireClickbyUser = false
         isApiCall = true
         initView(view)
         initTextChangeListener()
@@ -483,6 +552,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
         shopPin = view.findViewById(R.id.pin_code_EDT)
         ownerName = view.findViewById(R.id.ownername_EDT)
         ownerNumber = view.findViewById(R.id.ownernumber_EDT)
+        leadContactNumber = view.findViewById(R.id.lead_contact_EDT)
         ownerEmail = view.findViewById(R.id.owneremail_EDT)
         shopLargeImg = view.findViewById(R.id.shop_large_IMG)
         layer_image_vw_IMG = view.findViewById(R.id.layer_image_vw_IMG)
@@ -582,7 +652,50 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
         assign_to_shop_rl = view.findViewById(R.id.assign_to_shop_rl)
         assign_to_shop_tv = view.findViewById(R.id.assign_to_shop_tv)
 
+        tv_header_prospect_lead = view.findViewById(R.id.tv_header_prospect_lead)
+        tv_hint_TV_shop_Name = view.findViewById(R.id.hint_TV)
+        tv_hint_TV_agency_Name = view.findViewById(R.id.hint_TV1)
+        rl_contact_lead = view.findViewById(R.id.lead_contact_main)
+        edt_contact_lead = view.findViewById(R.id.lead_contact_EDT)
+        prospect_head = view.findViewById(R.id.tv_header_prospect_lead)
+        prospect_main = view.findViewById(R.id.rl_prospect_main)
+        questionnaire = view.findViewById(R.id.questionnaire_TV)
+        contactHeader = view.findViewById(R.id.contact_only)
+        owneremailLL = view.findViewById(R.id.owneremailLL)
+        ownerNumberLL = view.findViewById(R.id.ownerNumberRL)
+        rl_upload = view.findViewById(R.id.rl_upload)
+        rl_upload_image1 = view.findViewById(R.id.rl_upload_image1)
+
+        tv_upload_images  = view.findViewById(R.id.tv_upload_images)
+        iv_image_cross_icon_1 = view.findViewById(R.id.iv_image_cross_icon_1)
+        iv_image_cross_icon_2 = view.findViewById(R.id.iv_image_cross_icon_2)
+
+
+//        rv_upload_list = view.findViewById(R.id.rv_upload_list)
+//        rv_upload_listVV = view.findViewById(R.id.rv_upload_listVV)
+
+        iv_name_icon = view.findViewById(R.id.iv_name_icon)
+        category_IV = view.findViewById(R.id.category_IV)
+
+        agency_name_EDT = view.findViewById(R.id.agency_name_EDT)
+
+        project_name_Rl =  view.findViewById(R.id.project_name_Rl)
+        landLineNumberRL =  view.findViewById(R.id.landLineNumberRL)
+        project_name_EDT  = view.findViewById(R.id.project_name_EDT)
+        landLineNumberRL_EDT = view.findViewById(R.id.landLineNumberRL_EDT)
+
+
+
+
+
+
         assign_to_shop_tv.hint = getString(R.string.assign_to_hint_text) + " ${Pref.shopText}"
+
+
+        if(Pref.IsnewleadtypeforRuby && shopDataModel.type.equals("16"))
+          (mContext as DashboardActivity).setTopBarTitle("Add " + "Lead")
+      else
+          (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
 
         if (Pref.isShowBeatGroup)
             rl_select_beat.visibility = View.VISIBLE
@@ -601,10 +714,24 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
             rl_audio_record_date.visibility = View.GONE
 
 
-        if(AppUtils.getSharedPreferenceslogCompetitorImgEnable(mContext))
-            ll_competitor_image.visibility=View.VISIBLE
+        if (AppUtils.getSharedPreferenceslogCompetitorImgEnable(mContext))
+            ll_competitor_image.visibility = View.VISIBLE
         else
-            ll_competitor_image.visibility=View.GONE
+            ll_competitor_image.visibility = View.GONE
+
+//        Pref.IslandlineforCustomer =true
+        if (Pref.IslandlineforCustomer) {
+            landLineNumberRL.visibility = View.VISIBLE
+        }
+        else {
+            landLineNumberRL.visibility = View.GONE
+        }
+        if (Pref.IsprojectforCustomer) {
+            project_name_Rl.visibility = View.VISIBLE
+        }
+        else {
+            project_name_Rl.visibility = View.GONE
+        }
 
 
         val typeList = AppDatabase.getDBInstance()?.shopTypeDao()?.getAll()
@@ -634,12 +761,34 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
             rl_select_retailer.visibility = View.GONE
             rl_select_dealer.visibility = View.GONE
             assign_to_shop_rl.visibility = View.GONE
-        } else {
+        }
+        else {
             ll_customer_view.visibility = View.GONE
             rl_owner_name_main.visibility = View.VISIBLE
 
             when (addShopData.type) {
                 "1" -> {
+                    ownerNumberLL.visibility = View.VISIBLE
+                    owneremailLL.visibility = View.VISIBLE
+                    ll_competitor_image.visibility = View.VISIBLE
+                    contactHeader.visibility = View.VISIBLE
+                    rl_owner_name_main.visibility = View.VISIBLE
+                    rl_area_main.visibility = View.VISIBLE
+                    iv_name_icon.setImageResource(R.drawable.ic_add_shop_name_icon)
+                    category_IV.setImageResource(R.drawable.ic_add_shop_category_icon)
+                    rl_upload.visibility = View.GONE
+                    rl_upload_image1.visibility = View.GONE
+                    tv_upload_images.visibility = View.GONE
+//                    rv_upload_listVV.visibility = View.GONE
+//                    rv_upload_list.visibility = View.GONE
+
+//                    shop_name_EDT.hint = "Customer Name"
+                    tv_hint_TV_agency_Name.visibility = View.GONE
+                    rl_contact_lead.visibility = View.GONE
+                    prospect_head.visibility = View.GONE
+                    prospect_main.visibility = View.GONE
+                    questionnaire.visibility = View.GONE
+                    take_photo_tv.text = "Take a Photo"
                     rl_assign_to_dd.visibility = View.VISIBLE
                     assign_to_rl.visibility = View.VISIBLE
                     rl_amount.visibility = View.GONE
@@ -668,18 +817,40 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                     else {
                         rl_select_dealer.visibility = View.GONE
 
-                        if(assignDDList != null && assignDDList.isNotEmpty()) {
+                        if (assignDDList != null && assignDDList.isNotEmpty()) {
                             assignedToDDId = assignDDList[0].dd_id!!
                             tv_assign_to_dd.text = assignDDList[0].dd_name
                         }
                     }
 
-                    if(assignPPList != null && assignPPList.isNotEmpty()) {
+                    if (assignPPList != null && assignPPList.isNotEmpty()) {
                         assignedToPPId = assignPPList[0].pp_id!!
                         assign_to_tv.text = assignPPList[0].pp_name
                     }
+                    (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
                 }
                 "2" -> {
+                    ownerNumberLL.visibility = View.VISIBLE
+                    owneremailLL.visibility = View.VISIBLE
+                    ll_competitor_image.visibility = View.VISIBLE
+                    contactHeader.visibility = View.VISIBLE
+                    rl_owner_name_main.visibility = View.VISIBLE
+                    rl_area_main.visibility = View.VISIBLE
+                    iv_name_icon.setImageResource(R.drawable.ic_add_shop_name_icon)
+                    category_IV.setImageResource(R.drawable.ic_add_shop_category_icon)
+                    rl_upload.visibility = View.GONE
+                    rl_upload_image1.visibility = View.GONE
+                    tv_upload_images.visibility = View.GONE
+//                    rv_upload_listVV.visibility = View.GONE
+//                    rv_upload_list.visibility = View.GONE
+
+//                    shop_name_EDT.hint = "Customer Name"
+                    tv_hint_TV_agency_Name.visibility = View.GONE
+                    rl_contact_lead.visibility = View.GONE
+                    prospect_head.visibility = View.GONE
+                    prospect_main.visibility = View.GONE
+                    questionnaire.visibility = View.GONE
+                    take_photo_tv.text = "Take a Photo"
                     rl_assign_to_dd.visibility = View.GONE
                     assign_to_rl.visibility = View.GONE
                     rl_amount.visibility = View.GONE
@@ -695,8 +866,30 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                     til_mail.hint = getString(R.string.owner_email)
                     til_name.hint = getString(R.string.owner_name)
                     assign_to_tv.hint = "Assigned to " + Pref.ppText
+                    (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
                 }
                 "3" -> {
+                    ownerNumberLL.visibility = View.VISIBLE
+                    owneremailLL.visibility = View.VISIBLE
+                    ll_competitor_image.visibility = View.VISIBLE
+                    contactHeader.visibility = View.VISIBLE
+                    rl_owner_name_main.visibility = View.VISIBLE
+                    rl_area_main.visibility = View.VISIBLE
+                    iv_name_icon.setImageResource(R.drawable.ic_add_shop_name_icon)
+                    category_IV.setImageResource(R.drawable.ic_add_shop_category_icon)
+                    rl_upload.visibility = View.GONE
+                    rl_upload_image1.visibility = View.GONE
+                    tv_upload_images.visibility = View.GONE
+//                    rv_upload_listVV.visibility = View.GONE
+//                    rv_upload_list.visibility = View.GONE
+
+//                    shop_name_EDT.hint = "Customer Name"
+                    tv_hint_TV_agency_Name.visibility = View.GONE
+                    rl_contact_lead.visibility = View.GONE
+                    prospect_head.visibility = View.GONE
+                    prospect_main.visibility = View.GONE
+                    questionnaire.visibility = View.GONE
+                    take_photo_tv.text = "Take a Photo"
                     rl_assign_to_dd.visibility = View.GONE
                     assign_to_rl.visibility = View.GONE
                     rl_amount.visibility = View.GONE
@@ -712,8 +905,30 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                     til_mail.hint = getString(R.string.owner_email)
                     til_name.hint = getString(R.string.owner_name)
                     assign_to_tv.hint = "Assigned to " + Pref.ppText
+                    (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
                 }
                 "4", "12", "13", "14", "15" -> {
+                    ownerNumberLL.visibility = View.VISIBLE
+                    owneremailLL.visibility = View.VISIBLE
+                    ll_competitor_image.visibility = View.VISIBLE
+                    contactHeader.visibility = View.VISIBLE
+                    rl_owner_name_main.visibility = View.VISIBLE
+                    rl_area_main.visibility = View.VISIBLE
+                    iv_name_icon.setImageResource(R.drawable.ic_add_shop_name_icon)
+                    category_IV.setImageResource(R.drawable.ic_add_shop_category_icon)
+                    rl_upload.visibility = View.GONE
+                    rl_upload_image1.visibility = View.GONE
+                    tv_upload_images.visibility = View.GONE
+//                    rv_upload_listVV.visibility = View.GONE
+//                    rv_upload_list.visibility = View.GONE
+
+//                    shop_name_EDT.hint = "Customer Name"
+                    tv_hint_TV_agency_Name.visibility = View.GONE
+                    rl_contact_lead.visibility = View.GONE
+                    prospect_head.visibility = View.GONE
+                    prospect_main.visibility = View.GONE
+                    questionnaire.visibility = View.GONE
+                    take_photo_tv.text = "Take a Photo"
                     assign_to_rl.visibility = View.VISIBLE
                     rl_assign_to_dd.visibility = View.GONE
                     rl_amount.visibility = View.GONE
@@ -734,12 +949,34 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                     else
                         rl_select_dealer.visibility = View.GONE
 
-                    if(assignPPList != null && assignPPList.isNotEmpty()) {
+                    if (assignPPList != null && assignPPList.isNotEmpty()) {
                         assignedToPPId = assignPPList[0].pp_id!!
                         assign_to_tv.text = assignPPList[0].pp_name
                     }
+                    (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
                 }
                 "5" -> {
+                    ownerNumberLL.visibility = View.VISIBLE
+                    owneremailLL.visibility = View.VISIBLE
+                    ll_competitor_image.visibility = View.VISIBLE
+                    contactHeader.visibility = View.VISIBLE
+                    rl_owner_name_main.visibility = View.VISIBLE
+                    rl_area_main.visibility = View.VISIBLE
+                    iv_name_icon.setImageResource(R.drawable.ic_add_shop_name_icon)
+                    category_IV.setImageResource(R.drawable.ic_add_shop_category_icon)
+                    rl_upload.visibility = View.GONE
+                    rl_upload_image1.visibility = View.GONE
+                    tv_upload_images.visibility = View.GONE
+//                    rv_upload_listVV.visibility = View.GONE
+//                    rv_upload_list.visibility = View.GONE
+
+//                    shop_name_EDT.hint = "Customer Name"
+                    tv_hint_TV_agency_Name.visibility = View.GONE
+                    rl_contact_lead.visibility = View.GONE
+                    prospect_head.visibility = View.GONE
+                    prospect_main.visibility = View.GONE
+                    questionnaire.visibility = View.GONE
+                    take_photo_tv.text = "Take a Photo"
                     rl_assign_to_dd.visibility = View.VISIBLE
                     assign_to_rl.visibility = View.VISIBLE
                     rl_amount.visibility = View.VISIBLE
@@ -756,17 +993,39 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                     til_name.hint = getString(R.string.owner_name)
                     assign_to_tv.hint = "Assigned to " + Pref.ppText
 
-                    if(assignPPList != null && assignPPList.isNotEmpty()) {
+                    if (assignPPList != null && assignPPList.isNotEmpty()) {
                         assignedToPPId = assignPPList[0].pp_id!!
                         assign_to_tv.text = assignPPList[0].pp_name
                     }
 
-                    if(assignDDList != null && assignDDList.isNotEmpty()) {
+                    if (assignDDList != null && assignDDList.isNotEmpty()) {
                         assignedToDDId = assignDDList[0].dd_id!!
                         tv_assign_to_dd.text = assignDDList[0].dd_name
                     }
+                    (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
                 }
                 "6" -> {
+                    ownerNumberLL.visibility = View.VISIBLE
+                    owneremailLL.visibility = View.VISIBLE
+                    ll_competitor_image.visibility = View.VISIBLE
+                    contactHeader.visibility = View.VISIBLE
+                    rl_owner_name_main.visibility = View.VISIBLE
+                    rl_area_main.visibility = View.VISIBLE
+                    iv_name_icon.setImageResource(R.drawable.ic_add_shop_name_icon)
+                    category_IV.setImageResource(R.drawable.ic_add_shop_category_icon)
+                    rl_upload.visibility = View.GONE
+                    rl_upload_image1.visibility = View.GONE
+                    tv_upload_images.visibility = View.GONE
+//                    rv_upload_listVV.visibility = View.GONE
+//                    rv_upload_list.visibility = View.GONE
+
+//                    shop_name_EDT.hint = "Customer Name"
+                    tv_hint_TV_agency_Name.visibility = View.GONE
+                    rl_contact_lead.visibility = View.GONE
+                    prospect_head.visibility = View.GONE
+                    prospect_main.visibility = View.GONE
+                    questionnaire.visibility = View.GONE
+                    take_photo_tv.text = "Take a Photo"
                     rl_assign_to_dd.visibility = View.GONE
                     assign_to_rl.visibility = View.GONE
                     rl_amount.visibility = View.GONE
@@ -783,8 +1042,30 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                     til_mail.hint = getString(R.string.contact_email)
                     til_name.hint = getString(R.string.contact_name)
                     assign_to_tv.hint = "Assigned to " + Pref.ppText
+                    (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
                 }
                 "7" -> {
+                    ownerNumberLL.visibility = View.VISIBLE
+                    owneremailLL.visibility = View.VISIBLE
+                    ll_competitor_image.visibility = View.VISIBLE
+                    contactHeader.visibility = View.VISIBLE
+                    rl_owner_name_main.visibility = View.VISIBLE
+                    rl_area_main.visibility = View.VISIBLE
+                    iv_name_icon.setImageResource(R.drawable.ic_add_shop_name_icon)
+                    category_IV.setImageResource(R.drawable.ic_add_shop_category_icon)
+                    rl_upload.visibility = View.GONE
+                    rl_upload_image1.visibility = View.GONE
+                    tv_upload_images.visibility = View.GONE
+//                    rv_upload_listVV.visibility = View.GONE
+//                    rv_upload_list.visibility = View.GONE
+
+//                    shop_name_EDT.hint = "Customer Name"
+                    tv_hint_TV_agency_Name.visibility = View.GONE
+                    rl_contact_lead.visibility = View.GONE
+                    prospect_head.visibility = View.GONE
+                    prospect_main.visibility = View.GONE
+                    questionnaire.visibility = View.GONE
+                    take_photo_tv.text = "Take a Photo"
                     rl_assign_to_dd.visibility = View.GONE
                     assign_to_rl.visibility = View.VISIBLE
                     rl_amount.visibility = View.GONE
@@ -802,12 +1083,34 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                     til_name.hint = getString(R.string.contact_name)
                     assign_to_tv.hint = "Assigned to"
 
-                    if(assignPPList != null && assignPPList.isNotEmpty()) {
+                    if (assignPPList != null && assignPPList.isNotEmpty()) {
                         assignedToPPId = assignPPList[0].pp_id!!
                         assign_to_tv.text = assignPPList[0].pp_name
                     }
+                    (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
                 }
                 "8" -> {
+                    ownerNumberLL.visibility = View.VISIBLE
+                    owneremailLL.visibility = View.VISIBLE
+                    ll_competitor_image.visibility = View.VISIBLE
+                    contactHeader.visibility = View.VISIBLE
+                    rl_owner_name_main.visibility = View.VISIBLE
+                    rl_area_main.visibility = View.VISIBLE
+                    iv_name_icon.setImageResource(R.drawable.ic_add_shop_name_icon)
+                    category_IV.setImageResource(R.drawable.ic_add_shop_category_icon)
+                    rl_upload.visibility = View.GONE
+                    rl_upload_image1.visibility = View.GONE
+                    tv_upload_images.visibility = View.GONE
+//                    rv_upload_listVV.visibility = View.GONE
+//                    rv_upload_list.visibility = View.GONE
+
+//                    shop_name_EDT.hint = "Customer Name"
+                    tv_hint_TV_agency_Name.visibility = View.GONE
+                    rl_contact_lead.visibility = View.GONE
+                    prospect_head.visibility = View.GONE
+                    prospect_main.visibility = View.GONE
+                    questionnaire.visibility = View.GONE
+                    take_photo_tv.text = "Take a Photo"
                     rl_assign_to_dd.visibility = View.GONE
                     assign_to_rl.visibility = View.GONE
                     rl_amount.visibility = View.GONE
@@ -825,17 +1128,38 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                     til_mail.hint = getString(R.string.contact_email)
                     til_name.hint = getString(R.string.contact_name)
                     assign_to_tv.hint = "Assigned to " + Pref.ppText
+                    (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
                 }
                 "10" -> {
+                    ownerNumberLL.visibility = View.VISIBLE
+                    owneremailLL.visibility = View.VISIBLE
+                    ll_competitor_image.visibility = View.VISIBLE
+                    contactHeader.visibility = View.VISIBLE
+                    rl_owner_name_main.visibility = View.VISIBLE
+                    rl_area_main.visibility = View.VISIBLE
+                    iv_name_icon.setImageResource(R.drawable.ic_add_shop_name_icon)
+                    category_IV.setImageResource(R.drawable.ic_add_shop_category_icon)
+                    rl_upload.visibility = View.GONE
+                    rl_upload_image1.visibility = View.GONE
+                    tv_upload_images.visibility = View.GONE
+//                    rv_upload_listVV.visibility = View.GONE
+//                    rv_upload_list.visibility = View.GONE
+
+//                    shop_name_EDT.hint = "Customer Name"
+                    tv_hint_TV_agency_Name.visibility = View.GONE
+                    rl_contact_lead.visibility = View.GONE
+                    prospect_head.visibility = View.GONE
+                    prospect_main.visibility = View.GONE
+                    questionnaire.visibility = View.GONE
+                    take_photo_tv.text = "Take a Photo"
                     if (Pref.isDDShowForMeeting) {
                         rl_assign_to_dd.visibility = View.VISIBLE
 
-                        if(assignDDList != null && assignDDList.isNotEmpty()) {
+                        if (assignDDList != null && assignDDList.isNotEmpty()) {
                             assignedToDDId = assignDDList[0].dd_id!!
                             tv_assign_to_dd.text = assignDDList[0].dd_name
                         }
-                    }
-                    else
+                    } else
                         rl_assign_to_dd.visibility = View.GONE
 
                     if (Pref.isDDMandatoryForMeeting)
@@ -858,8 +1182,30 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                     til_mail.hint = getString(R.string.owner_email)
                     til_name.hint = getString(R.string.owner_name)
                     assign_to_tv.hint = "Assigned to " + Pref.ppText
+                    (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
                 }
                 "11" -> {
+                    ownerNumberLL.visibility = View.VISIBLE
+                    owneremailLL.visibility = View.VISIBLE
+                    ll_competitor_image.visibility = View.VISIBLE
+                    contactHeader.visibility = View.VISIBLE
+                    rl_owner_name_main.visibility = View.VISIBLE
+                    rl_area_main.visibility = View.VISIBLE
+                    iv_name_icon.setImageResource(R.drawable.ic_add_shop_name_icon)
+                    category_IV.setImageResource(R.drawable.ic_add_shop_category_icon)
+                    rl_upload.visibility = View.GONE
+                    rl_upload_image1.visibility = View.GONE
+                    tv_upload_images.visibility = View.GONE
+//                    rv_upload_listVV.visibility = View.GONE
+//                    rv_upload_list.visibility = View.GONE
+
+//                    shop_name_EDT.hint = "Customer Name"
+                    tv_hint_TV_agency_Name.visibility = View.GONE
+                    rl_contact_lead.visibility = View.GONE
+                    prospect_head.visibility = View.GONE
+                    prospect_main.visibility = View.GONE
+                    questionnaire.visibility = View.GONE
+                    take_photo_tv.text = "Take a Photo"
                     rl_assign_to_dd.visibility = View.GONE
                     assign_to_rl.visibility = View.GONE
                     rl_amount.visibility = View.GONE
@@ -880,24 +1226,87 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                         rl_select_retailer.visibility = View.VISIBLE
                     else
                         rl_select_retailer.visibility = View.GONE
+                    (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
                 }
                 else -> {
-                    rl_assign_to_dd.visibility = View.GONE
-                    assign_to_rl.visibility = View.GONE
-                    rl_amount.visibility = View.GONE
-                    rl_type.visibility = View.GONE
-                    shopImage.visibility = View.VISIBLE
-                    ll_doc_extra_info.visibility = View.GONE
-                    ll_extra_info.visibility = View.GONE
-                    rl_entity_main.visibility = View.GONE
-                    rl_select_retailer.visibility = View.GONE
-                    rl_select_dealer.visibility = View.GONE
-                    assign_to_shop_rl.visibility = View.GONE
-                    setMargin(false)
-                    til_no.hint = getString(R.string.owner_contact_number)
-                    til_mail.hint = getString(R.string.owner_email)
-                    til_name.hint = getString(R.string.owner_name)
-                    assign_to_tv.hint = "Assigned to " + Pref.ppText
+                    /*2-12-2021*/
+                    if (Pref.IsnewleadtypeforRuby) {
+                        assignedToPPId = ""
+                        assignedToDDId = ""
+                        tv_select_dealer.text = ""
+                        dealerId = ""
+                        retailerId = ""
+                        tv_select_retailer.text = ""
+                        assignedToShopId = ""
+                        assign_to_shop_tv.text = ""
+                        take_photo_tv.text = "Take Selfie with lead"
+//                        shop_name_EDT.hint = "Lead Name"
+                        tv_hint_TV_agency_Name.visibility = View.VISIBLE
+                        rl_contact_lead.visibility = View.VISIBLE
+                        prospect_head.visibility = View.VISIBLE
+                        prospect_main.visibility = View.VISIBLE
+                        questionnaire.visibility = View.VISIBLE
+                        shop_image_RL.visibility = View.VISIBLE
+                        rl_assign_to_dd.visibility = View.GONE
+                        assign_to_rl.visibility = View.GONE
+                        rl_amount.visibility = View.GONE
+                        rl_type.visibility = View.GONE
+                        setMargin(false)
+                        contactHeader.visibility = View.GONE
+                        rl_owner_name_main.visibility = View.GONE
+                        rl_area_main.visibility = View.GONE
+                        ownerNumberLL.visibility = View.GONE
+                        owneremailLL.visibility = View.GONE
+                        ll_competitor_image.visibility = View.GONE
+                        rl_upload.visibility = View.VISIBLE
+                        rl_upload_image1.visibility = View.VISIBLE
+                        tv_upload_images.visibility = View.VISIBLE
+
+//                        rv_upload_listVV.visibility = View.VISIBLE
+//                        rv_upload_list.visibility = View.VISIBLE
+                        iv_name_icon.setImageResource(R.drawable.ic_add_shop_name_icon)
+                        category_IV.setImageResource(R.drawable.ic_lead_new_lead)
+                        (mContext as DashboardActivity). setTopBarTitle("Add " + "Lead")
+                    } else {
+                        ownerNumberLL.visibility = View.VISIBLE
+                        owneremailLL.visibility = View.VISIBLE
+                        ll_competitor_image.visibility = View.VISIBLE
+                        contactHeader.visibility = View.VISIBLE
+                        rl_owner_name_main.visibility = View.VISIBLE
+                        rl_area_main.visibility = View.VISIBLE
+                        iv_name_icon.setImageResource(R.drawable.ic_add_shop_name_icon)
+                        category_IV.setImageResource(R.drawable.ic_add_shop_category_icon)
+                        rl_upload.visibility = View.GONE
+                        rl_upload_image1.visibility = View.GONE
+                        tv_upload_images.visibility = View.GONE
+//                        rv_upload_listVV.visibility = View.GONE
+//                        rv_upload_list.visibility = View.GONE
+
+//                        shop_name_EDT.hint = "Customer Name"
+                        tv_hint_TV_agency_Name.visibility = View.GONE
+                        rl_contact_lead.visibility = View.GONE
+                        prospect_head.visibility = View.GONE
+                        prospect_main.visibility = View.GONE
+                        questionnaire.visibility = View.GONE
+                        take_photo_tv.text = "Take a Photo"
+                        rl_assign_to_dd.visibility = View.GONE
+                        assign_to_rl.visibility = View.GONE
+                        rl_amount.visibility = View.GONE
+                        rl_type.visibility = View.GONE
+                        shopImage.visibility = View.VISIBLE
+                        ll_doc_extra_info.visibility = View.GONE
+                        ll_extra_info.visibility = View.GONE
+                        rl_entity_main.visibility = View.GONE
+                        rl_select_retailer.visibility = View.GONE
+                        rl_select_dealer.visibility = View.GONE
+                        assign_to_shop_rl.visibility = View.GONE
+                        setMargin(false)
+                        til_no.hint = getString(R.string.owner_contact_number)
+                        til_mail.hint = getString(R.string.owner_email)
+                        til_name.hint = getString(R.string.owner_name)
+                        assign_to_tv.hint = "Assigned to " + Pref.ppText
+                        (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
+                    }
                 }
             }
         }
@@ -983,6 +1392,18 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
         ll_competitor_image.setOnClickListener(this)
 
 
+        questionnaire.setOnClickListener(this)
+        prospect_main.setOnClickListener(this)
+
+        rl_upload.setOnClickListener(this)
+
+        rl_upload_image1.setOnClickListener(this)
+
+        iv_image_cross_icon_1.setOnClickListener(this)
+        iv_image_cross_icon_2.setOnClickListener(this)
+
+
+
         //assign_to_tv.hint = "Assigned to " + Pref.ppText
         tv_assign_to_dd.hint = "Assigned to " + Pref.ddText
 
@@ -1018,6 +1439,26 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
         /*datapath = (mContext as DashboardActivity).filesDir.absolutePath + "/tesseract/"
         FTStorageUtils.checkFile(File(datapath + "tessdata/"), datapath, mContext)
         mTess.init(datapath, "eng")*/
+            /*8-12-2021*/
+        rv_qaList = AppDatabase.getDBInstance()?.questionMasterDao()?.getAll() as ArrayList<QuestionEntity>
+        for(l in 0..rv_qaList.size-1){
+            quesAnsList.add(QuestionAns(rv_qaList.get(l).question_id!!,"-1"))
+        }
+
+        if (Pref.IsprojectforCustomer) {
+            til_name.hint="Contact Name"
+        }
+        else {
+            til_name.hint = "Owner Name"
+        }
+
+        if (Pref.IslandlineforCustomer) {
+            til_no.hint = "Contact Number"
+        }
+        else {
+            til_no.hint = "Owner Contact Number"
+        }
+
     }
 
     override fun onResume() {
@@ -1287,14 +1728,23 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
 //                                (mContext as DashboardActivity).showSnackMessage("SUCCESS")
                                     (mContext as DashboardActivity).updateFence()
                                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.shop_added_successfully))
+                                    voiceAttendanceMsg(getString(R.string.shop_added_successfully))
                                     //(mContext as DashboardActivity).onBackPressed()
 
 
-                                    if(imagePathCompetitor!=null){
-                                        addShopCompetetorImg(addShop.session_token,addShop.shop_id!!,Pref.user_id!!,imagePathCompetitor)
+                                    if (imagePathCompetitor != null && !imagePathCompetitor.equals("")) {
+                                        addShopCompetetorImg(addShop.session_token, addShop.shop_id!!, Pref.user_id!!, imagePathCompetitor)
                                     }
 
-                                    getAssignedPPListApi(true, addShop.shop_id)
+                                    /*9-12-2021*/
+                                     if (imagePathupload != null && !imagePathupload.equals("")) {
+                                         addShopSeconaryUploadImg( addShop.shop_id!!)
+                                    }else if(Pref.IsnewleadtypeforRuby && addShop.type.equals("16")){
+                                         syncQuesSubmit(addShop.shop_id!!)
+                                    }
+                                    else{
+                                         getAssignedPPListApi(true, addShop.shop_id)
+                                     }
                                     //showShopVerificationDialog(addShop.shop_id!!)
 
                                 } else if (addShopResult.status == NetworkConstant.SESSION_MISMATCH) {
@@ -1318,6 +1768,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                                     progress_wheel.stopSpinning()
                                     XLog.d("AddShop : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
                                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.shop_added_successfully))
+                                    voiceAttendanceMsg(getString(R.string.shop_added_successfully))
 //                                (mContext as DashboardActivity).showSnackMessage(getString(R.string.shop_added_successfully))
                                     (mContext as DashboardActivity).onBackPressed()
                                     //(mContext as DashboardActivity).loadFragment(FragType.NearByShopsListFragment, false, "")
@@ -1339,6 +1790,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                                 //(mContext as DashboardActivity).showSnackMessage(getString(R.string.shop_added_successfully))
                                 (mContext as DashboardActivity).onBackPressed()
                                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.shop_added_successfully))
+                                voiceAttendanceMsg(getString(R.string.shop_added_successfully))
                                 //(mContext as DashboardActivity).loadFragment(FragType.NearByShopsListFragment, false, "")
                                 (mContext as DashboardActivity).loadFragment(FragType.ShopDetailFragment, true, addShop.shop_id!!)
                                 if (error != null) {
@@ -1346,8 +1798,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                                 }
                             })
             )
-        }
-        else {
+        } else {
             val repository = AddShopRepositoryProvider.provideAddShopRepository()
             BaseActivity.compositeDisposable.add(
                     repository.addShopWithImage(addShop, shop_imgPath, doc_degree, mContext)
@@ -1363,15 +1814,24 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
 //                                (mContext as DashboardActivity).showSnackMessage("SUCCESS")
                                     (mContext as DashboardActivity).updateFence()
                                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.shop_added_successfully))
+                                    voiceAttendanceMsg(getString(R.string.shop_added_successfully))
                                     //(mContext as DashboardActivity).onBackPressed()
 
 
-                                        if(imagePathCompetitor!=null){
-                                            addShopCompetetorImg(addShop.session_token,addShop.shop_id!!,Pref.user_id!!,imagePathCompetitor)
-                                        }
+                                    if (imagePathCompetitor != null && !imagePathCompetitor.equals("")) {
+                                        addShopCompetetorImg(addShop.session_token, addShop.shop_id!!, Pref.user_id!!, imagePathCompetitor)
+                                    }
 
+                                    /*9-12-2021*/
+                                    if (imagePathupload != null && !imagePathupload.equals("")) {
+                                        addShopSeconaryUploadImg( addShop.shop_id!!)
+                                    }else if(Pref.IsnewleadtypeforRuby && addShop.type.equals("16")){
+                                        syncQuesSubmit(addShop.shop_id!!)
+                                    }
+                                    else{
+                                        getAssignedPPListApi(true, addShop.shop_id)
+                                    }
 
-                                    getAssignedPPListApi(true, addShop.shop_id)
                                     //showShopVerificationDialog(addShop.shop_id!!)
 
                                 } else if (addShopResult.status == NetworkConstant.SESSION_MISMATCH) {
@@ -1395,6 +1855,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                                     progress_wheel.stopSpinning()
                                     XLog.d("AddShop : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
                                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.shop_added_successfully))
+                                    voiceAttendanceMsg(getString(R.string.shop_added_successfully))
 //                                (mContext as DashboardActivity).showSnackMessage(getString(R.string.shop_added_successfully))
                                     (mContext as DashboardActivity).onBackPressed()
                                     //(mContext as DashboardActivity).loadFragment(FragType.NearByShopsListFragment, false, "")
@@ -1416,6 +1877,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                                 //(mContext as DashboardActivity).showSnackMessage(getString(R.string.shop_added_successfully))
                                 (mContext as DashboardActivity).onBackPressed()
                                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.shop_added_successfully))
+                                voiceAttendanceMsg(getString(R.string.shop_added_successfully))
                                 //(mContext as DashboardActivity).loadFragment(FragType.NearByShopsListFragment, false, "")
                                 (mContext as DashboardActivity).loadFragment(FragType.ShopDetailFragment, true, addShop.shop_id!!)
                                 if (error != null) {
@@ -1428,45 +1890,110 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
     }
 
 
-
-    private fun addShopCompetetorImg(sessionToken:String?,shopId:String,userId:String,shop_imgPathCompetitor: String?){
-        var objCompetetor :AddShopRequestCompetetorImg = AddShopRequestCompetetorImg()
-        objCompetetor.session_token=sessionToken
-        objCompetetor.shop_id=shopId
-        objCompetetor.user_id=userId
+    private fun addShopCompetetorImg(sessionToken: String?, shopId: String, userId: String, shop_imgPathCompetitor: String?) {
+        var objCompetetor: AddShopRequestCompetetorImg = AddShopRequestCompetetorImg()
+        objCompetetor.session_token = sessionToken
+        objCompetetor.shop_id = shopId
+        objCompetetor.user_id = userId
         //objCompetetor.visited_date=AppUtils.getCurrentDateTime()
-        objCompetetor.visited_date=""
+        objCompetetor.visited_date = ""
         val repository = AddShopRepositoryProvider.provideAddShopRepository()
         BaseActivity.compositeDisposable.add(
-                repository.addShopWithImageCompetetorImg(objCompetetor,shop_imgPathCompetitor,mContext)
+                repository.addShopWithImageCompetetorImg(objCompetetor, shop_imgPathCompetitor, mContext)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as BaseResponse
-                            if(response.status==NetworkConstant.SUCCESS){
-                                AppDatabase.getDBInstance()!!.shopVisitCompetetorImageDao().updateisUploaded(true,shopId)
+                            if (response.status == NetworkConstant.SUCCESS) {
+                                AppDatabase.getDBInstance()!!.shopVisitCompetetorImageDao().updateisUploaded(true, shopId)
                                 XLog.d("AddShop : CompetetorImg" + ", SHOP: " + shopId + ", Success: ")
-                            }else{
+                            } else {
                                 XLog.d("AddShop : CompetetorImg" + ", SHOP: " + shopId + ", Failed: ")
                             }
-                        },{
-                            error ->
+                        }, { error ->
                             if (error != null) {
                                 XLog.d("AddShop : CompetetorImg" + ", SHOP: " + shopId + ", ERROR: " + error.localizedMessage)
                             }
                         })
         )
     }
+    /*9-12-2021*/
+    private fun addShopSeconaryUploadImg(shopId: String) {
+        println("sec-image addShopSeconaryUploadImg")
+        var objCompetetor: AddShopUploadImg = AddShopUploadImg()
+        objCompetetor.session_token = Pref.session_token
+        objCompetetor.lead_shop_id = shopId
+        objCompetetor.user_id = Pref.user_id
 
+        val repository = AddShopRepositoryProvider.provideAddShopRepository()
+        BaseActivity.compositeDisposable.add(
+                repository.addShopWithImageuploadImg1(objCompetetor, imagePathupload, mContext)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            val response = result as BaseResponse
+                            println("sec-image addShopSeconaryUploadImg "+response.status.toString())
+                            if (response.status == NetworkConstant.SUCCESS) {
+                                AppDatabase.getDBInstance()!!.addShopSecondaryImgDao().updateisUploaded1(true, shopId)
+                                if (imagePathupload2 != null && !imagePathupload2.equals("")) {
+                                    addShopSeconaryUploadImg2(shopId)
+                                }else{
+                                    syncQuesSubmit(shopId)
+
+                                }
+                                XLog.d("AddShop : Img1" + ", SHOP: " + shopId + ", Success: ")
+                            } else {
+                                XLog.d("AddShop : Img1" + ", SHOP: " + shopId + ", Failed: ")
+                            }
+                        }, { error ->
+                            println("sec-image addShopSeconaryUploadImg error")
+                            if (error != null) {
+                                XLog.d("AddShop : Img1" + ", SHOP: " + shopId + ", ERROR: " + error.localizedMessage)
+                            }
+                        })
+        )
+    }
+
+
+      private fun addShopSeconaryUploadImg2(shopId: String) {
+          println("sec-image addShopSeconaryUploadImg2")
+        var objCompetetor: AddShopUploadImg = AddShopUploadImg()
+        objCompetetor.session_token = Pref.session_token
+        objCompetetor.lead_shop_id = shopId
+        objCompetetor.user_id = Pref.user_id
+
+        val repository = AddShopRepositoryProvider.provideAddShopRepository()
+        BaseActivity.compositeDisposable.add(
+                repository.addShopWithImageuploadImg2(objCompetetor, imagePathupload2, mContext)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            val response = result as BaseResponse
+                            println("sec-image addShopSeconaryUploadImg2 "+response.status.toString())
+                            if (response.status == NetworkConstant.SUCCESS) {
+                                AppDatabase.getDBInstance()!!.addShopSecondaryImgDao().updateisUploaded2(true, shopId)
+                                syncQuesSubmit(shopId)
+//                                getAssignedPPListApi(true, shopId)
+                                XLog.d("AddShop : Img2" + ", SHOP: " + shopId + ", Success: ")
+                            } else {
+                                XLog.d("AddShop : Img2" + ", SHOP: " + shopId + ", Failed: ")
+                            }
+                        }, { error ->
+                            println("sec-image addShopSeconaryUploadImg2 error")
+                            if (error != null) {
+                                XLog.d("AddShop : Img2" + ", SHOP: " + shopId + ", ERROR: " + error.localizedMessage)
+                            }
+                        })
+        )
+    }
 
 
     private fun showShopVerificationDialog(shop_id: String) {
 
-        if (!Pref.isShowOTPVerificationPopup)  {
+        if (!Pref.isShowOTPVerificationPopup) {
             (mContext as DashboardActivity).onBackPressed()
             (mContext as DashboardActivity).loadFragment(FragType.ShopDetailFragment, true, shop_id)
-        }
-        else {
+        } else {
             ShopVerificationDialog.getInstance(shop_id, object : ShopVerificationDialog.OnOTPButtonClickListener {
                 override fun onEditClick(number: String) {
                     val addShopData = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopDetail(shop_id)
@@ -1781,6 +2308,26 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
         shopDurationData.in_location = shopActivity.in_loc
         shopDurationData.out_location = shopActivity.out_loc
 
+        shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
+        /*10-12-2021*/
+        shopDurationData.updated_by = Pref.user_id
+        shopDurationData.updated_on = shopActivity.updated_on!!
+
+        if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+            shopDurationData.pros_id = shopActivity.pros_id!!
+        else
+            shopDurationData.pros_id = ""
+
+        if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+            shopDurationData.agency_name =shopActivity.agency_name!!
+        else
+            shopDurationData.agency_name = ""
+
+        if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+            shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+        else
+            shopDurationData.approximate_1st_billing_value = ""
+
         shopDataList.add(shopDurationData)
 
         if (shopDataList.isEmpty()) {
@@ -1849,8 +2396,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                     AppDatabase.getDBInstance()!!.shopActivityDao().updateTotalMinuteForDayOfShop(shopList[i].shopid!!, totalMinute, AppUtils.getCurrentDateForShopActi())
                     AppDatabase.getDBInstance()!!.shopActivityDao().updateTimeDurationForDayOfShop(shopList[i].shopid!!, duration, AppUtils.getCurrentDateForShopActi())
                     AppDatabase.getDBInstance()!!.shopActivityDao().updateDurationAvailable(true, shopList[i].shopid!!, AppUtils.getCurrentDateForShopActi())
-                }
-                else {
+                } else {
                     AppDatabase.getDBInstance()!!.shopActivityDao().updateEndTimeOfShop(endTimeStamp, shopList[i].shopid!!, AppUtils.getCurrentDateForShopActi(), shopList[i].startTimeStamp)
                     AppDatabase.getDBInstance()!!.shopActivityDao().updateTotalMinuteForDayOfShop(shopList[i].shopid!!, totalMinute, AppUtils.getCurrentDateForShopActi(), shopList[i].startTimeStamp)
                     AppDatabase.getDBInstance()!!.shopActivityDao().updateTimeDurationForDayOfShop(shopList[i].shopid!!, duration, AppUtils.getCurrentDateForShopActi(), shopList[i].startTimeStamp)
@@ -1872,8 +2418,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                 if (!Pref.isMultipleVisitEnable) {
                     AppDatabase.getDBInstance()!!.shopActivityDao().updateDeviceStatusReason(AppUtils.getDeviceName(), AppUtils.getAndroidVersion(),
                             AppUtils.getBatteryPercentage(mContext).toString(), netStatus, netType.toString(), shopList[i].shopid!!, AppUtils.getCurrentDateForShopActi())
-                }
-                else {
+                } else {
                     AppDatabase.getDBInstance()!!.shopActivityDao().updateDeviceStatusReason(AppUtils.getDeviceName(), AppUtils.getAndroidVersion(),
                             AppUtils.getBatteryPercentage(mContext).toString(), netStatus, netType.toString(), shopList[i].shopid!!, AppUtils.getCurrentDateForShopActi(), shopList[i].startTimeStamp)
                 }
@@ -2010,13 +2555,19 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
         }
         shopActivityEntity.in_time = AppUtils.getCurrentTimeWithMeredian()
         shopActivityEntity.in_loc = shop.actual_address
-        shopActivityEntity.shop_revisit_uniqKey=finalUniqKey?.toString()
+        shopActivityEntity.shop_revisit_uniqKey = finalUniqKey?.toString()
+
+        /*8-12-2021*/
+        shopActivityEntity.agency_name = addShop.owner_name
+        shopActivityEntity.pros_id=addShop.pros_id
+        shopActivityEntity.updated_by=Pref.user_id
+        shopActivityEntity.updated_on= AppUtils.getCurrentDateForShopActi()
 
         AppDatabase.getDBInstance()!!.shopActivityDao().insertAll(shopActivityEntity)
 
 //        AppUtils.isShopVisited = true
 
-        Pref.isShopVisited=true
+        Pref.isShopVisited = true
         val performance = AppDatabase.getDBInstance()!!.performanceDao().getTodaysData(AppUtils.getCurrentDateForShopActi())
         if (performance != null) {
             val list = AppDatabase.getDBInstance()!!.shopActivityDao().getDurationCalculatedVisitedShopForADay(AppUtils.getCurrentDateForShopActi(), true)
@@ -2069,6 +2620,9 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
 
     override fun onClick(p0: View?) {
         when (p0!!.id) {
+            R.id.questionnaire_TV -> {
+                dialogOpenQa()
+            }
             R.id.shop_large_IMG -> {
                 /* if (PermissionHelper.checkCameraPermission(mContext as DashboardActivity) && PermissionHelper.checkStoragePermission(mContext as DashboardActivity)) {
                      val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -2076,6 +2630,9 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                      (mContext as DashboardActivity).startActivityForResult(intent, PermissionHelper.REQUEST_CODE_CAMERA)
                  }*/
                 isDocDegree = 0
+                if(isLeadRubyType){
+                    isLeadRubyTypeFrontImage=true
+                }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                     initPermissionCheck()
                 else {
@@ -2095,6 +2652,28 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
 
             R.id.save_TV -> {
                 AppUtils.hideSoftKeyboard(mContext as DashboardActivity)
+
+                if (Pref.IsnewleadtypeforRuby && addShopData.type!!.toInt() == 16){
+                    if (imagePath == null || imagePath.equals("")){
+                        isDocDegree = 0
+                        if(isLeadRubyType){
+                            isLeadRubyTypeFrontImage=true
+                        }
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                            initPermissionCheck()
+                        else {
+                            launchCamera()
+                        }
+                        return
+                    }
+                }
+
+                if (Pref.IsnewleadtypeforRuby && addShopData.type!!.toInt() == 16 && CustomStatic.IsquestionnaireClickbyUser==false) {
+                    /*10-12-2021*/
+                    dialogOpenQa()
+                    return
+                }
+
 //                validateAndSaveData()
                 if (Pref.user_id.isNullOrBlank()) {
                     (mContext as DashboardActivity).clearData()
@@ -2113,12 +2692,29 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                     return
                 BaseActivity.isApiInitiated = true
 //                saveTV.isEnabled=false
-
-                if (TextUtils.isEmpty(mLatitude) && TextUtils.isEmpty(mLongitude)) {
+                //02-11-2021
+                if (AppUtils.isOnline(mContext)) {
+                    if (Pref.IsDuplicateShopContactnoAllowedOnline == false) {
+                        DuplicateShopOfPhoneNumberNotAllow()
+                    } else {
+                        if (TextUtils.isEmpty(mLatitude) && TextUtils.isEmpty(mLongitude)) {
+                            //updateshoplocation(Pref.latitude!!.toDouble(), Pref.longitude!!.toDouble())
+                            updateshoplocation(mLocation?.latitude!!, mLocation?.longitude!!)
+                        } else
+                            updateshoplocation(mLatitude.toDouble(), mLongitude.toDouble())
+                    }
+                } else {
+                    if (TextUtils.isEmpty(mLatitude) && TextUtils.isEmpty(mLongitude)) {
+                        //updateshoplocation(Pref.latitude!!.toDouble(), Pref.longitude!!.toDouble())
+                        updateshoplocation(mLocation?.latitude!!, mLocation?.longitude!!)
+                    } else
+                        updateshoplocation(mLatitude.toDouble(), mLongitude.toDouble())
+                }
+/*                if (TextUtils.isEmpty(mLatitude) && TextUtils.isEmpty(mLongitude)) {
                     //updateshoplocation(Pref.latitude!!.toDouble(), Pref.longitude!!.toDouble())
                     updateshoplocation(mLocation?.latitude!!, mLocation?.longitude!!)
                 } else
-                    updateshoplocation(mLatitude.toDouble(), mLongitude.toDouble())
+                    updateshoplocation(mLatitude.toDouble(), mLongitude.toDouble())*/
 
                 //updateshoplocation(0.0, 0.0)
 
@@ -2311,8 +2907,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                             showAssignedToDDDialog(list)
                         else
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_found))
-                    }
-                    else
+                    } else
                         showAssignedToDDDialog(assignDDList)
                 }
                 //callThemePopUp(assign_to_rl, mAssignedList)
@@ -2516,8 +3111,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_found))
                         } else
                             showRetailerListDialog(AppDatabase.getDBInstance()?.retailerDao()?.getAll() as ArrayList<RetailerEntity>)
-                    }
-                    else if (addShopData.type == "11") {
+                    } else if (addShopData.type == "11") {
                         val list_ = AppDatabase.getDBInstance()?.retailerDao()?.getAll()?.filter {
                             it.retailer_id == "2"
                         }
@@ -2526,11 +3120,9 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                             showRetailerListDialog(list_ as ArrayList<RetailerEntity>)
                         else
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_found))
-                    }
-                    else
+                    } else
                         showRetailerListDialog(list)
-                }
-                else
+                } else
                     getRetailerListApi(false)
             }
 
@@ -2559,30 +3151,106 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                             showAssignedToShopListDialog(list_)
                         else
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_found))
-                    }
-                    else
+                    } else
                         showAssignedToShopListDialog(list)
-                }
-                else {
+                } else {
                     if (!TextUtils.isEmpty(Pref.profile_state)) {
                         if (AppUtils.isOnline(mContext))
                             getAssignedToShopApi(false, "")
                         else
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
-                    }
-                    else
+                    } else
                         showProfileAlert()
                 }
             }
 
-            R.id.ll_competitor_image ->{
+            R.id.ll_competitor_image -> {
                 isDocDegree = 2
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                     initPermissionCheckOne()
                 else
                     showPictureDialog()
             }
+
+            /*6-12-2021*/
+            R.id.rl_prospect_main -> {
+                val list = AppDatabase.getDBInstance()?.prosDao()?.getAll() as ArrayList<ProspectEntity>
+                if (list == null || list.isEmpty())
+                    getProspectApi()
+                else
+                    showProsDialog(list)
+//                    showStageDialog(list)
+            }
+
+            /*9-12-2021*/
+            R.id.rl_upload -> {
+                isDocDegree = 3
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                    initPermissionCheckOne()
+                else
+                    showPictureDialogImage()
+            }
+
+            R.id.rl_upload_image1 ->{
+                isDocDegree = 4
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                    initPermissionCheckOne()
+                else
+                    showPictureDialogImage()
+            }
+            /*10-12-2021*/
+            R.id.iv_image_cross_icon_1 ->{
+                imagePathupload = ""
+                Picasso.get()
+                        .load(R.drawable.ic_upload_icon)
+                        .resize(500, 500)
+                        .into(iv_upload_image_view)
+                iv_image_cross_icon_1.visibility = View.GONE
+            }
+
+             R.id.iv_image_cross_icon_2 ->{
+                 imagePathupload2 = ""
+                 Picasso.get()
+                         .load(R.drawable.ic_upload_icon)
+                         .resize(500, 500)
+                         .into(iv_upload_image_view_image1)
+                 iv_image_cross_icon_2.visibility = View.GONE
+            }
+
         }
+    }
+
+    //02-11-2021
+    private fun DuplicateShopOfPhoneNumberNotAllow() {
+        if(Pref.IsnewleadtypeforRuby && addShopData.type.equals("16")){
+            ownerNumber.setText(leadContactNumber.text.toString())
+        }
+        val repository = AddShopRepositoryProvider.provideHandleDuplicatePhoneNumberRepo()
+        BaseActivity.compositeDisposable.add(
+                repository.getShopPhoneNumberAllStatus(ownerNumber.text.toString()!!)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            val response = result as BaseResponse
+                            if (response.status == NetworkConstant.SUCCESS) {
+                                Toaster.msgShort(mContext, response.message)
+                                BaseActivity.isApiInitiated = false
+                            } else {
+                                //Toaster.msgShort(mContext, response.message)
+                                if (TextUtils.isEmpty(mLatitude) && TextUtils.isEmpty(mLongitude)) {
+                                    //updateshoplocation(Pref.latitude!!.toDouble(), Pref.longitude!!.toDouble())
+                                    updateshoplocation(mLocation?.latitude!!, mLocation?.longitude!!)
+                                } else
+                                    updateshoplocation(mLatitude.toDouble(), mLongitude.toDouble())
+                            }
+                        }, { error ->
+                            error.printStackTrace()
+                            BaseActivity.isApiInitiated = false
+                            progress_wheel.stopSpinning()
+                            Toaster.msgShort(mContext, "Something went wrong. Please try again later")
+//                            (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                        })
+        )
     }
 
     private fun initRecorderPermissionCheck() {
@@ -2625,11 +3293,13 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
         progress_wheel.spin()
         val repository = ShopListRepositoryProvider.provideShopListRepository()
         BaseActivity.compositeDisposable.add(
-                repository.getModelList()
+                //repository.getModelList()
+                repository.getModelListNew()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
-                            val response = result as ModelListResponseModel
+                            //val response = result as ModelListResponseModel
+                            val response = result as ModelListResponse
                             XLog.d("GET MODEL DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             if (response.status == NetworkConstant.SUCCESS) {
 
@@ -2637,13 +3307,15 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
 
                                     doAsync {
 
-                                        response.model_list?.forEach {
-                                            val modelEntity = ModelEntity()
-                                            AppDatabase.getDBInstance()?.modelListDao()?.insertAll(modelEntity.apply {
-                                                model_id = it.id
-                                                model_name = it.name
-                                            })
-                                        }
+                                        AppDatabase.getDBInstance()?.modelListDao()?.insertAllLarge(response.model_list!!)
+
+                                        /*       response.model_list?.forEach {
+                                                   val modelEntity = ModelEntity()
+                                                   AppDatabase.getDBInstance()?.modelListDao()?.insertAll(modelEntity.apply {
+                                                       model_id = it.id
+                                                       model_name = it.name
+                                                   })
+                                               }*/
 
                                         uiThread {
                                             progress_wheel.stopSpinning()
@@ -2938,7 +3610,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
 
     private fun showStageDialog(stageList: ArrayList<StageEntity>) {
         StageListDialog.newInstance(stageList) { stage: StageEntity ->
-            tv_stage.text = stage.stage_name
+                tv_stage.text = stage.stage_name
             stageId = stage.stage_id!!
             clearFocus()
         }.show((mContext as DashboardActivity).supportFragmentManager, "")
@@ -3137,7 +3809,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
             tv_area.text = area.area_name
             areaId = area.area_id!!
             clearFocus()
-        }.show(fragmentManager, "")
+        }.show(fragmentManager!!, "")
     }
 
     private fun getTypeListApi(isFromRefresh: Boolean) {
@@ -3424,8 +4096,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                                                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_found))
                                                     } else
                                                         showRetailerListDialog(AppDatabase.getDBInstance()?.retailerDao()?.getAll() as ArrayList<RetailerEntity>)
-                                                }
-                                                else if (addShopData.type == "11") {
+                                                } else if (addShopData.type == "11") {
                                                     val list_ = AppDatabase.getDBInstance()?.retailerDao()?.getAll()?.filter {
                                                         it.retailer_id == "2"
                                                     }
@@ -3434,11 +4105,9 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                                                         showRetailerListDialog(list_ as ArrayList<RetailerEntity>)
                                                     else
                                                         (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_found))
-                                                }
-                                                else
+                                                } else
                                                     showRetailerListDialog(AppDatabase.getDBInstance()?.retailerDao()?.getAll() as ArrayList<RetailerEntity>)
-                                            }
-                                            else
+                                            } else
                                                 getDealerListApi(isFromRefresh)
                                         }
                                     }
@@ -3707,6 +4376,8 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                                             assignToDD.dd_phn_no = list[i].phn_no
                                             assignToDD.pp_id = list[i].assigned_to_pp_id
                                             assignToDD.type_id = list[i].type_id
+                                            assignToDD.dd_latitude = list[i].dd_latitude
+                                            assignToDD.dd_longitude = list[i].dd_longitude
                                             AppDatabase.getDBInstance()?.ddListDao()?.insert(assignToDD)
                                         }
 
@@ -3727,8 +4398,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                                                         showAssignedToDDDialog(list_)
                                                     else
                                                         (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_found))
-                                                }
-                                                else
+                                                } else
                                                     showAssignedToDDDialog(AppDatabase.getDBInstance()?.ddListDao()?.getAll())
                                             } else {
                                                 /*if (!TextUtils.isEmpty(shop_id))
@@ -3809,16 +4479,13 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                                                     showAssignedToShopListDialog(list_)
                                                 else
                                                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_found))
-                                            }
-                                            else
+                                            } else
                                                 showAssignedToShopListDialog(AppDatabase.getDBInstance()?.assignToShopDao()?.getAll() as ArrayList<AssignToShopEntity>)
-                                        }
-                                        else
+                                        } else
                                             showShopVerificationDialog(shop_id!!)
                                     }
                                 }
-                            }
-                            else {
+                            } else {
                                 progress_wheel.stopSpinning()
                                 if (!shopAdded)
                                     (mContext as DashboardActivity).showSnackMessage(response.message!!)
@@ -3843,7 +4510,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                 tv_assign_to_dd.text = dd?.dd_name + " (" + dd?.dd_phn_no + ")"
                 assignedToDDId = dd?.dd_id.toString()
             }
-        }).show(fragmentManager, "")
+        }).show(fragmentManager!!, "")
     }
 
     private fun showAssignedToPPDialog(mAssignedList: List<AssignToPPEntity>?, type: String?) {
@@ -3852,7 +4519,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                 assign_to_tv.text = pp?.pp_name + " (" + pp?.pp_phn_no + ")"
                 assignedToPPId = pp?.pp_id.toString()
             }
-        }).show(fragmentManager, "")
+        }).show(fragmentManager!!, "")
     }
 
     private fun showAssignedToShopListDialog(list: ArrayList<AssignToShopEntity>) {
@@ -3861,7 +4528,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                 assign_to_shop_tv.text = shop?.name + " (" + shop?.phn_no + ")"
                 assignedToShopId = shop?.assigned_to_shop_id!!
             }
-        }).show(fragmentManager, "")
+        }).show(fragmentManager!!, "")
     }
 
     fun setImage(imgRealPath: Uri, fileSizeInKB: Long) {
@@ -3874,13 +4541,30 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
             layer_image_vw_IMG.visibility = View.INVISIBLE
             take_photo_tv.visibility = View.INVISIBLE
             capture_shop_image_IV.visibility = View.INVISIBLE
-        } else if(isDocDegree==2){
+        } else if (isDocDegree == 2) {
             imagePathCompetitor = imgRealPath.toString()
             Picasso.get()
                     .load(imgRealPath)
                     .resize(500, 100)
                     .into(iv_competitor_image_view)
-        }else {
+        }
+        else if (isDocDegree == 3) {
+            imagePathupload = imgRealPath.toString()
+            Picasso.get()
+                    .load(imgRealPath)
+                    .resize(500, 500)
+                    .into(iv_upload_image_view)
+            iv_image_cross_icon_1.visibility = View.VISIBLE
+        }
+        else if (isDocDegree == 4) {
+            imagePathupload2 = imgRealPath.toString()
+            Picasso.get()
+                    .load(imgRealPath)
+                    .resize(500, 500)
+                    .into(iv_upload_image_view_image1)
+            iv_image_cross_icon_2.visibility = View.VISIBLE
+        }
+        else {
             if (fileSizeInKB <= 400) {
                 degreeImgLink = imgRealPath.toString()
                 attachment_EDT.setText(imgRealPath.toString())
@@ -3904,11 +4588,19 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
 
     fun launchCamera() {
         if (PermissionHelper.checkCameraPermission(mContext as DashboardActivity) && PermissionHelper.checkStoragePermission(mContext as DashboardActivity)) {
+            /*2-12-2021*/
+            if (Pref.IsnewleadtypeforRuby && isLeadRubyType && isLeadRubyTypeFrontImage) {
+                voiceAttendanceMsg("Take a selfie.")
+                isLeadRubyTypeFrontImage=false
+                (mContext as DashboardActivity).captureFrontImage()
+            } else{
+                (mContext as DashboardActivity).captureImage()
+            }
             /*val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             intent.putExtra(MediaStore.EXTRA_OUTPUT, (mContext as DashboardActivity).getPhotoFileUri(System.currentTimeMillis().toString() + ".png"))
             (mContext as DashboardActivity).startActivityForResult(intent, PermissionHelper.REQUEST_CODE_CAMERA)*/
 
-            (mContext as DashboardActivity).captureImage()
+
         }
     }
 
@@ -3922,6 +4614,20 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
         }
 
     }
+    /*9-12-2021*/
+    fun showPictureDialogImage() {
+        val pictureDialog = AlertDialog.Builder(mContext)
+        pictureDialog.setTitle("Select Action")
+        val pictureDialogItems = arrayOf("Select photo from gallery", "Capture photo from camera")
+        pictureDialog.setItems(pictureDialogItems) { dialog, which ->
+            when (which) {
+                0 -> selectImageInAlbum()
+                1 -> launchCamera()
+            }
+        }
+        pictureDialog.show()
+    }
+
 
     fun showPictureDialog() {
         val pictureDialog = AlertDialog.Builder(mContext)
@@ -3969,28 +4675,25 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                 (mContext as DashboardActivity).showSnackMessage("Please select assigned to " + Pref.ppText)
                 BaseActivity.isApiInitiated = false
                 return
-            }
-            else if (Pref.isShowDealerForDD && dealerId.isEmpty()) {
+            } else if (Pref.isShowDealerForDD && dealerId.isEmpty()) {
                 (mContext as DashboardActivity).showSnackMessage("Please select any GPTPL/Distributor")
                 BaseActivity.isApiInitiated = false
                 return
-            }
-            else if (TextUtils.isEmpty(assignedToDDId)) {
+            } else if (TextUtils.isEmpty(assignedToDDId)) {
                 (mContext as DashboardActivity).showSnackMessage("Please select assigned to " + Pref.ddText)
                 BaseActivity.isApiInitiated = false
                 return
-            }
-            else if (Pref.isShowRetailerEntity && retailerId.isEmpty()) {
+            } else if (Pref.isShowRetailerEntity && retailerId.isEmpty()) {
                 (mContext as DashboardActivity).showSnackMessage("Please select any retailer/entity")
                 BaseActivity.isApiInitiated = false
                 return
-            }
-            else if (Pref.willShowEntityTypeforShop && retailerId == "1" && entityId.isEmpty()) {
+            } else if (Pref.willShowEntityTypeforShop && retailerId == "1" && entityId.isEmpty()) {
                 (mContext as DashboardActivity).showSnackMessage("Please select any entity type")
                 BaseActivity.isApiInitiated = false
                 return
             }
-        } else if (addShopData.type == "4" || addShopData.type == "12" || addShopData.type == "13" || addShopData.type == "14" || addShopData.type == "15") {
+        }
+        else if (addShopData.type == "4" || addShopData.type == "12" || addShopData.type == "13" || addShopData.type == "14" || addShopData.type == "15") {
             amount = ""
             entityId = ""
             assignedToShopId = ""
@@ -3998,13 +4701,13 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                 (mContext as DashboardActivity).showSnackMessage("Please select assigned to " + Pref.ppText)
                 BaseActivity.isApiInitiated = false
                 return
-            }
-            else if (Pref.isShowDealerForDD && dealerId.isEmpty()) {
+            } else if (Pref.isShowDealerForDD && dealerId.isEmpty()) {
                 (mContext as DashboardActivity).showSnackMessage("Please select any GPTPL/Distributor")
                 BaseActivity.isApiInitiated = false
                 return
             }
-        } else if (addShopData.type == "5") {
+        }
+        else if (addShopData.type == "5") {
             entityId = ""
             assignedToShopId = ""
             if (TextUtils.isEmpty(assignedToPPId)) {
@@ -4049,8 +4752,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                 (mContext as DashboardActivity).showSnackMessage("Please select retailer")
                 BaseActivity.isApiInitiated = false
                 return
-            }
-            else if (TextUtils.isEmpty(assignedToShopId)) {
+            } else if (TextUtils.isEmpty(assignedToShopId)) {
                 (mContext as DashboardActivity).showSnackMessage("Please select assigned to " + Pref.shopText)
                 BaseActivity.isApiInitiated = false
                 return
@@ -4079,7 +4781,15 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
             shopDataModel.shopName = shopName.text.toString()
         else {
             shopName.error = getString(R.string.field_cannot_be_blank)
-            (mContext as DashboardActivity).showSnackMessage("Please enter " + Pref.shopText + " name")
+            /*9-12-2021*/
+            if(Pref.IsnewleadtypeforRuby && shopDataModel.type.equals("16")){
+                (mContext as DashboardActivity).showSnackMessage("Please enter " + "Lead" + " name")
+            }
+            else{
+                (mContext as DashboardActivity).showSnackMessage("Please enter " + Pref.shopText + " name")
+            }
+
+//            (mContext as DashboardActivity).showSnackMessage("Please enter " + Pref.shopText + " name")
             BaseActivity.isApiInitiated = false
             return
         }
@@ -4114,7 +4824,9 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
             if (!(ownerName.text!!.trim().isBlank()))
                 shopDataModel.ownerName = ownerName.text.toString()
             else {
-                if (addShopData.type != "8") {
+                if(Pref.IsnewleadtypeforRuby && addShopData.type.equals("16")){
+                    shopDataModel.ownerName = ""
+                }else if (addShopData.type != "8") {
                     ownerName.error = getString(R.string.field_cannot_be_blank)
 
                     if (addShopData.type != "7")
@@ -4129,8 +4841,33 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
             }
         }
 
-        if (!(ownerNumber.text!!.isBlank()))
+
+        if(Pref.IsnewleadtypeforRuby && addShopData.type.equals("16")){
+            if(!(agency_name_EDT.text!!.isBlank())){
+                  shopDataModel.agency_name = agency_name_EDT.text.toString()
+            }
+            else {
+                agency_name_EDT.error = getString(R.string.field_cannot_be_blank)
+                (mContext as DashboardActivity).showSnackMessage(getString(R.string.agency_name_error))
+                BaseActivity.isApiInitiated = false
+                return
+            }
+        }
+
+
+        if(Pref.IsnewleadtypeforRuby && addShopData.type.equals("16")){
+            ownerNumber.setText(leadContactNumber.text.toString())
+            ownerName.setText(agency_name_EDT.text.toString())
+            shopDataModel.ownerName =ownerName.text.toString()
+        }
+
+
+        if (!(ownerNumber.text!!.isBlank())) {
             shopDataModel.ownerContactNumber = ownerNumber.text.toString()
+            if(Pref.IsnewleadtypeforRuby && addShopData.type.equals("16")){
+                shopDataModel.lead_contact_number=ownerNumber.text.toString()
+            }
+        }
         else {
             ownerNumber.error = getString(R.string.field_cannot_be_blank)
             (mContext as DashboardActivity).showSnackMessage(getString(R.string.numberblank_error))
@@ -4147,7 +4884,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
         }
 
         if (ownerNumber.text.toString().trim().startsWith("6") || ownerNumber.text.toString().trim().startsWith("7") ||
-                ownerNumber.text.toString().trim().startsWith("8") || ownerNumber.text.toString().trim().startsWith("9")) {
+                ownerNumber.text.toString().trim().startsWith("8") || ownerNumber.text.toString().trim().startsWith("9") || true) {
             shopDataModel.ownerContactNumber = ownerNumber.text.toString()
         } else {
             (mContext as DashboardActivity).showSnackMessage(getString(R.string.error_enter_valid_phn_no), 3000)
@@ -4202,6 +4939,9 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
             (mContext as DashboardActivity).showSnackMessage(getString(R.string.error_select_stage))
             return
         }
+
+        shopDataModel.landline_number = landLineNumberRL_EDT.text.toString().trim()
+        shopDataModel.project_name = project_name_EDT.text.toString().trim()
 
         shopDataModel.doc_degree = ""
         if (ll_doc_extra_info.visibility == View.VISIBLE) {
@@ -4301,6 +5041,8 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                 return
             } else
                 shopDataModel.chemist_pincode = chemist_pin_code_EDT.text.toString().trim()
+
+
 
             saveDataToDb()
             return
@@ -4456,6 +5198,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
         shopDataModel.dealer_id = dealerId
         shopDataModel.beat_id = beatId
 
+
         if (TextUtils.isEmpty(booking_amount_EDT.text.toString().trim()))
             shopDataModel.booking_amount = ""
         else
@@ -4466,6 +5209,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
             BaseActivity.isApiInitiated = false
             return
         }
+
 
         if (Pref.isFingerPrintMandatoryForVisit) {
             if ((mContext as DashboardActivity).isFingerPrintSupported) {
@@ -4538,6 +5282,8 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
         addShopData.added_date = shopDataModel.added_date
         addShopData.user_id = Pref.user_id
 
+        addShopData.pros_id=""
+
         if (addShopData.type.isNullOrBlank())
             addShopData.type = "1"
 
@@ -4550,6 +5296,34 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
             amount = ""
         } else if (addShopData.type == "1") {
             amount = ""
+        }
+        /*6-12-2021*/
+        else if(Pref.IsnewleadtypeforRuby && addShopData.type.equals("16")){
+            addShopData.update_by = Pref.user_id
+            addShopData.update_on = AppUtils.getCurrentDateForShopActi()
+            if(ProsId==null || ProsId.equals("")){
+                addShopData.pros_id = "1"
+                ProsId="1"
+            }
+            else{
+                addShopData.pros_id = ProsId
+            }
+            addShopData.pros_id = ProsId
+            addShopData.owner_name = agency_name_EDT.text.toString()
+//            addShopData.agency_name = agency_name_EDT.text.toString()
+
+
+            //8-12-2021
+            for(t in 0..quesAnsList.size-1){
+                var questionSubmitEntity:QuestionSubmitEntity=QuestionSubmitEntity()
+                questionSubmitEntity.shop_id=addShopData.shop_id!!
+                questionSubmitEntity.question_id=quesAnsList.get(t).qID
+                questionSubmitEntity.answer=quesAnsList.get(t).qAns
+                questionSubmitEntity.isUploaded=false
+                questionSubmitEntity.isUpdateToUploaded=true
+                AppDatabase.getDBInstance()!!.questionSubmitDao().insert(questionSubmitEntity)
+            }
+
         }
 
         addShopData.amount = amount
@@ -4597,7 +5371,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
             assignToPP.pp_name = addShopData.shop_name
             assignToPP.pp_phn_no = addShopData.owner_contact_no
             AppDatabase.getDBInstance()?.ppListDao()?.insert(assignToPP)
-        } else if (!TextUtils.isEmpty(addShopData.type)  && (addShopData.type == "4" || addShopData.type == "7")) {
+        } else if (!TextUtils.isEmpty(addShopData.type) && (addShopData.type == "4" || addShopData.type == "7")) {
             val assignToPP = AssignToDDEntity()
             assignToPP.dd_id = addShopData.shop_id
             assignToPP.dd_name = addShopData.shop_name
@@ -4605,8 +5379,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
             //assignToPP.pp_id = addShopData.assigned_to_pp_id
             assignToPP.type_id = addShopData.dealer_id
             AppDatabase.getDBInstance()?.ddListDao()?.insert(assignToPP)
-        }
-        else if (!TextUtils.isEmpty(addShopData.type) && addShopData.type == "1") {
+        } else if (!TextUtils.isEmpty(addShopData.type) && addShopData.type == "1") {
             val assignToShop = AssignToShopEntity()
             AppDatabase.getDBInstance()?.assignToShopDao()?.insert(assignToShop.apply {
                 assigned_to_shop_id = addShopData.shop_id
@@ -4616,26 +5389,65 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
             })
         }
 
-        finalUniqKey=Pref.user_id+System.currentTimeMillis().toString()
+        finalUniqKey = Pref.user_id + System.currentTimeMillis().toString()
         insertIntoShopActivityTable(addShopData)
 
-        var obj:ShopVisitCompetetorModelEntity = ShopVisitCompetetorModelEntity()
-        obj.session_token=addShopData.session_token!!
-        obj.shop_id=addShopData.shop_id!!
-        obj.user_id=Pref.user_id!!
-        obj.shop_image=imagePathCompetitor
-        obj.isUploaded=false
-        obj.visited_date=""
-        if(imagePathCompetitor.length>0 && imagePathCompetitor!=null && imagePathCompetitor!=""){
+
+
+
+
+        var obj: ShopVisitCompetetorModelEntity = ShopVisitCompetetorModelEntity()
+        obj.session_token = addShopData.session_token!!
+        obj.shop_id = addShopData.shop_id!!
+        obj.user_id = Pref.user_id!!
+        obj.shop_image = imagePathCompetitor
+        obj.isUploaded = false
+        obj.visited_date = ""
+        if (imagePathCompetitor.length > 0 && imagePathCompetitor != null && imagePathCompetitor != "") {
             AppDatabase.getDBInstance()!!.shopVisitCompetetorImageDao().insert(obj)
         }
 
-        addShopData.shop_revisit_uniqKey=finalUniqKey!!
+        var obj1: AddShopSecondaryImgEntity = AddShopSecondaryImgEntity()
+        obj1.lead_shop_id = addShopData.shop_id!!
+        if(!imagePathupload.equals("") && imagePathupload!=null)
+            obj1.rubylead_image1 = imagePathupload!!
+        if(!imagePathupload2.equals("") && imagePathupload2!=null)
+            obj1.rubylead_image2 = imagePathupload2!!
+
+
+        if (imagePathupload.length > 0 && imagePathupload != null && imagePathupload != "") {
+            AppDatabase.getDBInstance()!!.addShopSecondaryImgDao().insert(obj1)
+        }
+
+        addShopData.shop_revisit_uniqKey = finalUniqKey!!
+
+        if(shopDataModel.agency_name !=null ){
+            addShopData.agency_name=shopDataModel.agency_name!!
+        }else{
+            addShopData.agency_name=shopDataModel.ownerName
+        }
+        if(shopDataModel.lead_contact_number !=null ){
+            addShopData.lead_contact_number=shopDataModel.lead_contact_number!!
+        }else{
+            addShopData.lead_contact_number=shopDataModel.ownerContactNumber
+        }
+
+        if(shopDataModel.landline_number !=null ){
+            addShopData.landline_number=landLineNumberRL_EDT.text.toString()
+        }else{
+            addShopData.landline_number=""
+        }
+
+        if(shopDataModel.project_name !=null ){
+            addShopData.project_name=project_name_EDT.text.toString()
+        }else{
+            addShopData.project_name=""
+        }
+
+
 
         addShopApi(addShopData, shopDataModel.shopImageLocalPath, shopDataModel.doc_degree)
     }
-
-
 
 
     private fun initShopTypePopUp(view: View) {
@@ -4665,6 +5477,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
         val pp_tv: AppCustomTextView = layout.findViewById(R.id.pp_tv)
         val new_party_tv: AppCustomTextView = layout.findViewById(R.id.new_party_tv)
         val diamond_tv: AppCustomTextView = layout.findViewById(R.id.diamond_tv)
+        val lead_tv: AppCustomTextView = layout.findViewById(R.id.lead_tv)
         val rv_type_list: RecyclerView = layout.findViewById(R.id.rv_type_list)
 
         val list = AppDatabase.getDBInstance()?.shopTypeDao()?.getAll()
@@ -4682,7 +5495,14 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
             } else
                 shop_name_TL.hint = getString(R.string.company_name)*/
 
-            shop_name_TL.hint = Pref.shopText + " name"
+            if (Pref.IsnewleadtypeforRuby && shopType.shoptype_id.equals("16")){
+                shop_name_TL.hint="Lead Name"
+                isLeadRubyType=true
+            }else{
+                shop_name_TL.hint = Pref.shopText + " name"
+                isLeadRubyType=false
+            }
+
 
             addShopData.type = shopType.shoptype_id
 
@@ -4691,6 +5511,27 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
             if (!Pref.isCustomerFeatureEnable) {
                 when (addShopData.type) {
                     "1" -> {
+                        ownerNumberLL.visibility = View.VISIBLE
+                        owneremailLL.visibility = View.VISIBLE
+                        ll_competitor_image.visibility = View.VISIBLE
+                        contactHeader.visibility = View.VISIBLE
+                        rl_owner_name_main.visibility = View.VISIBLE
+                        rl_area_main.visibility = View.VISIBLE
+                        iv_name_icon.setImageResource(R.drawable.ic_add_shop_name_icon)
+                        category_IV.setImageResource(R.drawable.ic_add_shop_category_icon)
+                        rl_upload.visibility = View.GONE
+                        rl_upload_image1.visibility = View.GONE
+                        tv_upload_images.visibility = View.GONE
+//                        rv_upload_listVV.visibility = View.GONE
+//                        rv_upload_list.visibility = View.GONE
+
+//                        shop_name_EDT.hint = "Customer Name"
+                        tv_hint_TV_agency_Name.visibility = View.GONE
+                        rl_contact_lead.visibility = View.GONE
+                        prospect_head.visibility = View.GONE
+                        prospect_main.visibility = View.GONE
+                        questionnaire.visibility = View.GONE
+                        take_photo_tv.text = "Take a Photo"
                         rl_assign_to_dd.visibility = View.VISIBLE
                         assign_to_rl.visibility = View.VISIBLE
                         rl_amount.visibility = View.GONE
@@ -4718,17 +5559,16 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                             rl_select_dealer.visibility = View.VISIBLE
                             assignedToDDId = ""
                             tv_assign_to_dd.text = ""
-                        }
-                        else {
+                        } else {
                             rl_select_dealer.visibility = View.GONE
 
-                            if(assignDDList != null && assignDDList.isNotEmpty()) {
+                            if (assignDDList != null && assignDDList.isNotEmpty()) {
                                 assignedToDDId = assignDDList[0].dd_id!!
                                 tv_assign_to_dd.text = assignDDList[0].dd_name
                             }
                         }
 
-                        if(assignPPList != null && assignPPList.isNotEmpty()) {
+                        if (assignPPList != null && assignPPList.isNotEmpty()) {
                             assignedToPPId = assignPPList[0].pp_id!!
                             assign_to_tv.text = assignPPList[0].pp_name
                         }
@@ -4739,8 +5579,30 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                         tv_select_retailer.text = ""
                         assignedToShopId = ""
                         assign_to_shop_tv.text = ""
+                        (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
                     }
                     "2" -> {
+                        ownerNumberLL.visibility = View.VISIBLE
+                        owneremailLL.visibility = View.VISIBLE
+                        ll_competitor_image.visibility = View.VISIBLE
+                        contactHeader.visibility = View.VISIBLE
+                        rl_owner_name_main.visibility = View.VISIBLE
+                        rl_area_main.visibility = View.VISIBLE
+                        iv_name_icon.setImageResource(R.drawable.ic_add_shop_name_icon)
+                        category_IV.setImageResource(R.drawable.ic_add_shop_category_icon)
+                        rl_upload.visibility = View.GONE
+                        rl_upload_image1.visibility = View.GONE
+                        tv_upload_images.visibility = View.GONE
+//                        rv_upload_listVV.visibility = View.GONE
+//                        rv_upload_list.visibility = View.GONE
+
+//                        shop_name_EDT.hint = "Customer Name"
+                        tv_hint_TV_agency_Name.visibility = View.GONE
+                        rl_contact_lead.visibility = View.GONE
+                        prospect_head.visibility = View.GONE
+                        prospect_main.visibility = View.GONE
+                        questionnaire.visibility = View.GONE
+                        take_photo_tv.text = "Take a Photo"
                         rl_assign_to_dd.visibility = View.GONE
                         assign_to_rl.visibility = View.GONE
                         rl_amount.visibility = View.GONE
@@ -4765,8 +5627,30 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                         tv_select_retailer.text = ""
                         assignedToShopId = ""
                         assign_to_shop_tv.text = ""
+                        (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
                     }
                     "3" -> {
+                        ownerNumberLL.visibility = View.VISIBLE
+                        owneremailLL.visibility = View.VISIBLE
+                        ll_competitor_image.visibility = View.VISIBLE
+                        contactHeader.visibility = View.VISIBLE
+                        rl_owner_name_main.visibility = View.VISIBLE
+                        rl_area_main.visibility = View.VISIBLE
+                        iv_name_icon.setImageResource(R.drawable.ic_add_shop_name_icon)
+                        category_IV.setImageResource(R.drawable.ic_add_shop_category_icon)
+                        rl_upload.visibility = View.GONE
+                        rl_upload_image1.visibility = View.GONE
+                        tv_upload_images.visibility = View.GONE
+//                        rv_upload_listVV.visibility = View.GONE
+//                        rv_upload_list.visibility = View.GONE
+
+//                        shop_name_EDT.hint = "Customer Name"
+                        tv_hint_TV_agency_Name.visibility = View.GONE
+                        rl_contact_lead.visibility = View.GONE
+                        prospect_head.visibility = View.GONE
+                        prospect_main.visibility = View.GONE
+                        questionnaire.visibility = View.GONE
+                        take_photo_tv.text = "Take a Photo"
                         rl_assign_to_dd.visibility = View.GONE
                         assign_to_rl.visibility = View.GONE
                         rl_amount.visibility = View.GONE
@@ -4790,8 +5674,31 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                         tv_select_retailer.text = ""
                         assignedToShopId = ""
                         assign_to_shop_tv.text = ""
+                        (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
                     }
                     "4", "12", "13", "14", "15" -> {
+                        ownerNumberLL.visibility = View.VISIBLE
+                        owneremailLL.visibility = View.VISIBLE
+                        ll_competitor_image.visibility = View.VISIBLE
+                        contactHeader.visibility = View.VISIBLE
+                        rl_owner_name_main.visibility = View.VISIBLE
+                        rl_area_main.visibility = View.VISIBLE
+                        iv_name_icon.setImageResource(R.drawable.ic_add_shop_name_icon)
+                        category_IV.setImageResource(R.drawable.ic_add_shop_category_icon)
+                        rl_upload.visibility = View.GONE
+                        rl_upload_image1.visibility = View.GONE
+                        tv_upload_images.visibility = View.GONE
+//                        rv_upload_listVV.visibility = View.GONE
+//                        rv_upload_list.visibility = View.GONE
+
+
+//                        shop_name_EDT.hint = "Customer Name"
+                        tv_hint_TV_agency_Name.visibility = View.GONE
+                        rl_contact_lead.visibility = View.GONE
+                        prospect_head.visibility = View.GONE
+                        prospect_main.visibility = View.GONE
+                        questionnaire.visibility = View.GONE
+                        take_photo_tv.text = "Take a Photo"
                         assign_to_rl.visibility = View.VISIBLE
                         rl_assign_to_dd.visibility = View.GONE
                         rl_amount.visibility = View.GONE
@@ -4812,7 +5719,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                         else
                             rl_select_dealer.visibility = View.GONE
 
-                        if(assignPPList != null && assignPPList.isNotEmpty()) {
+                        if (assignPPList != null && assignPPList.isNotEmpty()) {
                             assignedToPPId = assignPPList[0].pp_id!!
                             assign_to_tv.text = assignPPList[0].pp_name
                         }
@@ -4824,8 +5731,30 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                         tv_select_retailer.text = ""
                         assignedToShopId = ""
                         assign_to_shop_tv.text = ""
+                        (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
                     }
                     "5" -> {
+                        ownerNumberLL.visibility = View.VISIBLE
+                        owneremailLL.visibility = View.VISIBLE
+                        ll_competitor_image.visibility = View.VISIBLE
+                        contactHeader.visibility = View.VISIBLE
+                        rl_owner_name_main.visibility = View.VISIBLE
+                        rl_area_main.visibility = View.VISIBLE
+                        iv_name_icon.setImageResource(R.drawable.ic_add_shop_name_icon)
+                        category_IV.setImageResource(R.drawable.ic_add_shop_category_icon)
+                        rl_upload.visibility = View.GONE
+                        rl_upload_image1.visibility = View.GONE
+                        tv_upload_images.visibility = View.GONE
+//                        rv_upload_listVV.visibility = View.GONE
+//                        rv_upload_list.visibility = View.GONE
+
+//                        shop_name_EDT.hint = "Customer Name"
+                        tv_hint_TV_agency_Name.visibility = View.GONE
+                        rl_contact_lead.visibility = View.GONE
+                        prospect_head.visibility = View.GONE
+                        prospect_main.visibility = View.GONE
+                        questionnaire.visibility = View.GONE
+                        take_photo_tv.text = "Take a Photo"
                         rl_assign_to_dd.visibility = View.VISIBLE
                         assign_to_rl.visibility = View.VISIBLE
                         rl_amount.visibility = View.VISIBLE
@@ -4842,12 +5771,12 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                         assign_to_tv.hint = "Assigned to " + Pref.ppText
                         rl_entity_main.visibility = View.GONE
 
-                        if(assignPPList != null && assignPPList.isNotEmpty()) {
+                        if (assignPPList != null && assignPPList.isNotEmpty()) {
                             assignedToPPId = assignPPList[0].pp_id!!
                             assign_to_tv.text = assignPPList[0].pp_name
                         }
 
-                        if(assignDDList != null && assignDDList.isNotEmpty()) {
+                        if (assignDDList != null && assignDDList.isNotEmpty()) {
                             assignedToDDId = assignDDList[0].dd_id!!
                             tv_assign_to_dd.text = assignDDList[0].dd_name
                         }
@@ -4858,8 +5787,30 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                         tv_select_retailer.text = ""
                         assignedToShopId = ""
                         assign_to_shop_tv.text = ""
+                        (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
                     }
                     "6" -> {
+                        ownerNumberLL.visibility = View.VISIBLE
+                        owneremailLL.visibility = View.VISIBLE
+                        ll_competitor_image.visibility = View.VISIBLE
+                        contactHeader.visibility = View.VISIBLE
+                        rl_owner_name_main.visibility = View.VISIBLE
+                        rl_area_main.visibility = View.VISIBLE
+                        iv_name_icon.setImageResource(R.drawable.ic_add_shop_name_icon)
+                        category_IV.setImageResource(R.drawable.ic_add_shop_category_icon)
+                        rl_upload.visibility = View.GONE
+                        rl_upload_image1.visibility = View.GONE
+                        tv_upload_images.visibility = View.GONE
+//                        rv_upload_listVV.visibility = View.GONE
+//                        rv_upload_list.visibility = View.GONE
+
+//                        shop_name_EDT.hint = "Customer Name"
+                        tv_hint_TV_agency_Name.visibility = View.GONE
+                        rl_contact_lead.visibility = View.GONE
+                        prospect_head.visibility = View.GONE
+                        prospect_main.visibility = View.GONE
+                        questionnaire.visibility = View.GONE
+                        take_photo_tv.text = "Take a Photo"
                         rl_assign_to_dd.visibility = View.GONE
                         assign_to_rl.visibility = View.GONE
                         rl_amount.visibility = View.GONE
@@ -4885,8 +5836,30 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                         tv_select_retailer.text = ""
                         assignedToShopId = ""
                         assign_to_shop_tv.text = ""
+                        (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
                     }
                     "7" -> {
+                        ownerNumberLL.visibility = View.VISIBLE
+                        owneremailLL.visibility = View.VISIBLE
+                        ll_competitor_image.visibility = View.VISIBLE
+                        contactHeader.visibility = View.VISIBLE
+                        rl_owner_name_main.visibility = View.VISIBLE
+                        rl_area_main.visibility = View.VISIBLE
+                        iv_name_icon.setImageResource(R.drawable.ic_add_shop_name_icon)
+                        category_IV.setImageResource(R.drawable.ic_add_shop_category_icon)
+                        rl_upload.visibility = View.GONE
+                        rl_upload_image1.visibility = View.GONE
+                        tv_upload_images.visibility = View.GONE
+//                        rv_upload_listVV.visibility = View.GONE
+//                        rv_upload_list.visibility = View.GONE
+
+//                        shop_name_EDT.hint = "Customer Name"
+                        tv_hint_TV_agency_Name.visibility = View.GONE
+                        rl_contact_lead.visibility = View.GONE
+                        prospect_head.visibility = View.GONE
+                        prospect_main.visibility = View.GONE
+                        questionnaire.visibility = View.GONE
+                        take_photo_tv.text = "Take a Photo"
                         rl_assign_to_dd.visibility = View.GONE
                         assign_to_rl.visibility = View.VISIBLE
                         rl_amount.visibility = View.GONE
@@ -4904,7 +5877,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                         assign_to_tv.hint = "Assigned to"
                         rl_entity_main.visibility = View.GONE
 
-                        if(assignPPList != null && assignPPList.isNotEmpty()) {
+                        if (assignPPList != null && assignPPList.isNotEmpty()) {
                             assignedToPPId = assignPPList[0].pp_id!!
                             assign_to_tv.text = assignPPList[0].pp_name
                         }
@@ -4916,8 +5889,30 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                         tv_select_retailer.text = ""
                         assignedToShopId = ""
                         assign_to_shop_tv.text = ""
+                        (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
                     }
                     "8" -> {
+                        ownerNumberLL.visibility = View.VISIBLE
+                        owneremailLL.visibility = View.VISIBLE
+                        ll_competitor_image.visibility = View.VISIBLE
+                        contactHeader.visibility = View.VISIBLE
+                        rl_owner_name_main.visibility = View.VISIBLE
+                        rl_area_main.visibility = View.VISIBLE
+                        iv_name_icon.setImageResource(R.drawable.ic_add_shop_name_icon)
+                        category_IV.setImageResource(R.drawable.ic_add_shop_category_icon)
+                        rl_upload.visibility = View.GONE
+                        rl_upload_image1.visibility = View.GONE
+                        tv_upload_images.visibility = View.GONE
+//                        rv_upload_listVV.visibility = View.GONE
+//                        rv_upload_list.visibility = View.GONE
+
+//                        shop_name_EDT.hint = "Customer Name"
+                        tv_hint_TV_agency_Name.visibility = View.GONE
+                        rl_contact_lead.visibility = View.GONE
+                        prospect_head.visibility = View.GONE
+                        prospect_main.visibility = View.GONE
+                        questionnaire.visibility = View.GONE
+                        take_photo_tv.text = "Take a Photo"
                         rl_assign_to_dd.visibility = View.GONE
                         assign_to_rl.visibility = View.GONE
                         rl_amount.visibility = View.GONE
@@ -4943,17 +5938,38 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                         tv_select_retailer.text = ""
                         assignedToShopId = ""
                         assign_to_shop_tv.text = ""
+                        (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
                     }
                     "10" -> {
+                        ownerNumberLL.visibility = View.VISIBLE
+                        owneremailLL.visibility = View.VISIBLE
+                        ll_competitor_image.visibility = View.VISIBLE
+                        contactHeader.visibility = View.VISIBLE
+                        rl_owner_name_main.visibility = View.VISIBLE
+                        rl_area_main.visibility = View.VISIBLE
+                        iv_name_icon.setImageResource(R.drawable.ic_add_shop_name_icon)
+                        category_IV.setImageResource(R.drawable.ic_add_shop_category_icon)
+                        rl_upload.visibility = View.GONE
+                        rl_upload_image1.visibility = View.GONE
+                        tv_upload_images.visibility = View.GONE
+//                        rv_upload_listVV.visibility = View.GONE
+//                        rv_upload_list.visibility = View.GONE
+
+//                        shop_name_EDT.hint = "Customer Name"
+                        tv_hint_TV_agency_Name.visibility = View.GONE
+                        rl_contact_lead.visibility = View.GONE
+                        prospect_head.visibility = View.GONE
+                        prospect_main.visibility = View.GONE
+                        questionnaire.visibility = View.GONE
+                        take_photo_tv.text = "Take a Photo"
                         if (Pref.isDDShowForMeeting) {
                             rl_assign_to_dd.visibility = View.VISIBLE
 
-                            if(assignDDList != null && assignDDList.isNotEmpty()) {
+                            if (assignDDList != null && assignDDList.isNotEmpty()) {
                                 assignedToDDId = assignDDList[0].dd_id!!
                                 tv_assign_to_dd.text = assignDDList[0].dd_name
                             }
-                        }
-                        else
+                        } else
                             rl_assign_to_dd.visibility = View.GONE
 
                         if (Pref.isDDMandatoryForMeeting)
@@ -4984,8 +6000,30 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                         tv_select_retailer.text = ""
                         assignedToShopId = ""
                         assign_to_shop_tv.text = ""
+                        (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
                     }
                     "11" -> {
+                        ownerNumberLL.visibility = View.VISIBLE
+                        owneremailLL.visibility = View.VISIBLE
+                        ll_competitor_image.visibility = View.VISIBLE
+                        contactHeader.visibility = View.VISIBLE
+                        rl_owner_name_main.visibility = View.VISIBLE
+                        rl_area_main.visibility = View.VISIBLE
+                        iv_name_icon.setImageResource(R.drawable.ic_add_shop_name_icon)
+                        category_IV.setImageResource(R.drawable.ic_add_shop_category_icon)
+                        rl_upload.visibility = View.GONE
+                        rl_upload_image1.visibility = View.GONE
+                        tv_upload_images.visibility = View.GONE
+//                        rv_upload_listVV.visibility = View.GONE
+//                        rv_upload_list.visibility = View.GONE
+
+//                        shop_name_EDT.hint = "Customer Name"
+                        tv_hint_TV_agency_Name.visibility = View.GONE
+                        rl_contact_lead.visibility = View.GONE
+                        prospect_head.visibility = View.GONE
+                        prospect_main.visibility = View.GONE
+                        questionnaire.visibility = View.GONE
+                        take_photo_tv.text = "Take a Photo"
                         rl_assign_to_dd.visibility = View.GONE
                         assign_to_rl.visibility = View.GONE
                         rl_amount.visibility = View.GONE
@@ -5012,36 +6050,99 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                         tv_select_retailer.text = ""
                         assignedToShopId = ""
                         assign_to_shop_tv.text = ""
+                        (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
                     }
                     else -> {
-                        rl_assign_to_dd.visibility = View.GONE
-                        assign_to_rl.visibility = View.GONE
-                        rl_amount.visibility = View.GONE
-                        rl_type.visibility = View.GONE
-                        shopImage.visibility = View.VISIBLE
-                        setMargin(false)
-                        ll_doc_extra_info.visibility = View.GONE
-                        ll_extra_info.visibility = View.GONE
-                        rl_select_retailer.visibility = View.GONE
-                        rl_select_dealer.visibility = View.GONE
-                        assign_to_shop_rl.visibility = View.GONE
-                        til_no.hint = getString(R.string.owner_contact_number)
-                        til_mail.hint = getString(R.string.owner_email)
-                        til_name.hint = getString(R.string.owner_name)
-                        assign_to_tv.hint = "Assigned to " + Pref.ppText
-                        rl_entity_main.visibility = View.GONE
-                        assignedToPPId = ""
-                        assignedToDDId = ""
+                        /*2-12-2021*/
+                        if (Pref.IsnewleadtypeforRuby) {
+                            assignedToPPId = ""
+                            assignedToDDId = ""
+                            tv_select_dealer.text = ""
+                            dealerId = ""
+                            retailerId = ""
+                            tv_select_retailer.text = ""
+                            assignedToShopId = ""
+                            assign_to_shop_tv.text = ""
+                            take_photo_tv.text = "Take Selfie with lead"
+                            tv_hint_TV_agency_Name.visibility = View.VISIBLE
+                            rl_contact_lead.visibility = View.VISIBLE
+                            prospect_head.visibility = View.VISIBLE
+                            prospect_main.visibility = View.VISIBLE
+                            questionnaire.visibility = View.VISIBLE
+                            shop_image_RL.visibility = View.VISIBLE
+                            rl_assign_to_dd.visibility = View.GONE
+                            assign_to_rl.visibility = View.GONE
+                            rl_amount.visibility = View.GONE
+                            rl_type.visibility = View.GONE
+                            setMargin(false)
+                            contactHeader.visibility = View.GONE
+                            rl_owner_name_main.visibility = View.GONE
+                            rl_area_main.visibility = View.GONE
+                            ownerNumberLL.visibility = View.GONE
+                            owneremailLL.visibility = View.GONE
+                            ll_competitor_image.visibility = View.GONE
+                            rl_upload.visibility = View.VISIBLE
+                            rl_upload_image1.visibility = View.VISIBLE
+                            tv_upload_images.visibility = View.VISIBLE
+//                            rv_upload_listVV.visibility = View.VISIBLE
+//                            rv_upload_list.visibility = View.VISIBLE
+                            iv_name_icon.setImageResource(R.drawable.ic_add_shop_name_icon)
+                            category_IV.setImageResource(R.drawable.ic_lead_new_lead)
+                            (mContext as DashboardActivity).setTopBarTitle("Add " + "Lead")
 
-                        tv_select_dealer.text = ""
-                        dealerId = ""
-                        retailerId = ""
-                        tv_select_retailer.text = ""
-                        assignedToShopId = ""
-                        assign_to_shop_tv.text = ""
+                        } else {
+                            ownerNumberLL.visibility = View.VISIBLE
+                            owneremailLL.visibility = View.VISIBLE
+                            ll_competitor_image.visibility = View.VISIBLE
+                            contactHeader.visibility = View.VISIBLE
+                            rl_owner_name_main.visibility = View.VISIBLE
+                            rl_area_main.visibility = View.VISIBLE
+                            iv_name_icon.setImageResource(R.drawable.ic_add_shop_name_icon)
+                            category_IV.setImageResource(R.drawable.ic_add_shop_category_icon)
+                            rl_upload.visibility = View.GONE
+                            rl_upload_image1.visibility = View.GONE
+                            tv_upload_images.visibility = View.GONE
+//                            rv_upload_listVV.visibility = View.GONE
+//                            rv_upload_list.visibility = View.GONE
+
+//                            shop_name_EDT.hint = "Customer Name"
+                            tv_hint_TV_agency_Name.visibility = View.GONE
+                            rl_contact_lead.visibility = View.GONE
+                            prospect_head.visibility = View.GONE
+                            prospect_main.visibility = View.GONE
+                            questionnaire.visibility = View.GONE
+                            take_photo_tv.text = "Take a Photo"
+                            rl_assign_to_dd.visibility = View.GONE
+                            assign_to_rl.visibility = View.GONE
+                            rl_amount.visibility = View.GONE
+                            rl_type.visibility = View.GONE
+                            shopImage.visibility = View.VISIBLE
+                            setMargin(false)
+                            ll_doc_extra_info.visibility = View.GONE
+                            ll_extra_info.visibility = View.GONE
+                            rl_select_retailer.visibility = View.GONE
+                            rl_select_dealer.visibility = View.GONE
+                            assign_to_shop_rl.visibility = View.GONE
+                            til_no.hint = getString(R.string.owner_contact_number)
+                            til_mail.hint = getString(R.string.owner_email)
+                            til_name.hint = getString(R.string.owner_name)
+                            assign_to_tv.hint = "Assigned to " + Pref.ppText
+                            rl_entity_main.visibility = View.GONE
+                            assignedToPPId = ""
+                            assignedToDDId = ""
+
+                            tv_select_dealer.text = ""
+                            dealerId = ""
+                            retailerId = ""
+                            tv_select_retailer.text = ""
+                            assignedToShopId = ""
+                            assign_to_shop_tv.text = ""
+                            (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
+                        }
                     }
                 }
-            } else {
+            }
+            else {
                 rl_assign_to_dd.visibility = View.GONE
                 assign_to_rl.visibility = View.GONE
                 rl_amount.visibility = View.GONE
@@ -5067,6 +6168,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                 tv_select_retailer.text = ""
                 assignedToShopId = ""
                 assign_to_shop_tv.text = ""
+                (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
             }
 
             popup.dismiss()
@@ -5117,6 +6219,25 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
             rl_amount.visibility = View.VISIBLE
             popup.dismiss()
         })
+
+        lead_tv.setOnClickListener(View.OnClickListener {
+            if (Pref.IsnewleadtypeforRuby) {
+                type_TV.text = "Lead"
+                shop_name_TL.hint = "Lead Name"
+                addShopData.type = "16"
+                rl_assign_to_dd.visibility = View.GONE
+                assign_to_rl.visibility = View.GONE
+                rl_amount.visibility = View.GONE
+                popup.dismiss()
+            } else {
+                shop_name_TL.hint = getString(R.string.shop_name)
+                addShopData.type = "16"
+                popup.dismiss()
+            }
+
+        })
+
+
 
         popup.setBackgroundDrawable(ColorDrawable(Color.WHITE))
 //        popup.showAsDropDown(view)
@@ -5243,8 +6364,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
         try {
             filePath = audioFile?.absolutePath!!
             audio_record_date_EDT.setText(filePath)
-        }
-        catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -5317,12 +6437,164 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                 if (!TextUtils.isEmpty(email))
                     break
             }
-        }
-        else
+        } else
             ShowCardDetailsDialog.newInstance(picTexts).show((mContext as DashboardActivity).supportFragmentManager, "")
         //ownerNumber.setText(extractPhone(picTexts).get(0))
     }
 
+    private fun voiceAttendanceMsg(msg: String) {
+        if (Pref.isVoiceEnabledForAttendanceSubmit) {
+            val speechStatus = (mContext as DashboardActivity).textToSpeech.speak(msg, TextToSpeech.QUEUE_FLUSH, null)
+            if (speechStatus == TextToSpeech.ERROR)
+                Log.e("Add Day Start", "TTS error in converting Text to Speech!");
+        }
+    }
 
+    data class QuestionAns(var qID:String,var qAns:String)
+
+     fun dialogOpenQa() {
+        val simpleDialog = Dialog(mContext)
+        simpleDialog.setCancelable(true)
+        simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        simpleDialog.setContentView(R.layout.dialog_qa)
+        val dialogHeader = simpleDialog.findViewById(R.id.dialog_qa_headerTV) as AppCustomTextView
+        val  rv_QAList = simpleDialog.findViewById(R.id.rv_qa_list) as RecyclerView
+        rv_QAList.layoutManager = LinearLayoutManager(mContext)
+
+        adapterqaList = AdapterQuestionList(mContext,quesAnsList, rv_qaList,true, object : QaOnCLick {
+            override fun getQaID(qaID: String, ans: String) {
+                for(k in 0..quesAnsList.size-1){
+                    if(quesAnsList.get(k).qID.equals(qaID)){
+                        quesAnsList.get(k).qAns=ans
+                        break
+                    }
+
+                }
+            }
+        })
+        rv_QAList.adapter = adapterqaList
+
+        dialogHeader.text = "Hi " + Pref.user_name!! + "!"
+
+        val dialogYes = simpleDialog.findViewById(R.id.dialog_qa_ok) as AppCustomTextView
+        dialogYes.setOnClickListener({ view ->
+
+            var isAllAnswered:Boolean=true
+            for(p in 0..quesAnsList.size-1){
+                if(quesAnsList.get(p).qAns.equals("-1")){
+                    isAllAnswered=false
+                }
+            }
+            if(isAllAnswered){
+                CustomStatic.IsquestionnaireClickbyUser = true
+
+                simpleDialog.cancel()
+            }else{
+                Toaster.msgShort(mContext,"Please answer to all questions")
+                voiceAttendanceMsg("Please answer to all questions")
+            }
+        })
+        simpleDialog.show()
+    }
+
+    private fun getProspectApi() {
+        try {
+            val list = AppDatabase.getDBInstance()?.prosDao()?.getAll()
+            if (list!!.size == 0) {
+                val repository = ShopListRepositoryProvider.provideShopListRepository()
+                BaseActivity.compositeDisposable.add(
+                        repository.getProsList()
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeOn(Schedulers.io())
+                                .subscribe({ result ->
+                                    val response = result as ProsListResponseModel
+                                    XLog.d("GET PROS DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                                    if (response.status == NetworkConstant.SUCCESS) {
+                                        if (response.Prospect_list != null && response.Prospect_list!!.isNotEmpty()) {
+                                            doAsync {
+                                                AppDatabase.getDBInstance()?.prosDao()?.insertAll(response.Prospect_list!!)
+                                                uiThread {
+
+                                                }
+                                            }
+                                        } else {
+                                            progress_wheel.stopSpinning()
+                                        }
+                                    } else {
+
+                                    }
+
+                                }, { error ->
+                                    progress_wheel.stopSpinning()
+
+                                })
+                )
+            } else {
+
+            }
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+
+
+        }
+
+    }
+
+    private fun showProsDialog(prosList: ArrayList<ProspectEntity>) {
+        ProspectListDialog.newInstance(prosList) { pros: ProspectEntity ->
+            prospect_name.text = pros.pros_name
+            ProsId = pros.pros_id!!
+            clearFocus()
+        }.show((mContext as DashboardActivity).supportFragmentManager, "")
+    }
+
+
+    private fun syncQuesSubmit(shopId:String){
+        try{
+            var questionSubmit : AddQuestionSubmitRequestData = AddQuestionSubmitRequestData()
+
+            if(true){
+
+                questionSubmit.user_id=Pref.user_id
+                questionSubmit.session_token=Pref.session_token
+                questionSubmit.shop_id=shopId
+
+                var questionList=AppDatabase.getDBInstance()?.questionSubmitDao()?.getQsAnsByShopID(questionSubmit.shop_id!!,false) as ArrayList<QuestionSubmit>
+                questionSubmit.Question_list=questionList
+
+                val repository = AddShopRepositoryProvider.provideAddShopWithoutImageRepository()
+                BaseActivity.compositeDisposable.add(
+                        repository.addQues(questionSubmit)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeOn(Schedulers.io())
+                                .subscribe({ result ->
+                                    val questionSubmitResponse= result as BaseResponse
+                                    XLog.d("QuestionSubmit : RESPONSE " + result.status)
+                                    if (result.status == NetworkConstant.SUCCESS){
+
+                                        doAsync {
+                                            AppDatabase.getDBInstance()!!.questionSubmitDao().updateIsUploaded(true,questionSubmit.shop_id!!)
+                                            uiThread {
+                                                getAssignedPPListApi(true,shopId)
+                                            }
+                                        }
+                                    }
+                                },{error ->
+                                    if (error == null) {
+                                        XLog.d("QuestionSubmit : ERROR " )
+                                    } else {
+                                        XLog.d("QuestionSubmit : ERROR " + error.localizedMessage)
+                                        error.printStackTrace()
+                                    }
+                                })
+                )
+            }else{
+
+            }
+        }catch (ex:Exception){
+            XLog.d("QuestionSubmit : ERROR " + ex.toString())
+            ex.printStackTrace()
+        }
+    }
 
 }

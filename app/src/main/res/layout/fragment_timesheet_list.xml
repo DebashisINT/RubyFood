@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/smoke_white">
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/date_CV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
                 android:textStyle="normal"
                 android:visibility="gone" />
         </RelativeLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
     <com.rubyfood.widgets.AppCustomTextView
         android:id="@+id/tv_pick_date"
@@ -98,7 +98,7 @@
         android:textSize="@dimen/_11sdp"
         android:textStyle="normal" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_timesheet_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -126,7 +126,7 @@
         wheel:matProg_barColor="@color/default_text_color"
         wheel:matProg_progressIndeterminate="true" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

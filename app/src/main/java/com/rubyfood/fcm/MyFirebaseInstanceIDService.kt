@@ -3,14 +3,12 @@ package com.rubyfood.fcm
 import android.annotation.SuppressLint
 import android.text.TextUtils
 import android.util.Log
-import com.elvishew.xlog.XLog
 import com.rubyfood.app.Pref
 import com.rubyfood.app.utils.AppUtils
 import com.rubyfood.base.BaseResponse
 import com.rubyfood.base.presentation.BaseActivity
 import com.rubyfood.fcm.api.UpdateDeviceTokenRepoProvider
-import com.google.firebase.iid.FirebaseInstanceId
-import com.google.firebase.iid.FirebaseInstanceIdService
+import com.elvishew.xlog.XLog
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
@@ -20,9 +18,9 @@ import org.jetbrains.anko.uiThread
  * Created by Saikat on 20-09-2018.
  */
 
-class MyFirebaseInstanceIDService : FirebaseInstanceIdService() {
+class MyFirebaseInstanceIDService{ //: FirebaseInstanceIdService() {
 
-    @SuppressLint("WrongThread")
+    /*@SuppressLint("WrongThread")
     override fun onTokenRefresh() {
         super.onTokenRefresh()
 
@@ -117,5 +115,5 @@ class MyFirebaseInstanceIDService : FirebaseInstanceIdService() {
 
     companion object {
         private val TAG = MyFirebaseInstanceIDService::class.java.simpleName
-    }
+    }*/
 }

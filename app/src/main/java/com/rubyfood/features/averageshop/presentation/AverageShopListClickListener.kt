@@ -9,4 +9,7 @@ interface AverageShopListClickListener {
     fun OnMenuClick(position: Int,view:View)
     fun OnItemClick(position: Int)
     fun onSyncClick(position: Int)
+    fun onQuestionnarieClick(shopId:String)
+    fun onReturnClick(position: Int)
+
 }

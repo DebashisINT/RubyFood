@@ -29,6 +29,7 @@ import com.rubyfood.base.presentation.BaseActivity
 import com.rubyfood.base.presentation.BaseFragment
 import com.rubyfood.features.addshop.presentation.ModelListDialog
 import com.rubyfood.features.dashboard.presentation.DashboardActivity
+import com.rubyfood.features.login.model.productlistmodel.ModelListResponse
 import com.rubyfood.features.nearbyshops.api.ShopListRepositoryProvider
 import com.rubyfood.features.nearbyshops.model.ModelListResponseModel
 import com.rubyfood.features.quotation.api.QuotationRepoProvider
@@ -865,11 +866,13 @@ class AddQuotationFragment : BaseFragment(), View.OnClickListener {
         progress_wheel.spin()
         val repository = ShopListRepositoryProvider.provideShopListRepository()
         BaseActivity.compositeDisposable.add(
-                repository.getModelList()
+                //repository.getModelList()
+                repository.getModelListNew()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
-                            val response = result as ModelListResponseModel
+                            //val response = result as ModelListResponseModel
+                            val response = result as ModelListResponse
                             XLog.d("GET MODEL DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             if (response.status == NetworkConstant.SUCCESS) {
 
@@ -877,13 +880,15 @@ class AddQuotationFragment : BaseFragment(), View.OnClickListener {
 
                                     doAsync {
 
-                                        response.model_list?.forEach {
+                                        AppDatabase.getDBInstance()?.modelListDao()?.insertAllLarge(response.model_list!!)
+
+                                 /*       response.model_list?.forEach {
                                             val modelEntity = ModelEntity()
                                             AppDatabase.getDBInstance()?.modelListDao()?.insertAll(modelEntity.apply {
                                                 model_id = it.id
                                                 model_name = it.name
                                             })
-                                        }
+                                        }*/
 
                                         uiThread {
                                             progress_wheel.stopSpinning()

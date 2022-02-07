@@ -2,7 +2,7 @@ package com.rubyfood.features.addshop.presentation
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
+import androidx.fragment.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,8 +31,8 @@ class AccuracyIssueDialog : DialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.window!!.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
+        dialog?.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.window!!.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
         val v = inflater?.inflate(R.layout.dialog_address_not_accurate, container, false)
 
         if ((mContext as DashboardActivity).getCurrentFragType() == FragType.AddShopFragment)
@@ -51,7 +51,7 @@ class AccuracyIssueDialog : DialogFragment() {
 //        new_address_EDT=v.findViewById(R.id.new_address_EDT)
         dialog_header_TV = v.findViewById(R.id.dialog_header_TV)
 
-        dialog_header_TV.text = AppUtils.hiFirstNameText()
+        dialog_header_TV.text = AppUtils.hiFirstNameText()+"!"
 
         if ((mContext as DashboardActivity).getCurrentFragType() != FragType.AddShopFragment) {
             cancel_TV.visibility = View.GONE
@@ -63,18 +63,18 @@ class AccuracyIssueDialog : DialogFragment() {
 
         update_TV.setOnClickListener(View.OnClickListener {
             if ((mContext as DashboardActivity).getCurrentFragType() != FragType.AddShopFragment) {
-                dialog.dismiss()
+                dialog?.dismiss()
             } else {
-                dialog.dismiss()
+                dialog?.dismiss()
 //                (mContext as DashboardActivity).onBackPressed()
                 (mContext as DashboardActivity).loadFragment(FragType.SearchLocationFragment, true, "")
             }
         })
         cancel_TV.setOnClickListener(View.OnClickListener {
             if ((mContext as DashboardActivity).getCurrentFragType() != FragType.AddShopFragment)
-                dialog.dismiss()
+                dialog?.dismiss()
             else {
-                dialog.dismiss()
+                dialog?.dismiss()
                 (mContext as DashboardActivity).onBackPressed()
             }
         })

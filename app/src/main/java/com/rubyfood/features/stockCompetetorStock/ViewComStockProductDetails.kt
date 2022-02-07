@@ -2,8 +2,8 @@ package com.rubyfood.features.stockCompetetorStock
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +17,7 @@ import com.rubyfood.features.stockCompetetorStock.adapter.AdapterComStockProduct
 class ViewComStockProductDetails: BaseFragment(), View.OnClickListener {
 
     private lateinit var mContext: Context
-    private lateinit var rvList:RecyclerView
+    private lateinit var rvList: RecyclerView
 
 
     override fun onAttach(context: Context) {

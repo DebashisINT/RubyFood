@@ -10,14 +10,15 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
-import android.support.annotation.RequiresApi
-import android.support.v4.app.NotificationManagerCompat
-import android.support.v7.widget.AppCompatImageView
-import android.support.v7.widget.LinearLayoutManager
+import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationManagerCompat
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.FileProvider
 import com.rubyfood.R
 import com.rubyfood.app.Pref
 import com.rubyfood.app.utils.AppUtils
@@ -25,6 +26,7 @@ import com.rubyfood.app.utils.FTStorageUtils
 import com.rubyfood.base.presentation.BaseFragment
 import com.rubyfood.features.dashboard.presentation.DashboardActivity
 import com.rubyfood.test.viewPermission.AdapterViewPermission
+import com.elvishew.xlog.XLog
 import kotlinx.android.synthetic.main.fragment_view_permission.*
 import java.io.File
 import java.util.*
@@ -244,6 +246,14 @@ class ViewPermissionFragment: BaseFragment(), View.OnClickListener {
 
         permList = (permList + permListDenied).toMutableList()
 
+        for(i in 0..permList.size-1){
+            XLog.d("Permission Name"+permList.get(i).permissionName + " Status : ")
+        }
+        for(i in 0..permListDenied.size-1){
+            XLog.d("Permission Name"+permListDenied.get(i).permissionName + " Status : ")
+        }
+
+
         showPermission()
     }
 
@@ -320,7 +330,9 @@ class ViewPermissionFragment: BaseFragment(), View.OnClickListener {
                             val fileUrl = Uri.parse(path)
 
                             val file = File(fileUrl.path)
-                            val uri = Uri.fromFile(file)
+                            //val uri = Uri.fromFile(file)
+                            //27-09-2021
+                            val uri: Uri = FileProvider.getUriForFile(mContext, context!!.applicationContext.packageName.toString() + ".provider", file)
                             shareIntent.type = "image/png"
                             shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
                             startActivity(Intent.createChooser(shareIntent, "Share pdf using"));

@@ -16,7 +16,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
-import android.support.v7.widget.CardView
+import androidx.cardview.widget.CardView
 import android.widget.LinearLayout
 import com.rubyfood.app.utils.AutoStartHelper
 import com.fasterxml.jackson.databind.util.ClassUtil.getPackageName

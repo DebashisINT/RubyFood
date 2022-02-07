@@ -9,7 +9,7 @@ import android.os.Bundle
 import android.content.DialogInterface
 import android.location.*
 import android.provider.Settings
-import android.support.v7.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import android.util.Log
 import com.rubyfood.R
 import java.io.IOException
@@ -98,14 +98,14 @@ class GPSTracker(private val mContext: Context) : Service(), LocationListener {
             // Application can use GPS or Network Provider
             if (!provider_info!!.isEmpty()) {
                 locationManager!!.requestLocationUpdates(
-                        provider_info,
+                        provider_info!!,
                         MIN_TIME_BW_UPDATES,
                         MIN_DISTANCE_CHANGE_FOR_UPDATES,
                         this
                 )
 
                 if (locationManager != null) {
-                    location = locationManager!!.getLastKnownLocation(provider_info)
+                    location = locationManager!!.getLastKnownLocation(provider_info!!)
                     updateGPSCoordinates()
                 }
             }

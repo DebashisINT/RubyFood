@@ -1,11 +1,15 @@
 package com.rubyfood.features.addAttendence.api.leavetytpeapi
 
 import com.rubyfood.app.NetworkConstant
+import com.rubyfood.base.BaseResponse
+import com.rubyfood.features.addAttendence.model.ApprovalLeaveResponseModel
 import com.rubyfood.features.addAttendence.model.LeaveTypeResponseModel
+import com.rubyfood.features.leaveapplynew.model.ApprovalRejectReqModel
 import io.reactivex.Observable
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
@@ -17,6 +21,15 @@ interface LeaveTypeApi {
     @FormUrlEncoded
     @POST("Leave/Types")
     fun getLeaveTypeList(@Field("session_token") session_token: String, @Field("user_id") user_id: String): Observable<LeaveTypeResponseModel>
+
+
+    @FormUrlEncoded
+    @POST("LeaveApproval/UserLeaveList")
+    fun getApprovalLeaveList(@Field("session_token") session_token: String, @Field("user_id_leave_applied") user_id: String): Observable<ApprovalLeaveResponseModel>
+
+
+    @POST("LeaveApproval/UserLeaveForApprovalStatus")
+    fun postApprovalRejectclick(@Body ApprovalRejectReqModel: ApprovalRejectReqModel?): Observable<BaseResponse>
 
     /**
      * Companion object to create the GithubApiService

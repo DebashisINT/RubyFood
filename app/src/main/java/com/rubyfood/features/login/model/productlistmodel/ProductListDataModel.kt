@@ -12,4 +12,5 @@ class ProductListDataModel {
     var product_name: String? = null
     var category: String? = null
     var watt: String? = null
+
 }

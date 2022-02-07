@@ -4,7 +4,7 @@ package com.rubyfood.features.myorder.presentation;
  * Created by Pratishruti on 30-10-2017.
  */
 
-public class RubyFoodJava {
+public class RubyfoodJava {
 //    private MyOrderListAdapter myOrderListAdapter;
 //    private Context context;
 //

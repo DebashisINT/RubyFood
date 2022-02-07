@@ -9,4 +9,6 @@ class AssignToDDListDataModel {
     var phn_no: String? = null
     var assigned_to_pp_id: String? = null
     var type_id: String? = null
+    var dd_latitude: String? = null
+    var dd_longitude: String? = null
 }

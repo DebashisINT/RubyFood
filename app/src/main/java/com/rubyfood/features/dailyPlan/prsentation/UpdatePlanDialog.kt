@@ -3,7 +3,7 @@ package com.rubyfood.features.dailyPlan.prsentation
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
+import androidx.fragment.app.DialogFragment
 import android.text.InputFilter
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -65,8 +65,8 @@ class UpdatePlanDialog : DialogFragment(), View.OnClickListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.window!!.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
+        dialog?.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.window!!.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
         val v = inflater.inflate(R.layout.dialog_update_plan, container, false)
 
         isCancelable = false

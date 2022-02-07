@@ -29,6 +29,12 @@ class ShopDurationRequestData {
     var out_location: String? = null
     var shop_revisit_uniqKey: String? = null
 
+    var agency_name: String? = null
+    var approximate_1st_billing_value: String?= null
+    var updated_by: String?= null
+    var updated_on: String?= null
+    var pros_id: String?= null
+
 
 //    "visited_date": "yyyy-MM-dd",
 //    "visited_time": "yyyy-MM-dd HH:mm:ss",

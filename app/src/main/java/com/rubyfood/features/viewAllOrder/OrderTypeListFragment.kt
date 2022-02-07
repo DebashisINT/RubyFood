@@ -3,10 +3,10 @@ package com.rubyfood.features.viewAllOrder
 import android.content.Context
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
-import android.support.v4.widget.NestedScrollView
-import android.support.v7.widget.AppCompatTextView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.core.widget.NestedScrollView
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -42,10 +42,7 @@ import com.rubyfood.features.location.model.ShopDurationRequest
 import com.rubyfood.features.location.model.ShopDurationRequestData
 import com.rubyfood.features.location.shopdurationapi.ShopDurationRepositoryProvider
 import com.rubyfood.features.login.api.productlistapi.ProductListRepoProvider
-import com.rubyfood.features.login.model.productlistmodel.ProductListOfflineResponseModel
-import com.rubyfood.features.login.model.productlistmodel.ProductListResponseModel
-import com.rubyfood.features.login.model.productlistmodel.ProductRateDataModel
-import com.rubyfood.features.login.model.productlistmodel.ProductRateListResponseModel
+import com.rubyfood.features.login.model.productlistmodel.*
 import com.rubyfood.features.shopdetail.presentation.ShopDetailFragment
 import com.rubyfood.features.stock.api.StockRepositoryProvider
 import com.rubyfood.features.stock.model.AddStockInputParamsModel
@@ -143,11 +140,12 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
         val repository = ProductListRepoProvider.productListProvider()
         progress_wheel.spin()
         BaseActivity.compositeDisposable.add(
-                repository.getProductRateOfflineList()
+                repository.getProductRateOfflineListNew()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
-                            val response = result as ProductListOfflineResponseModel
+                            //val response = result as ProductListOfflineResponseModel
+                            val response = result as ProductListOfflineResponseModelNew
                             BaseActivity.isApiInitiated = false
                             if (response.status == NetworkConstant.SUCCESS) {
                                 val productRateList = response.product_rate_list
@@ -160,7 +158,9 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
                                     doAsync {
 
-                                        productRateList.forEach {
+                                        AppDatabase.getDBInstance()?.productRateDao()?.insertAll(productRateList)
+
+                                        /*productRateList.forEach {
                                             val productRate = ProductRateEntity()
                                             AppDatabase.getDBInstance()?.productRateDao()?.insert(productRate.apply {
                                                 product_id = it.product_id
@@ -174,7 +174,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                                                 isStockShow = it.isStockShow
                                                 isRateShow = it.isRateShow
                                             })
-                                        }
+                                        }*/
 
                                         uiThread {
                                             productRateListDb = AppDatabase.getDBInstance()?.productRateDao()?.getAll() as ArrayList<ProductRateEntity>?
@@ -456,7 +456,8 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
         val repository = ProductListRepoProvider.productListProvider()
         progress_wheel.spin()
         BaseActivity.compositeDisposable.add(
-                repository.getProductList(Pref.session_token!!, Pref.user_id!!, date!!)
+                //repository.getProductList(Pref.session_token!!, Pref.user_id!!, date!!)
+                repository.getProductList(Pref.session_token!!, Pref.user_id!!,"")
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
@@ -469,9 +470,15 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                                     if (!isFromInitView)
                                         AppDatabase.getDBInstance()?.productListDao()?.deleteAllProduct()
 
+
+
+
                                     doAsync {
 
-                                        for (i in list.indices) {
+                                        AppDatabase.getDBInstance()?.productListDao()?.insertAll(list!!)
+
+
+                              /*          for (i in list.indices) {
                                             val productEntity = ProductListEntity()
                                             productEntity.id = list[i].id?.toInt()!!
                                             productEntity.product_name = list[i].product_name
@@ -483,7 +490,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                                             productEntity.category_id = list[i].category_id
                                             productEntity.date = AppUtils.getCurrentDateForShopActi()
                                             AppDatabase.getDBInstance()?.productListDao()?.insert(productEntity)
-                                        }
+                                        }*/
 
 
                                         /*list.forEach {
@@ -841,9 +848,14 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
                 selectedProductList.add(product!!)
                 (mContext as DashboardActivity).qtyList.add("0")
+                (mContext as DashboardActivity).schemaqtyList.add("0")
 
-                if (!Pref.isRateNotEditable)
+                (mContext as DashboardActivity).mrpList.add("0.00")
+
+                if (!Pref.isRateNotEditable){
                     (mContext as DashboardActivity).rateList.add("0.00")
+                    (mContext as DashboardActivity).schemarateList.add("0.00")
+                }
                 else {
                     if (Pref.isRateOnline) {
                         if (productRateList != null && productRateList!!.size > 0) {
@@ -857,7 +869,8 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                             }
                         } else
                             (mContext as DashboardActivity).rateList.add("0.00")
-                    } else {
+                    }
+                    else {
                         if (productRateListDb != null && productRateListDb!!.size > 0) {
                             val shop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(shopId)
                             for (i in productRateListDb!!.indices) {
@@ -883,11 +896,13 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                         } else
                             (mContext as DashboardActivity).rateList.add("0.00")
                     }
+                    (mContext as DashboardActivity).schemarateList.add("0.00")
                 }
                 //(mContext as DashboardActivity).loadFragment(FragType.CartFragment, true, selectedProductList)
 
                 //val totalPrice = String.format("%.2f", (amount.toFloat() * desc.toInt()).toFloat())
                 (mContext as DashboardActivity).totalPrice.add(0.00)
+                (mContext as DashboardActivity).totalScPrice.add(0.00)
 
                 (mContext as DashboardActivity).tv_cart_count.text = selectedProductList.size.toString()
                 (mContext as DashboardActivity).tv_cart_count.visibility = View.VISIBLE
@@ -1026,7 +1041,8 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
     }
 
     fun saveOrder(totalOrderValue: String, selectedProductList: ArrayList<ProductListEntity>?, totalPrice: java.util.ArrayList<Double>,
-                  remarks: String, imagePath: String, patient_name: String, patient_address: String, patient_no: String) {
+                 remarks: String, imagePath: String, patient_name: String, patient_address: String, patient_no: String,totalScValue: String,totalScPrice: java.util.ArrayList<Double>,
+                  hospital: String,emailAddress:String) {
 
         try {
             val addShop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(shopId)
@@ -1040,6 +1056,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                     orderListDetails.amount = totalOrderValue
                     orderListDetails.description = ""
                     orderListDetails.collection = ""
+                    orderListDetails.scheme_amount = totalScValue
 
                     val random = Random()
                     val m = random.nextInt(9999 - 1000) + 1000
@@ -1063,6 +1080,9 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                     orderListDetails.patient_name = patient_name
                     orderListDetails.patient_address = patient_address
                     orderListDetails.patient_no = patient_no
+                    /*06-01-2022*/
+                    orderListDetails.Hospital = hospital
+                    orderListDetails.Email_Address = emailAddress
 
                     val shopActivity = AppDatabase.getDBInstance()!!.shopActivityDao().getShopActivityForId(shopId)
 
@@ -1089,21 +1109,21 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                                 if (Pref.isRateNotEditable) {
                                     if (Pref.isRateOnline) {
                                         if (productRateList != null && productRateList!!.size > 0)
-                                            insertOrderProductList(selectedProductList[i], orderListDetails, i, totalPrice[i])
+                                            insertOrderProductList(selectedProductList[i], orderListDetails, i, totalPrice[i],totalScPrice[i])
                                         else {
                                             if ((mContext as DashboardActivity).rateList[i].toDouble() != 0.00)
-                                                insertOrderProductList(selectedProductList[i], orderListDetails, i, totalPrice[i])
+                                                insertOrderProductList(selectedProductList[i], orderListDetails, i, totalPrice[i],totalScPrice[i])
                                         }
                                     } else {
                                         if (productRateListDb != null && productRateListDb!!.size > 0)
-                                            insertOrderProductList(selectedProductList[i], orderListDetails, i, totalPrice[i])
+                                            insertOrderProductList(selectedProductList[i], orderListDetails, i, totalPrice[i],totalScPrice[i])
                                         else {
                                             if ((mContext as DashboardActivity).rateList[i].toDouble() != 0.00)
-                                                insertOrderProductList(selectedProductList[i], orderListDetails, i, totalPrice[i])
+                                                insertOrderProductList(selectedProductList[i], orderListDetails, i, totalPrice[i],totalScPrice[i])
                                         }
                                     }
                                 } else {
-                                    insertOrderProductList(selectedProductList[i], orderListDetails, i, totalPrice[i])
+                                    insertOrderProductList(selectedProductList[i], orderListDetails, i, totalPrice[i],totalScPrice[i])
                                 }
 
                                 /*val productOrderList = OrderProductListEntity()
@@ -1169,10 +1189,10 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                         var shopAll=AppDatabase.getDBInstance()!!.shopActivityDao().getShopActivityAll()
                         if(shopAll.size == 1){
                             obj.shop_revisit_uniqKey=shopAll.get(0).shop_revisit_uniqKey
-                        }else{
+                        }else if(shopAll.size!=0){
                             obj.shop_revisit_uniqKey=shopAll.get(shopAll.size-1).shop_revisit_uniqKey
                         }
-
+                        if(shopAll.size!=0)
                         AppDatabase.getDBInstance()?.shopVisitOrderStatusRemarksDao()!!.insert(obj)
                     }
 
@@ -1226,7 +1246,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
         }
     }
 
-    private fun insertOrderProductList(productListEntity: ProductListEntity, orderListDetails: OrderDetailsListEntity, i: Int, totalPrice: Double) {
+    private fun insertOrderProductList(productListEntity: ProductListEntity, orderListDetails: OrderDetailsListEntity, i: Int, totalPrice: Double,totalScPrice:Double) {
         val productOrderList = OrderProductListEntity()
         productOrderList.brand = productListEntity.brand
         productOrderList.brand_id = productListEntity.brand_id
@@ -1241,6 +1261,18 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
         productOrderList.rate = (mContext as DashboardActivity).rateList[i].toDouble().toString()
         productOrderList.total_price = totalPrice.toString()
         productOrderList.shop_id = shopId
+        productOrderList.scheme_qty = (mContext as DashboardActivity).schemaqtyList[i]
+        productOrderList.scheme_rate = (mContext as DashboardActivity).schemarateList[i].toDouble().toString()
+        productOrderList.total_scheme_price = totalScPrice.toString()
+
+        try{
+            productOrderList.MRP = (mContext as DashboardActivity).mrpList[i]
+        }
+        catch (ex:Exception){
+            productOrderList.MRP = ""
+        }
+
+
 
         AppDatabase.getDBInstance()!!.orderProductListDao().insert(productOrderList)
     }
@@ -1259,6 +1291,11 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
         addOrder.user_id = Pref.user_id
         addOrder.latitude = order_lat
         addOrder.longitude = order_long
+
+        if (orderListDetails!!.scheme_amount != null)
+            addOrder.scheme_amount = orderListDetails!!.scheme_amount
+        else
+            addOrder.scheme_amount = ""
 
         if (remarks != null)
             addOrder.remarks = remarks
@@ -1302,6 +1339,17 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                 addOrder.address = ""
         }
 
+        /*06-01-2022*/
+        if (orderListDetails.Hospital != null)
+            addOrder.Hospital = orderListDetails.Hospital
+        else
+            addOrder.Hospital = ""
+
+        if (orderListDetails.Email_Address != null)
+            addOrder.Email_Address = orderListDetails.Email_Address
+        else
+            addOrder.Email_Address = ""
+
         val list = AppDatabase.getDBInstance()!!.orderProductListDao().getDataAccordingToShopAndOrderId(order_id!!, shop_id!!)
         val productList = ArrayList<AddOrderInputProductList>()
 
@@ -1312,6 +1360,11 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
             product.rate = list[i].rate
             product.total_price = list[i].total_price
             product.product_name = list[i].product_name
+            product.scheme_qty = list[i].scheme_qty
+            product.scheme_rate = list[i].scheme_rate
+            product.total_scheme_price = list[i].total_scheme_price
+
+            product.MRP = list[i].MRP
             productList.add(product)
         }
 
@@ -1376,7 +1429,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
     private fun showCongratsAlert(shopId: String, orderId: String) {
         val shop = AppDatabase.getDBInstance()?.addShopEntryDao()?.getShopByIdN(shopId)
-        val body = "${AppUtils.hiFirstNameText()}. Your order for " + shop?.shopName + " has been placed successfully. Order No. is $orderId"
+        val body = "${AppUtils.hiFirstNameText()}!. Your order for " + shop?.shopName + " has been placed successfully. Order No. is $orderId"
         CommonDialogSingleBtn.getInstance("Congrats!", body, "OK", object : OnDialogClickListener {
             override fun onOkClick() {
                 (mContext as DashboardActivity).onBackPressed()
@@ -1686,6 +1739,11 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
         var uniqKeyObj=AppDatabase.getDBInstance()!!.shopActivityDao().getNewShopActivityKey(mAddShopDBModelEntity.shop_id,false)
         addShopData.shop_revisit_uniqKey=uniqKeyObj?.shop_revisit_uniqKey!!
 
+
+        addShopData.project_name = mAddShopDBModelEntity.project_name
+        addShopData.landline_number = mAddShopDBModelEntity.landline_number
+        addShopData.agency_name = mAddShopDBModelEntity.agency_name
+
         callAddShopApi(addShopData, mAddShopDBModelEntity.shopImageLocalPath, shop_id, order_id, amount, collection, currentDateForShopActi, desc, order_lat,
                 order_long, stock_id, mAddShopDBModelEntity.doc_degree, remarks, signature, orderListDetails)
         //callAddShopApi(addShopData, "")
@@ -1988,6 +2046,29 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
             shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
 
+            /*10-12-2021*/
+            shopDurationData.updated_by = Pref.user_id
+            try {
+                shopDurationData.updated_on = shopActivity.updated_on!!
+            }catch (ex:Exception){
+                shopDurationData.updated_on = ""
+            }
+
+            if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                shopDurationData.pros_id = shopActivity.pros_id!!
+            else
+                shopDurationData.pros_id = ""
+
+            if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                shopDurationData.agency_name =shopActivity.agency_name!!
+            else
+                shopDurationData.agency_name = ""
+
+            if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+            else
+                shopDurationData.approximate_1st_billing_value = ""
+
             shopDataList.add(shopDurationData)
         }
         else {
@@ -2045,6 +2126,30 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                 shopDurationData.out_location = shopActivity.out_loc
 
                 shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
+
+                /*10-12-2021*/
+                shopDurationData.updated_by = Pref.user_id
+                try {
+                    shopDurationData.updated_on = shopActivity.updated_on!!
+                }
+                catch(ex:Exception){
+                    shopDurationData.updated_on = ""
+                }
+
+                if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                    shopDurationData.pros_id = shopActivity.pros_id!!
+                else
+                    shopDurationData.pros_id = ""
+
+                if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                    shopDurationData.agency_name =shopActivity.agency_name!!
+                else
+                    shopDurationData.agency_name = ""
+
+                if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                    shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+                else
+                    shopDurationData.approximate_1st_billing_value = ""
 
                 shopDataList.add(shopDurationData)
             }

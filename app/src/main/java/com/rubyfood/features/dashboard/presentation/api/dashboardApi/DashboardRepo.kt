@@ -6,7 +6,10 @@ import com.rubyfood.app.FileUtils
 import com.rubyfood.app.Pref
 import com.rubyfood.app.utils.AppUtils
 import com.rubyfood.base.BaseResponse
+import com.rubyfood.features.addAttendence.model.AddAttendenceImageInput
 import com.rubyfood.features.dashboard.presentation.DashboardActivity
+import com.rubyfood.features.dashboard.presentation.model.DayStartEndImageInput
+import com.rubyfood.features.location.LocationFuzedService
 import com.rubyfood.features.login.model.AlarmSelfieInput
 import com.rubyfood.features.login.presentation.LoginActivity
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -55,4 +58,79 @@ class DashboardRepo(val apiService: DashboardApi) {
     fun submiLogoutReason(reason: String): Observable<BaseResponse> {
         return apiService.submitLogoutReason(Pref.session_token!!, Pref.user_id!!, reason)
     }
+
+
+
+    fun dayStartWithImage(image: String, context: Context): Observable<BaseResponse> {
+        var profile_img_data: MultipartBody.Part? = null
+
+        val profile_img_file = File(image) //FileUtils.getFile(context, Uri.parse(image))
+        if (profile_img_file != null && profile_img_file.exists()) {
+            val profileImgBody = RequestBody.create(MediaType.parse("multipart/form-data"), profile_img_file)
+            profile_img_data = MultipartBody.Part.createFormData("image", profile_img_file.name, profileImgBody)
+        } else {
+            var mFile: File? = null
+            if (context is DashboardActivity)
+                mFile = (context as DashboardActivity).getShopDummyImageFile()
+            else
+                mFile = (context as LocationFuzedService).getShopDummyImageFile()
+            val profileImgBody = RequestBody.create(MediaType.parse("multipart/form-data"), mFile)
+            profile_img_data = MultipartBody.Part.createFormData("image", mFile.name, profileImgBody)
+        }
+
+        val attendanceImg = DayStartEndImageInput()
+        attendanceImg.session_token = Pref.session_token!!
+        attendanceImg.user_id = Pref.user_id!!
+        attendanceImg.date_time = AppUtils.getCurrentDateTime()
+        attendanceImg.day_start = "1"
+        attendanceImg.day_end = "0"
+
+        //var shopObject: RequestBody? = null
+        var jsonInString = ""
+        try {
+            jsonInString = ObjectMapper().writeValueAsString(attendanceImg)
+            //  shopObject = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonInString)
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+        return apiService.dayStartEndWithImage(jsonInString, profile_img_data)
+        // return apiService.getAddShopWithoutImage(jsonInString)
+    }
+
+    fun dayEndWithImage(image: String, context: Context): Observable<BaseResponse> {
+        var profile_img_data: MultipartBody.Part? = null
+
+        val profile_img_file = File(image) //FileUtils.getFile(context, Uri.parse(image))
+        if (profile_img_file != null && profile_img_file.exists()) {
+            val profileImgBody = RequestBody.create(MediaType.parse("multipart/form-data"), profile_img_file)
+            profile_img_data = MultipartBody.Part.createFormData("image", profile_img_file.name, profileImgBody)
+        } else {
+            var mFile: File? = null
+            if (context is DashboardActivity)
+                mFile = (context as DashboardActivity).getShopDummyImageFile()
+            else
+                mFile = (context as LocationFuzedService).getShopDummyImageFile()
+            val profileImgBody = RequestBody.create(MediaType.parse("multipart/form-data"), mFile)
+            profile_img_data = MultipartBody.Part.createFormData("image", mFile.name, profileImgBody)
+        }
+
+        val attendanceImg = DayStartEndImageInput()
+        attendanceImg.session_token = Pref.session_token!!
+        attendanceImg.user_id = Pref.user_id!!
+        attendanceImg.date_time = AppUtils.getCurrentDateTime()
+        attendanceImg.day_start = "0"
+        attendanceImg.day_end = "1"
+
+        //var shopObject: RequestBody? = null
+        var jsonInString = ""
+        try {
+            jsonInString = ObjectMapper().writeValueAsString(attendanceImg)
+            //  shopObject = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonInString)
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+        return apiService.dayStartEndWithImage(jsonInString, profile_img_data)
+        // return apiService.getAddShopWithoutImage(jsonInString)
+    }
+
 }

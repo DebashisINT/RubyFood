@@ -4,8 +4,8 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.speech.tts.TextToSpeech
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
@@ -1099,6 +1099,31 @@ class ChatBotFragment : BaseFragment(), View.OnClickListener {
                     shopDurationData.in_location = shopActivity.in_loc
                     shopDurationData.out_location = shopActivity.out_loc
 
+                    shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
+                    /*10-12-2021*/
+                    shopDurationData.updated_by = Pref.user_id
+                    try {
+                        shopDurationData.updated_on = shopActivity.updated_on!!
+                    }
+                    catch (ex:Exception){
+                        shopDurationData.updated_on = ""
+                    }
+
+                    if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                        shopDurationData.pros_id = shopActivity.pros_id!!
+                    else
+                        shopDurationData.pros_id = ""
+
+                    if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                        shopDurationData.agency_name =shopActivity.agency_name!!
+                    else
+                        shopDurationData.agency_name = ""
+
+                    if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                        shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+                    else
+                        shopDurationData.approximate_1st_billing_value = ""
+
                     shopDataList.add(shopDurationData)
 
                     XLog.d("====SYNC VISITED SHOP DATA (ChatBot)====")
@@ -1170,6 +1195,31 @@ class ChatBotFragment : BaseFragment(), View.OnClickListener {
                     shopDurationData.start_timestamp = it.startTimeStamp
                     shopDurationData.in_location = it.in_loc
                     shopDurationData.out_location = it.out_loc
+
+
+                    shopDurationData.shop_revisit_uniqKey = it.shop_revisit_uniqKey!!
+                    /*10-12-2021*/
+                    shopDurationData.updated_by = Pref.user_id
+                    try {
+                        shopDurationData.updated_on = it.updated_on!!
+                    }catch (Ex:Exception){
+                        shopDurationData.updated_on = ""
+                    }
+
+                    if (!TextUtils.isEmpty(it.pros_id!!))
+                        shopDurationData.pros_id = it.pros_id!!
+                    else
+                        shopDurationData.pros_id = ""
+
+                    if (!TextUtils.isEmpty(it.agency_name!!))
+                        shopDurationData.agency_name =it.agency_name!!
+                    else
+                        shopDurationData.agency_name = ""
+
+                    if (!TextUtils.isEmpty(it.approximate_1st_billing_value))
+                        shopDurationData.approximate_1st_billing_value = it.approximate_1st_billing_value!!
+                    else
+                        shopDurationData.approximate_1st_billing_value = ""
 
                     shopDataList.add(shopDurationData)
 

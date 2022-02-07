@@ -8,7 +8,7 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/nsv_apply_reimbursement"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -39,7 +39,7 @@
                 android:background="@color/light_gray" />
 
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvDateList"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_60sdp" />
@@ -50,24 +50,24 @@
                 android:background="@color/white"
                 android:orientation="horizontal">
 
-                <android.support.design.widget.TabLayout
+                <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tabs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:tabIndicatorHeight="@dimen/_2sdp">
 
-                    <android.support.design.widget.TabItem
+                    <com.google.android.material.tabs.TabItem
                         android:id="@+id/tabItemLocal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/reimbursement_local" />
 
-                    <android.support.design.widget.TabItem
+                    <com.google.android.material.tabs.TabItem
                         android:id="@+id/tabItemOutStanding"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/reimbursement_outstation" />
-                </android.support.design.widget.TabLayout>
+                </com.google.android.material.tabs.TabLayout>
 
             </LinearLayout>
 
@@ -270,7 +270,7 @@
                         android:layout_marginTop="@dimen/_5sdp"
                         android:src="@drawable/ic_hotel_icon" />
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColorHint="@color/light_gray"
@@ -288,7 +288,7 @@
                             android:textSize="@dimen/_13sdp"
                             app:theme="@style/EvoEditTextTheme" />
 
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
                 <com.rubyfood.widgets.AppCustomTextView
@@ -435,7 +435,7 @@
                         android:layout_alignBottom="@+id/til_hotel_loc"
                         android:layout_marginBottom="@dimen/_3sdp"/>
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_hotel_loc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -454,7 +454,7 @@
                             app:theme="@style/EvoEditTextTheme"
                             android:editable="false"
                             android:background="@android:color/transparent"/>
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <ImageView
                         android:id="@+id/iv_location_dropdown"
@@ -511,7 +511,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <android.support.v7.widget.AppCompatRadioButton
+                        <androidx.appcompat.widget.AppCompatRadioButton
                             android:id="@+id/food_break_fast"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -519,7 +519,7 @@
                             android:textColor="@color/black"
                             app:buttonTint="@color/colorPrimary" />
 
-                        <android.support.v7.widget.AppCompatRadioButton
+                        <androidx.appcompat.widget.AppCompatRadioButton
                             android:id="@+id/food_lunch"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -528,7 +528,7 @@
                             android:textColor="@color/black"
                             app:buttonTint="@color/colorPrimary" />
 
-                        <android.support.v7.widget.AppCompatRadioButton
+                        <androidx.appcompat.widget.AppCompatRadioButton
                             android:id="@+id/food_dinner"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -569,7 +569,7 @@
                         android:layout_alignBottom="@+id/til_food_loc"
                         android:layout_marginBottom="@dimen/_3sdp"/>
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_food_loc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -588,7 +588,7 @@
                             app:theme="@style/EvoEditTextTheme"
                             android:editable="false"
                             android:background="@android:color/transparent"/>
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <ImageView
                         android:id="@+id/iv_food_location_dropdown"
@@ -656,7 +656,7 @@
                                 android:layout_marginTop="@dimen/_5sdp"
                                 android:src="@drawable/ic_notification" />
 
-                            <android.support.design.widget.TextInputLayout
+                            <com.google.android.material.textfield.TextInputLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textColorHint="@color/light_gray"
@@ -674,7 +674,7 @@
                                     android:textSize="@dimen/_13sdp"
                                     app:theme="@style/EvoEditTextTheme" />
 
-                            </android.support.design.widget.TextInputLayout>
+                            </com.google.android.material.textfield.TextInputLayout>
                         </LinearLayout>
                     </LinearLayout>
 
@@ -694,7 +694,7 @@
                             android:orientation="horizontal"
                             android:paddingEnd="@dimen/_15sdp">
 
-                            <android.support.design.widget.TextInputLayout
+                            <com.google.android.material.textfield.TextInputLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textColorHint="@color/light_gray"
@@ -712,7 +712,7 @@
                                     android:textSize="@dimen/_13sdp"
                                     app:theme="@style/EvoEditTextTheme" />
 
-                            </android.support.design.widget.TextInputLayout>
+                            </com.google.android.material.textfield.TextInputLayout>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -865,7 +865,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:src="@drawable/ic_rupee_icon" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_amount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -883,7 +883,7 @@
                         android:textColor="@color/black"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -947,7 +947,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:src="@drawable/ic_kilometres_icon" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColorHint="@color/light_gray"
@@ -965,7 +965,7 @@
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
 
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -1034,7 +1034,7 @@
                         android:layout_marginTop="@dimen/_5sdp"
                         android:src="@drawable/ic_remarks_icon" />
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColorHint="@color/light_gray"
@@ -1052,7 +1052,7 @@
                             android:textSize="@dimen/_13sdp"
                             app:theme="@style/EvoEditTextTheme" />
 
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </LinearLayout>
 
@@ -1092,7 +1092,7 @@
                             android:contentDescription="@null"
                             android:src="@drawable/ic_upload_icon" />
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/iv_image_cross_icon_1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -1120,7 +1120,7 @@
                             android:contentDescription="@null"
                             android:src="@drawable/ic_upload_icon" />
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/iv_image_cross_icon_2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -1148,7 +1148,7 @@
                             android:contentDescription="@null"
                             android:src="@drawable/ic_upload_icon" />
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/iv_image_cross_icon_3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -1178,9 +1178,9 @@
 
             </RelativeLayout>
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/clBottomSheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -1189,14 +1189,14 @@
 
         <include layout="@layout/bottom_sheet" />
 
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.rubyfood.widgets.AppCustomTextView
         android:id="@+id/submit_button_TV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/selector_order_history_bg"
+        android:background="@drawable/deselected_new_order_history"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center"

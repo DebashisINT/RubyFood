@@ -2,11 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/attendance_top_bar_color"
+    android:background="@drawable/shape_custom_border_blue_button"
     android:gravity="center"
     android:orientation="horizontal"
     android:paddingBottom="@dimen/_10sdp"
     android:paddingTop="@dimen/_10sdp">
+
+    <com.rubyfood.widgets.AppCustomTextView
+        android:id="@+id/file_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/Name"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_11sdp"
+        android:textStyle="bold"
+        android:visibility="gone" />
 
     <com.rubyfood.widgets.AppCustomTextView
         android:layout_width="0dp"

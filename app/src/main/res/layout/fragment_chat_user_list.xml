@@ -4,9 +4,9 @@
     xmlns:fab="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/color_silver">
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_user_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/_15sdp" />
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_close_icon"
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
@@ -60,7 +60,7 @@
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/_13sdp" />
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
                     android:textSize="@dimen/_13sdp"
                     app:theme="@style/EvoEditTextTheme" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
         </RelativeLayout>
 
         <LinearLayout
@@ -114,7 +114,7 @@
                 android:textSize="@dimen/_11sdp"
                 android:gravity="center"
                 android:background="@drawable/selector_order_history_bg"
-                android:textColor="@drawable/selector_text_clor_blue_white"
+                android:textColor="@drawable/selector_text_clor_blue_white_new_new"
                 android:clickable="true"
                 android:focusable="true" />
 
@@ -134,4 +134,4 @@
     </LinearLayout>
 
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

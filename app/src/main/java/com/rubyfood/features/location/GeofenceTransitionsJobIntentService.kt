@@ -3,8 +3,8 @@ package com.rubyfood.features.location
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.support.v4.app.JobIntentService
-import android.support.v4.content.LocalBroadcastManager
+import androidx.core.app.JobIntentService
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.text.TextUtils
 import android.util.Log
 import com.elvishew.xlog.XLog

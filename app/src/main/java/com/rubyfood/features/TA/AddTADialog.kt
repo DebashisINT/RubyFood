@@ -7,9 +7,9 @@ import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.provider.MediaStore
-import android.support.design.widget.TextInputLayout
-import android.support.v4.app.DialogFragment
-import android.support.v7.app.AlertDialog
+import com.google.android.material.textfield.TextInputLayout
+import androidx.fragment.app.DialogFragment
+import androidx.appcompat.app.AlertDialog
 import android.text.Editable
 import android.text.Selection
 import android.text.TextWatcher
@@ -87,8 +87,8 @@ class AddTADialog : DialogFragment(), View.OnTouchListener, View.OnClickListener
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.window!!.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
+        dialog?.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.window!!.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
         val v = inflater?.inflate(R.layout.dialog_add_ta, container, false)
         //addShopData = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopDetail(shopId)
         //Utils.DIALOG_NAME = "AddTADialog"
@@ -150,7 +150,7 @@ class AddTADialog : DialogFragment(), View.OnTouchListener, View.OnClickListener
             } else {
                 insertNewTaToDB()
                 (mContext as DashboardActivity).showSnackMessage("TA Data added successfully")
-                dialog.dismiss()
+                dialog?.dismiss()
                 addressUpdateClickListener.onAddedDataSuccess()
             }
         })

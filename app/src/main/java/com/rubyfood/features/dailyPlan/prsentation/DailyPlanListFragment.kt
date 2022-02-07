@@ -8,8 +8,8 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater

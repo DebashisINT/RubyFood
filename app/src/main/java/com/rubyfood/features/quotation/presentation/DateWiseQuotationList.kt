@@ -3,11 +3,11 @@ package com.rubyfood.features.quotation.presentation
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.CardView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.core.content.ContextCompat
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -853,8 +853,11 @@ class DateWiseQuotationList : BaseFragment(), DatePickerListener {
             addShopData.assigned_to_shop_id = assigned_to_shop_id
             addShopData.actual_address = actual_address
 
-            var uniqKeyObj=AppDatabase.getDBInstance()!!.shopActivityDao().getNewShopActivityKey(shop_id,false)
-            addShopData.shop_revisit_uniqKey=uniqKeyObj?.shop_revisit_uniqKey!!
+
+
+            addShopData.project_name = project_name
+            addShopData.landline_number = landline_number
+            addShopData.agency_name = agency_name
         }
         callAddShopApi(addShopData, shop?.shopImageLocalPath!!, quot, isEdit, shop.doc_degree!!)
     }
@@ -1129,7 +1132,31 @@ class DateWiseQuotationList : BaseFragment(), DatePickerListener {
             shopDurationData.in_location = shopActivity.in_loc
             shopDurationData.out_location = shopActivity.out_loc
 
-            shopDurationData.shop_revisit_uniqKey=shopActivity.shop_revisit_uniqKey!!
+            shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
+
+
+            /*10-12-2021*/
+            shopDurationData.updated_by = Pref.user_id
+            try {
+                shopDurationData.updated_on = shopActivity.updated_on!!
+            }catch (ex:Exception){
+                shopDurationData.updated_on = ""
+            }
+
+            if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                shopDurationData.pros_id = shopActivity.pros_id!!
+            else
+                shopDurationData.pros_id = ""
+
+            if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                shopDurationData.agency_name =shopActivity.agency_name!!
+            else
+                shopDurationData.agency_name = ""
+
+            if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+            else
+                shopDurationData.approximate_1st_billing_value = ""
 
             shopDataList.add(shopDurationData)
         }
@@ -1187,8 +1214,31 @@ class DateWiseQuotationList : BaseFragment(), DatePickerListener {
                 shopDurationData.in_location = shopActivity.in_loc
                 shopDurationData.out_location = shopActivity.out_loc
 
-                shopDurationData.shop_revisit_uniqKey=shopActivity.shop_revisit_uniqKey!!
+                shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
 
+
+                /*10-12-2021*/
+                shopDurationData.updated_by = Pref.user_id
+                try {
+                    shopDurationData.updated_on = shopActivity.updated_on!!
+                }catch (ex:Exception){
+                    shopDurationData.updated_on = ""
+                }
+
+                if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                    shopDurationData.pros_id = shopActivity.pros_id!!
+                else
+                    shopDurationData.pros_id = ""
+
+                if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                    shopDurationData.agency_name =shopActivity.agency_name!!
+                else
+                    shopDurationData.agency_name = ""
+
+                if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                    shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+                else
+                    shopDurationData.approximate_1st_billing_value = ""
 
                 shopDataList.add(shopDurationData)
             }
@@ -1315,6 +1365,8 @@ class DateWiseQuotationList : BaseFragment(), DatePickerListener {
                                             assignToDD.dd_phn_no = list[i].phn_no
                                             assignToDD.pp_id = list[i].assigned_to_pp_id
                                             assignToDD.type_id = list[i].type_id
+                                            assignToDD.dd_latitude = list[i].dd_latitude
+                                            assignToDD.dd_longitude = list[i].dd_longitude
                                             AppDatabase.getDBInstance()?.ddListDao()?.insert(assignToDD)
                                         }
 

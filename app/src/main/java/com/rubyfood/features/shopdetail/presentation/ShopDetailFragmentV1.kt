@@ -2,11 +2,11 @@ package com.rubyfood.features.shopdetail.presentation
 
 import android.content.Context
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewPager
+import com.google.android.material.tabs.TabLayout
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
+import androidx.core.content.ContextCompat
+import androidx.viewpager.widget.ViewPager
 import android.view.*
 import android.widget.*
 import com.rubyfood.R
@@ -132,16 +132,16 @@ class ShopDetailFragmentV1 : BaseFragment(), View.OnClickListener {
             return tabTitles.size
         }
 
-        override fun getItem(position: Int): BaseFragment? {
 
+
+        override fun getItem(position: Int): BaseFragment {
             when (position) {
                 0 -> return ShopDetailsProfileFragment()
                 1 -> return ShopDetailsOrderFragment()
                 2 -> return ShopDetailsCollectionsFragment()
 
             }
-
-            return null
+            return BaseFragment()
         }
 
         override fun getPageTitle(position: Int): CharSequence? {

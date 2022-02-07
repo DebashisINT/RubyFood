@@ -15,18 +15,25 @@
     <string name="MAP_ProjectAPIKey" translatable="false">AIzaSyAuu3Ff0neij9Y3nbg2FWn3pCsu-stZXkM</string>
 
     <!--Login-->
+    <string name="username_new" translatable="false">Username</string>
     <string name="username" translatable="false">Enter Login ID</string>
-    <string name="password" translatable="false">Enter Password</string>
+    <string name="password" translatable="false">Password</string>
+    <string name="password_new" translatable="false">*********</string>
     <string name="login" translatable="false">Login</string>
     <string name="select_login" translatable="false">Select to Login</string>
     <string name="forgot_password" translatable="false">Forgot Password?</string>
-    <string name="login_logout_msg" translatable="false">Good Internet connectivity is mandatory for Login &amp; Logout</string>
+    <string name="login_logout_msg" translatable="false">Good Internet connectivity is \nmandatory for Login &amp; Logout.</string>
     <string name="login_net_connected" translatable="false">Internet connection strength is good, you can login now.</string>
-    <string name="login_net_disconnected" translatable="false">Internet is disconnected, you cannot login, please switch on the internet</string>
+    <string name="login_net_connected1" translatable="false">You can login now.</string>
+    <string name="login_net_disconnected" translatable="false">Internet is disconnected, you cannot login, please switch on the internet.</string>
+    <string name="login_net_disconnected1" translatable="false">Please switch on the internet.</string>
     <string name="remember_me" translatable="false">Remember me</string>
 
     <!--Menu-->
     <string name="add_order" translatable="false">Add Order</string>
+    <string name="photo_registration" translatable="false">Photo Registration</string>
+    <string name="team_attendance" translatable="false">Team Attendance</string>
+    <string name="photo_attd" translatable="false">Photo Attendance</string>
     <string name="view_order" translatable="false">View Order</string>
     <string name="add" translatable="false">Add</string>
     <string name="my_allowence_request" translatable="false">My Allowance Request</string>
@@ -65,6 +72,8 @@
     <string name="current_stock_list" translatable="false">Current Stock Details</string>
     <string name="current_stock_product_list" translatable="false">Product Details</string>
     <string name="competetor_stock_list" translatable="false">Competitor Stock Details</string>
+    <string name="new_order_scr_add_order" translatable="false">Add Order</string>
+    <string name="new_order_scr_cart" translatable="false">Cart</string>
     <string name="outlet_stock_list" translatable="false">Outlet Stock List</string>
     <string name="gps_restriction" translatable="false">GPS Restriction</string>
     <string name="view_cart" translatable="false">View Cart</string>
@@ -177,6 +186,7 @@
     <string name="emailblank_error" translatable="false">Please enter email ID</string>
     <string name="numbervalid_error" translatable="false">Please enter valid phone number</string>
     <string name="numberblank_error" translatable="false">Please enter contact number</string>
+    <string name="agency_name_error" translatable="false">Please enter agency name</string>
     <string name="contact_number_exist" translatable="false">Contact number already exist</string>
     <string name="shopname_error" translatable="false">Please enter shop name</string>
     <string name="shopadd_error" translatable="false">Please enter shop address</string>
@@ -276,7 +286,9 @@
     <string name="total_items" translatable="false">Total item(s):</string>
     <string name="total_amount" translatable="false">Total Amount:</string>
     <string name="order_items" translatable="false">Order item(s):</string>
+    <string name="return_items" translatable="false">Return item(s):</string>
     <string name="new_order_amount" translatable="false">Order Amount:</string>
+    <string name="new_return_amount" translatable="false">Return Amount:</string>
 
     <!--Alerts-->
     <string name="alert_exit" translatable="false">Use back option of device to exit.</string>
@@ -329,6 +341,10 @@
     <string name="view_stock" translatable="false">View Stock</string>
     <string name="stock_update_success" translatable="false">Stock updated successfully</string>
     <string name="outstanding_update_success" translatable="false">Outstanding updated successfully</string>
+    <string name="face_reg_success" translatable="false">Face  Registration successfully</string>
+    <string name="face_match_success" translatable="false">Face  matched successfully</string>
+    <string name="not_match" translatable="false">Not Matched</string>
+    <string name="no_reg_face" translatable="false">Face  is not registered </string>
     <string name="enter_closing_stock_alert" translatable="false">Please enter closing stock</string>
     <string name="add_order_text" translatable="false">Add Order</string>
     <string name="add_order_rate" translatable="false">Add Rate</string>
@@ -465,7 +481,7 @@
     <!--<string name="functionality_disabled">Functionality Disabled</string>-->
     <string name="ok" translatable="false">Ok</string>
     <string name="cancel" translatable="false">Cancel</string>
-    <string name="confirm_logout" translatable="false">Select Ok to confirm Logout</string>
+    <string name="confirm_logout" translatable="false">Select Ok to confirm Logout.</string>
     <string name="alert_logout" translatable="false">Please logout to continue.</string>
     <string name="field_cannot_be_blank" translatable="false">Field can\'t be blank</string>
     <string name="capture_shop_image" translatable="false">Capture an image of shop</string>
@@ -481,6 +497,7 @@
     <string name="alert_revisit" translatable="false"><!--Do you want to revisit this shop?--> Wish to Revisit now?</string>
     <string name="error_message_next_visit_date" translatable="false">Please select next visit date</string>
     <string name="error_message_audio" translatable="false">Please record audio</string>
+    <string name="error_message_approx" translatable="false">Please Approx value enter</string>
 
     <!--fonts-->
     <string name="no_registered_shops" translatable="false">No Registered Shops Available</string>
@@ -500,7 +517,8 @@
     <string name="total_order_value" translatable="false">Total Orders</string>
     <string name="visit_to_shops" translatable="false">Shop(s) visit / day</string>
     <string name="visits_to_shops" translatable="false">Shop(s) \nvisited / day</string>
-    <string name="visits_to_shops_new" translatable="false"><!--Shop(s) visited--> Total Visits </string>
+    <string name="visits_to_shops_new" translatable="false"><!--Shop(s) visited-->
+        Total Visits </string>
     <string name="visits_shops" translatable="false">Shop(s) visited / day</string>
     <string name="time_spent_on_each_shop" translatable="false">Duration\nspent / shop</string>
     <string name="time_spent_on_each_shop_new" translatable="false"><!--Duration spent--> Visit Duration </string>
@@ -508,7 +526,8 @@
     <string name="spent_on_each_shop" translatable="false">spent/shop</string>
     <string name="avg_order_on_each_shop" translatable="false">average order value/shop</string>
     <string name="avg_order_value" translatable="false">Avg.order \nvalue / shop</string>
-    <string name="total_order_value_new" translatable="false"><!--Order taken--> Total Order(s)</string>
+    <string name="total_order_value_new" translatable="false"><!--Order taken-->
+        Total Order(s)</string>
     <string name="total_quot" translatable="false">Total quot.</string>
     <string name="time_spent_on_shop" translatable="false">Duration spent / shop</string>
     <string name="avg_order" translatable="false">\u20B9150</string>
@@ -635,6 +654,7 @@
     <string name="supervisor_email_text" translatable="false">Supervisor email</string>
     <string name="select_from_date" translatable="false">Please select from date first</string>
     <string name="accept_permission" translatable="false">Please accept permission from settings.</string>
+    <string name="accept_permission_storage" translatable="false">Please accept Storage permission from settings.</string>
     <string name="total_distance_km" translatable="false">Total Distance (KM)</string>
     <string name="duration" translatable="false">Duration (HRS)</string>
     <string name="distance" translatable="false">Distance (KM)</string>
@@ -668,6 +688,7 @@
     <string name="product_total_order_amount" translatable="false">Total Amount (\u20B9):\u0020</string>
     <string name="total_order_amount" translatable="false">Order Amount (\u20B9):\u0020</string>
     <string name="total_order_value_with_colon" translatable="false">Total Order Value (\u20B9):\u0020</string>
+    <string name="total_return_value_with_colon" translatable="false">Total Return Value (\u20B9):\u0020</string>
     <string name="total_stock_value_with_colon" translatable="false">Total Stock Value (\u20B9):\u0020</string>
     <string name="total_invoice_amount" translatable="false">Invoice Amount (\u20B9):\u0020</string>
     <string name="new_total_order_amount" translatable="false">Order Amount:\u0020</string>
@@ -694,7 +715,7 @@
 
     <!--Add Attendance-->
     <string name="attendance_alert" translatable="false">Attendance Notification</string>
-    <string name="attendance_msg_bdy" translatable="false">Select OK to mark your attendance</string>
+    <string name="attendance_msg_bdy" translatable="false">Select OK to mark your Attendance. Thanks.</string>
     <string name="set_todays_target" translatable="false">Set Your Today\'s Target</string>
     <string name="target_order_value" translatable="false">Target value</string>
     <string name="target_collection_value" translatable="false">Collection value</string>
@@ -744,6 +765,7 @@
     <string name="new_stock" translatable="false">Stock</string>
     <string name="quotation" translatable="false">Quotation</string>
     <string name="team_shop" translatable="false">Team shop</string>
+    <string name="return_sync" translatable="false">Return</string>
 
     <!--reimbursement-->
     <string name="reimbursement_local" translatable="false">Local</string>
@@ -754,6 +776,8 @@
     <string name="amount" translatable="false">Amount</string>
     <string name="enter_amount" translatable="false">Enter Amount</string>
     <string name="remark" translatable="false">Remark</string>
+    <string name="leave_remark" translatable="false">Leave Remark</string>
+    <string name="approver_remark" translatable="false">Approver Remark</string>
     <string name="enter_remark" translatable="false">Enter Remarks</string>
     <string name="select_type" translatable="false">Select Type</string>
     <string name="Submit" translatable="false">SUBMIT</string>
@@ -992,7 +1016,7 @@
     <string name="select_month" translatable="false">Select Month</string>
     <string name="select_year" translatable="false">Select Year</string>
     <string name="know_state" translatable="false">Report</string>
-    
+
 
     <!--Daily Plan-->
     <string name="plan_date" translatable="false">Plan Date:\u0020</string>
@@ -1178,7 +1202,7 @@
     <string name="no_completed_task_available" translatable="false">No Completed Task Available</string>
     <string name="no_pending_task_available" translatable="false">No Pending Task Available</string>
 
-    
+
     <!--Activity-->
     <string name="party" translatable="false">Enter Party</string>
     <string name="select_party" translatable="false">Select Party</string>
@@ -1442,4 +1466,66 @@
     <string name="current_lat_long" translatable="false">Current Latitude, Longitude</string>
     <string name="current_address" translatable="false">Current Address</string>
     <string name="error_enter_canceled_by" translatable="false">Please enter cancelled by</string>
+
+
+    <string name="tfe_od_app_name" translation_description="Object Detection rubyfood app [CHAR_LIMIT=40]">Face Recognition</string>
+    <string name="tfe_od_camera_error" translation_description="Error regarding camera support[CHAR_LIMIT=40]">This device doesn\'t support Camera2 API.</string>
+    <string name="label_install_anydesk" translatable="false">Install Anydesk</string>
+    <string name="label_open_anydesk" translatable="false">Open Anydesk</string>
+    <string name="label_own_files" translatable="false">Own Files</string>
+    <string name="label_from_organization" translatable="false">From Organization</string>
+    <string name="label_click_view_file" translatable="false">Click me For View files</string>
+    <string name="Name" translatable="false">File Name</string>
+    <string name="already_download" translatable="false">Already Downloaded</string>
+    <string name="day_start" translatable="false">Day Start</string>
+    <string name="day_end" translatable="false">Day End</string>
+    <string name="Stop" translatable="false">STOP</string>
+    <string name="Start" translatable="false">START</string>
+    <string name="dd_visit" translatable="false">Point Visit</string>
+    <string name="new_order_scr_list" translatable="false">Order  Details</string>
+
+
+    <string name="error_message_remarks_manadatory" translatable="false">Please put the remarks</string>
+
+
+    <string-array name="order_sort_gender">
+        <item>Select Gender</item>
+        <item>MALE</item>
+        <item>FEMALE</item>
+    </string-array>
+    <string name="title_activity_custom_dialog">CustomDialog</string>
+    <!--
+    This string is used for square devices and overridden by hello_world in
+    values-round/strings.xml for round devices.
+    -->
+    <string name="hello_world">Hello Square World!</string>
+
+
+    <string name="battery_setting_message" translatable="false">Device Battery Percentage is low.\n
+    GPS Tracking or detection may not be working Properly.</string>
+    <string name="power_setting_message" translatable="false">"Device Power Saver is ON.\n
+    GPS Tracking or detection may not be working Properly."</string>
+
+    <string name="power_off_msg" translatable="false">Device Power Saver is ON.
+    GPS Tracking or detection may not be working Properly.</string>
+
+
+    <string name="lead_name" translatable="false">Lead Name</string>
+    <string name="agency_name" translatable="false">Agency Name</string>
+    <string name="lead_contact_name" translatable="false">Lead Contact Number</string>
+    <string name="prospect_name" translatable="false">Prospect</string>
+    <string name="questionnaire" translatable="false">Questionnaire</string>
+
+
+    <string name="return_details" translatable="false">Return Details</string>
+
+    <string name="returns" translatable="false">Return</string>
+
+    <string name="pro_name" translatable="false">Project Name</string>
+    <string name="landline_contact_number" translatable="false">Landline Number</string>
+
+    <string name="name_filed_managenent_system" translatable="false">FIELD SALES MANAGEMENT</string>
+
+
+
 </resources>

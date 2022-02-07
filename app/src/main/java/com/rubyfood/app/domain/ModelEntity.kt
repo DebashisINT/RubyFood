@@ -1,8 +1,8 @@
 package com.rubyfood.app.domain
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.rubyfood.app.AppConstant
 
 /**
@@ -20,4 +20,6 @@ class ModelEntity {
 
     @ColumnInfo(name = "model_name")
     var model_name: String? = null
+
+
 }

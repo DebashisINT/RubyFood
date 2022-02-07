@@ -2,7 +2,7 @@ package com.rubyfood.features.viewAllOrder
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
+import androidx.fragment.app.DialogFragment
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -77,8 +77,8 @@ class AddOrderDialog : DialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.window!!.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
+        dialog?.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.window!!.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
         val v = inflater?.inflate(R.layout.dialog_add_order, container, false)
         //addShopData = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopDetail(shopId)
         isCancelable = false
@@ -114,7 +114,7 @@ class AddOrderDialog : DialogFragment() {
                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.error_enter_order_collection))
             } else {
                 addressUpdateClickListener.onUpdateClick(order_edt.text.toString().trim(), et_order_desc.text.toString().trim(), et_collection.text.toString().trim())
-                dialog.dismiss()
+                dialog?.dismiss()
             }
         })
 

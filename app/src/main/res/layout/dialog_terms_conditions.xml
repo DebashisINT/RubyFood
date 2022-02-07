@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
                 android:layout_above="@+id/ok_TV"
                 android:layout_alignParentTop="true"/>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -86,13 +86,13 @@
                     android:textSize="@dimen/_13sdp"
                     app:theme="@style/EvoEditTextTheme" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.rubyfood.widgets.AppCustomTextView
                 android:id="@+id/ok_TV"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_35sdp"
-                android:background="@drawable/selector_order_history_bg"
+                android:background="@drawable/shape_custom_border_blue_button"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
@@ -105,4 +105,4 @@
     </LinearLayout>
 
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

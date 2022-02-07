@@ -14,4 +14,8 @@ interface LocalShopListClickListener {
     fun onLocationClick(shop: Any)
 
     fun onQuationClick(shop: Any)
+
+    fun onReturnClick(position: Int)
+
+
 }

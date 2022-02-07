@@ -3,9 +3,9 @@ package com.rubyfood.features.changepassword.presentation
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.support.design.widget.TextInputEditText
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.FragmentManager
+import com.google.android.material.textfield.TextInputEditText
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -45,8 +45,8 @@ class ChangePasswordDialog : DialogFragment(), View.OnClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.window?.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
+        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.window?.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
         val v = inflater!!.inflate(R.layout.dialogfragment_change_password, container, false)
         isCancelable = false
         initView(v)
@@ -113,7 +113,7 @@ class ChangePasswordDialog : DialogFragment(), View.OnClickListener {
         }
     }
 
-    override fun show(manager: FragmentManager?, tag: String?) {
+    override fun show(manager: FragmentManager, tag: String?) {
         try {
             val ft = manager?.beginTransaction()
             ft?.add(this, tag)

@@ -1,6 +1,9 @@
 package com.rubyfood.features.nearbyshops.api
 
 import com.rubyfood.app.NetworkConstant
+import com.rubyfood.features.login.model.GetQtsAnsSubmitDtlsResponseModel
+import com.rubyfood.features.login.model.GetSecImageUploadResponseModel
+import com.rubyfood.features.login.model.productlistmodel.ModelListResponse
 import com.rubyfood.features.nearbyshops.model.*
 import io.reactivex.Observable
 import retrofit2.Retrofit
@@ -27,6 +30,10 @@ interface ShopListApi {
     fun getModelList(@Field("session_token") session_token:String,@Field("user_id") user_id:String): Observable<ModelListResponseModel>
 
     @FormUrlEncoded
+    @POST("ProductList/ModelList")
+    fun getModelListNew(@Field("session_token") session_token:String,@Field("user_id") user_id:String): Observable<ModelListResponse>
+
+    @FormUrlEncoded
     @POST("ProductList/PrimaryApplicationList")
     fun getPrimaryAppList(@Field("session_token") session_token:String,@Field("user_id") user_id:String): Observable<PrimaryAppListResponseModel>
 
@@ -49,6 +56,26 @@ interface ShopListApi {
     @FormUrlEncoded
     @POST("Shoplist/AllShopTypeWithSettings")
     fun getShopTypeListStockView(@Field("session_token") session_token:String,@Field("user_id") user_id:String): Observable<ShopTypeStockViewResponseModel>
+
+
+    @FormUrlEncoded
+    @POST("RubyFoodLead/ProspectList")
+    fun getProsList(@Field("session_token") session_token:String,@Field("user_id") user_id:String): Observable<ProsListResponseModel>
+
+    @FormUrlEncoded
+    @POST("RubyFoodLead/QuestionList")
+    fun getQuesList(@Field("session_token") session_token:String,@Field("user_id") user_id:String): Observable<QuesListResponseModel>
+
+    @FormUrlEncoded
+    @POST("RubyFoodLead/QuestionAnswerList")
+    fun getQuestionAnsSubmitDetails(@Field("session_token") session_token:String,@Field("user_id") user_id:String)
+            : Observable<GetQtsAnsSubmitDtlsResponseModel>
+
+
+    @FormUrlEncoded
+    @POST("RubyFoodLead/LeadTypeImageLink")
+    fun getSecImageUpload(@Field("session_token") session_token:String,@Field("user_id") user_id:String)
+            : Observable<GetSecImageUploadResponseModel>
 
     /**
      * Companion object to create the GithubApiService

@@ -6,13 +6,15 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.rubyfood.R
+import com.rubyfood.app.AppDatabase
 import com.rubyfood.app.NetworkConstant
 import com.rubyfood.app.Pref
 import com.rubyfood.app.types.FragType
@@ -28,6 +30,7 @@ import com.rubyfood.features.myjobs.model.CustomerDataModel
 import com.rubyfood.features.myjobs.model.CustomerListResponseModel
 import com.rubyfood.features.nearbyuserlist.model.NearbyUserDataModel
 import com.rubyfood.features.nearbyuserlist.presentation.NearbyUserListAdapter
+import com.rubyfood.features.stockCompetetorStock.CompetetorStockFragment
 import com.rubyfood.widgets.AppCustomTextView
 import com.github.jhonnyx2012.horizontalpicker.DatePickerListener
 import com.github.jhonnyx2012.horizontalpicker.HorizontalPicker
@@ -48,6 +51,17 @@ class MyJobsFragment: BaseFragment(), DatePickerListener {
     private lateinit var tv_no_data_available: AppCustomTextView
 
     private lateinit var selectedDate: String
+
+    companion object{
+        var usr_id:String ? = ""
+        fun setUserID(objects: Any):MyJobsFragment{
+            val myJobsFragment = MyJobsFragment()
+            if (!TextUtils.isEmpty(objects.toString())) {
+                usr_id =objects.toString()
+            }
+            return myJobsFragment
+        }
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -108,10 +122,14 @@ class MyJobsFragment: BaseFragment(), DatePickerListener {
             return
         }
 
+        if(usr_id!!.length==0 || usr_id.equals("")){
+            usr_id=Pref.user_id
+        }
+
         progress_wheel.spin()
         val repository =  MyJobRepoProvider.jobRepoProvider()
         BaseActivity.compositeDisposable.add(
-                repository.getCustomerListDateWise(selectedDate)
+                repository.getCustomerListDateWise(selectedDate,usr_id!!)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->

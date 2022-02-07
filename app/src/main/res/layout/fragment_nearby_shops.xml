@@ -6,7 +6,7 @@
     android:id="@+id/shop_list_parent_rl"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/add_shop_bg_color"
+    android:background="@color/color_silver"
     android:clickable="true">
 
 
@@ -98,7 +98,7 @@
 
     </RelativeLayout>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/date_CV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
 
             />
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
     <com.rubyfood.widgets.AppCustomTextView
         android:id="@+id/tv_shop_count"
@@ -144,7 +144,7 @@
         android:visibility="gone"
         android:layout_below="@+id/tv_shop_count"/>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/near_by_shops_RCV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -163,7 +163,7 @@
         android:textStyle="normal"
         android:visibility="gone" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/filter_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -2,8 +2,8 @@ package com.rubyfood.features.stockAddCurrentStock.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.RecyclerView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.row_add_stock_item_binding.view.*
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
-class AdapterProductList(val context: Context, val productList: ArrayList<ProductListEntity>?, val productListQty:ArrayList<String>?, private val listner: ProductListOnClick):RecyclerView.Adapter<AdapterProductList.ProductListViewHolder>() {
+class AdapterProductList(val context: Context, val productList: ArrayList<ProductListEntity>?, val productListQty:ArrayList<String>?, private val listner: ProductListOnClick): RecyclerView.Adapter<AdapterProductList.ProductListViewHolder>() {
 
 
    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductListViewHolder {

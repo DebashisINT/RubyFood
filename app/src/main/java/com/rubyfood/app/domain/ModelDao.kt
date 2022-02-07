@@ -1,8 +1,9 @@
 package com.rubyfood.app.domain
 
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.Query
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.rubyfood.app.AppConstant
 
 /**
@@ -22,4 +23,9 @@ interface ModelDao {
 
     @Query("SELECT * FROM " + AppConstant.MODEL_TABLE + " where model_id=:model_id")
     fun getSingleType(model_id: String): ModelEntity
+
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @JvmSuppressWildcards
+    abstract fun insertAllLarge(model: List<ModelEntity>)
 }

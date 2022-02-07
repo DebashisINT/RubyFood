@@ -1,7 +1,7 @@
 package com.rubyfood.features.orderList
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -124,7 +124,8 @@ class NewDateWiseOrderListAdapter(context: Context, userLocationDataEntity: Arra
                 val list_ = AppDatabase.getDBInstance()!!.billingDao().getDataOrderIdWise(userLocationDataEntity[adapterPosition].order_id!!)
                 if (list_ != null && list_.isNotEmpty()) {
 
-                    itemView.tv_billing.setBackgroundResource(R.drawable.selector_view_bills_bg)
+                    //itemView.tv_billing.setBackgroundResource(R.drawable.selector_view_bills_bg)
+                    itemView.tv_billing.setBackgroundResource(R.drawable.shape_custom_border_blue_button)
                     itemView.tv_billing.setText(R.string.view_bill)
 
                     itemView.tv_billing.setOnClickListener {
@@ -133,7 +134,8 @@ class NewDateWiseOrderListAdapter(context: Context, userLocationDataEntity: Arra
                     }
                 } else {
 
-                    itemView.tv_billing.setBackgroundResource(R.drawable.selector_update_bills_bg)
+                    //itemView.tv_billing.setBackgroundResource(R.drawable.selector_update_bills_bg)
+                    itemView.tv_billing.setBackgroundResource(R.drawable.shape_custom_border_blue_button)
                     itemView.tv_billing.text = Pref.updateBillingText
 
                     itemView.tv_billing.setOnClickListener {

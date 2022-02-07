@@ -5,7 +5,7 @@
     android:id="@+id/rl_add_chemist_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/smoke_white">
+    android:background="@color/color_silver">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -75,14 +75,14 @@
                     android:layout_alignParentRight="true"
                     android:layout_below="@+id/tv_product_asterik">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/ic_search_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:contentDescription="@null"
                         app:srcCompat="@drawable/places_ic_search" />
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/ic_close_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -113,7 +113,7 @@
                     android:background="@color/gray_50" />
             </RelativeLayout>
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_search_list"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_120sdp"
@@ -257,14 +257,14 @@
                         android:layout_alignParentRight="true"
                         android:layout_below="@+id/tv_pob_product_asterik">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/ic_pob_search_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:contentDescription="@null"
                             app:srcCompat="@drawable/places_ic_search" />
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/ic_pob_close_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -296,7 +296,7 @@
                         android:background="@color/gray_50" />
                 </RelativeLayout>
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_pob_search_list"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_120sdp"
@@ -311,7 +311,7 @@
                 android:layout_marginRight="@dimen/_12sdp"
                 android:layout_marginTop="@dimen/_5sdp">
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_vol"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -329,7 +329,7 @@
                         android:singleLine="true"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.rubyfood.widgets.AppCustomTextView
                     android:id="@+id/tv_vol_asterisk_mark"
@@ -379,7 +379,7 @@
                 android:layout_marginRight="@dimen/_12sdp"
                 android:layout_marginTop="@dimen/_5sdp">
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_remarks"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -397,7 +397,7 @@
                         android:singleLine="true"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.rubyfood.widgets.AppCustomTextView
                     android:id="@+id/tv_remarks_asterisk_mark"
@@ -515,7 +515,7 @@
                 android:layout_marginRight="@dimen/_12sdp"
                 android:layout_marginTop="@dimen/_5sdp">
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_remarks_mr"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -533,7 +533,7 @@
                         android:singleLine="true"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.rubyfood.widgets.AppCustomTextView
                     android:id="@+id/tv_remarks_mr_asterisk_mark"

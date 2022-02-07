@@ -2,7 +2,7 @@ package com.rubyfood.features.logoutsync.presentation
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatImageView
 import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater

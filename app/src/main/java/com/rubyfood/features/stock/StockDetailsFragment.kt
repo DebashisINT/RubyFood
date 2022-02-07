@@ -3,9 +3,9 @@ package com.rubyfood.features.stock
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +15,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import com.rubyfood.R
 import com.rubyfood.app.AppDatabase
+import com.rubyfood.app.Pref
 import com.rubyfood.app.domain.StockDetailsListEntity
 import com.rubyfood.app.uiaction.IntentActionable
 import com.rubyfood.app.utils.AppUtils
@@ -46,6 +47,10 @@ class StockDetailsFragment: BaseFragment() {
     private lateinit var tv_shop_name: AppCustomTextView
     private lateinit var iv_call_icon: ImageView
     private lateinit var tv_total_value_header: AppCustomTextView
+    private lateinit var ll_patient_info: LinearLayout
+    private lateinit var ll_scheme_info: LinearLayout
+
+    private lateinit var tv_frag_cart_order_id: AppCustomTextView
 
     companion object {
 
@@ -111,6 +116,8 @@ class StockDetailsFragment: BaseFragment() {
         tv_no_data_available = view.findViewById(R.id.tv_no_data_available)
         tv_total_value_header = view.findViewById(R.id.tv_total_value_header)
 
+        tv_frag_cart_order_id = view.findViewById(R.id.tv_frag_cart_order_id)
+
         rl_cart_main = view.findViewById(R.id.rl_cart_main)
         rv_cart_list.layoutManager = LinearLayoutManager(mContext)
 
@@ -158,6 +165,18 @@ class StockDetailsFragment: BaseFragment() {
             iv_call_icon.visibility = View.GONE
 
         tv_total_value_header.text = getString(R.string.total_stock_value_with_colon)
+
+
+        ll_patient_info = view.findViewById(R.id.ll_patient_info)
+        ll_scheme_info = view.findViewById(R.id.ll_frag_cart_new_scheme_root)
+        ll_scheme_info.visibility=View.GONE
+        if (Pref.isPatientDetailsShowInOrder)
+            ll_patient_info.visibility = View.VISIBLE
+        else
+            ll_patient_info.visibility = View.GONE
+
+        tv_frag_cart_order_id.text="Stock ID:"
+
     }
 
 }

@@ -7,14 +7,15 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
@@ -497,7 +498,9 @@ class DayWiseFragment : BaseFragment(), View.OnClickListener {
                         val fileUrl = Uri.parse(path)
 
                         val file = File(fileUrl.path)
-                        val uri = Uri.fromFile(file)
+                        //val uri = Uri.fromFile(file)
+                        //27-09-2021
+                        val uri: Uri = FileProvider.getUriForFile(mContext, context!!.applicationContext.packageName.toString() + ".provider", file)
                         shareIntent.type = "image/png"
                         shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
                         startActivity(Intent.createChooser(shareIntent, "Share pdf using"))
@@ -708,7 +711,8 @@ class DayWiseFragment : BaseFragment(), View.OnClickListener {
                 return
             }
 
-            val uri = Uri.fromFile(file)
+//            val uri = Uri.fromFile(file)
+            val uri : Uri=FileProvider.getUriForFile(mContext, context!!.applicationContext.packageName.toString() + ".provider", file)
 //        shareIntent.data = fileUrl
             shareIntent.type = "image/png"
             shareIntent.putExtra(Intent.EXTRA_STREAM, uri)

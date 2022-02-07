@@ -1,6 +1,6 @@
 package com.rubyfood.features.login;
 
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 /**
  * Created by Pratishruti on 26-10-2017.

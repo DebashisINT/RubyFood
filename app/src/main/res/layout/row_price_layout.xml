@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -19,7 +19,7 @@
             android:orientation="horizontal"
             android:padding="@dimen/_5sdp">
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvPriceRow"
                 android:layout_width="0px"
                 android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
                 android:paddingLeft="@dimen/_10sdp"
                 android:paddingRight="@dimen/_10sdp">
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvPriceRowTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
                     android:textColor="#757575"
                     android:textSize="@dimen/_12sdp" />
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvPriceDesc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
 
             </LinearLayout>
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_ta_delete_icon"
                 android:layout_width="@dimen/_15sdp"
                 android:layout_height="@dimen/_15sdp"
@@ -77,4 +77,4 @@
             android:layout_marginRight="@dimen/_10sdp"
             android:background="#4d757575" />
     </LinearLayout>
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -5,13 +5,13 @@
     android:id="@+id/rl_add_task_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/color_silver"
     android:paddingLeft="@dimen/_10sdp"
     android:paddingRight="@dimen/_10sdp"
     android:paddingTop="@dimen/_20sdp"
     android:paddingBottom="@dimen/_10sdp">
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/nsv_apply_reimbursement"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp">
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_date_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
                     android:textColor="@color/red"
                     android:textSize="@dimen/_15sdp" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/date_TL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme"  />
 
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -112,7 +112,7 @@
                     android:textColor="@color/red"
                     android:textSize="@dimen/_15sdp" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_task"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -135,7 +135,7 @@
                         android:maxLength="50"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -175,7 +175,7 @@
                     android:textSize="@dimen/_15sdp"
                     android:visibility="gone"/>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_details"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -199,7 +199,7 @@
                         android:scrollbars="none"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -228,7 +228,7 @@
                 android:visibility="visible" />
 
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <com.pnikosis.materialishprogress.ProgressWheel
         android:id="@+id/progress_wheel"

@@ -163,7 +163,7 @@ class MicroLearningWebViewFragment : BaseFragment() {
                             ll_loader.visibility = View.GONE
                         }
                         else
-                            view?.loadUrl(url)
+                            view?.loadUrl(url!!)
                         Log.e("Webview", "======================page finished===================")
                         /*try {
                             if (url?.contains(mMicroLearning?.url!!)!!) {

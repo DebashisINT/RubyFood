@@ -28,7 +28,7 @@
         android:background="@color/gray_50"
         android:layout_below="@+id/et_grp_name"/>
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_done_btn"
         android:layout_width="@dimen/_30sdp"
         android:layout_height="@dimen/_30sdp"
@@ -43,7 +43,7 @@
         android:orientation="vertical"
         android:layout_below="@+id/iv_done_btn">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_selected_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
             android:textSize="@dimen/_12sdp"
             android:textColor="@color/black"/>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_user_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

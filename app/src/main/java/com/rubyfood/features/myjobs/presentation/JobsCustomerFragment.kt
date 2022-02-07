@@ -2,7 +2,7 @@ package com.rubyfood.features.myjobs.presentation
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatImageView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +13,7 @@ import com.amulyakhare.textdrawable.TextDrawable
 import com.amulyakhare.textdrawable.util.ColorGenerator
 import com.rubyfood.R
 import com.rubyfood.app.NetworkConstant
+import com.rubyfood.app.Pref
 import com.rubyfood.app.domain.TaskEntity
 import com.rubyfood.app.types.FragType
 import com.rubyfood.app.utils.AppUtils
@@ -153,6 +154,11 @@ class JobsCustomerFragment : BaseFragment(), View.OnClickListener {
             else
                 tv_update_status.visibility = View.GONE
         }
+
+
+        if(Pref.IsMyJobFromTeam){
+            tv_update_status.visibility=View.GONE
+        }
     }
 
     private fun initClickListener() {
@@ -224,10 +230,15 @@ class JobsCustomerFragment : BaseFragment(), View.OnClickListener {
             return
         }
 
+        if(MyJobsFragment.usr_id!!.length==0 || MyJobsFragment.usr_id.equals("")){
+            MyJobsFragment.usr_id =Pref.user_id
+        }
+
+
         progress_wheel.spin()
         val repository = MyJobRepoProvider.jobRepoProvider()
         BaseActivity.compositeDisposable.add(
-                repository.getStatus(customerdata?.id!!)
+                repository.getStatus(MyJobsFragment.usr_id!!,customerdata?.id!!)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->

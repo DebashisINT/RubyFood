@@ -1,8 +1,8 @@
 package com.rubyfood.features.stockAddCurrentStock.adapter
 
 import android.content.Context
-import android.support.v7.view.menu.MenuView
-import android.support.v7.widget.RecyclerView
+import androidx.appcompat.view.menu.MenuView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +12,7 @@ import com.rubyfood.app.domain.CurrentStockEntryModelEntity
 import com.rubyfood.app.domain.CurrentStockEntryProductModelEntity
 import kotlinx.android.synthetic.main.row_view_stock_product_details.view.*
 
-class AdapterStockProductDetails(val context: Context, val stockProductList: List<CurrentStockEntryProductModelEntity>):RecyclerView.Adapter<AdapterStockProductDetails.StockProductViewHolder>() {
+class AdapterStockProductDetails(val context: Context, val stockProductList: List<CurrentStockEntryProductModelEntity>): RecyclerView.Adapter<AdapterStockProductDetails.StockProductViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StockProductViewHolder {
@@ -32,7 +32,7 @@ class AdapterStockProductDetails(val context: Context, val stockProductList: Lis
         holder.tv_product_qty.text= stockProductList.get(position).product_stock_qty
     }
 
-    inner class StockProductViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
+    inner class StockProductViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         val tv_product=itemView.tv_row_view_stock_products_product
         val tv_product_brand=itemView.tv_row_view_stock_products_brand
         val tv_product_qty=itemView.tv_row_view_stock_products_qty

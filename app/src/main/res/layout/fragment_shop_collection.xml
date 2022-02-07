@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#e5e5e5">
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
@@ -20,14 +20,14 @@
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
-            <android.support.v7.widget.AppCompatSpinner
+            <androidx.appcompat.widget.AppCompatSpinner
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:entries="@array/shop_sort_array"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"/>
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/new_collection"
@@ -54,7 +54,7 @@
         <include layout="@layout/row_shop_collection_list"/>
 
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_collection_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
@@ -63,6 +63,6 @@
 
     </LinearLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -12,7 +12,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 import com.rubyfood.app.utils.FTStorageUtils
 import com.rubyfood.app.utils.SharedWakeLock
 import com.rubyfood.features.alarm.model.AlarmData
@@ -83,6 +83,10 @@ class AlarmReceiver : BroadcastReceiver() {
                     XLog.e("Alarm_Service: Service is stopped.")
 
                     if (Pref.user_id != null && Pref.user_id!!.isNotEmpty()) {
+
+                        if(Pref.IsLeavePressed==true && Pref.IsLeaveGPSTrack == false){
+                            return
+                        }
 
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                             val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler

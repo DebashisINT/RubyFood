@@ -3,8 +3,8 @@ package com.rubyfood.features.addAttendence
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.FragmentManager
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,8 +48,8 @@ class SelfieDialog : DialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.window?.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
+        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.window?.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
         val v = inflater.inflate(R.layout.dialog_selfie, container, false)
         isCancelable = false
 
@@ -83,7 +83,7 @@ class SelfieDialog : DialogFragment() {
         }
     }
 
-    override fun show(manager: FragmentManager?, tag: String?) {
+    override fun show(manager: FragmentManager, tag: String?) {
         try {
             //if (!dialog.isShowing) {
             val ft = manager?.beginTransaction()

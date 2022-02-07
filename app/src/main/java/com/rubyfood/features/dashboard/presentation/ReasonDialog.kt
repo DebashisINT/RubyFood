@@ -2,7 +2,7 @@ package com.rubyfood.features.dashboard.presentation
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
+import androidx.fragment.app.DialogFragment
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -57,9 +57,9 @@ class ReasonDialog : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCanceledOnTouchOutside(false)
-        dialog.window!!.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
+        dialog?.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.setCanceledOnTouchOutside(false)
+        dialog?.window!!.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
         val v = inflater.inflate(R.layout.dialog_reason, container, false)
         initView(v)
 

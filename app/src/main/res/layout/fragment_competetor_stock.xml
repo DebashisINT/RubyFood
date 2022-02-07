@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
+    android:background="@color/color_silver"
     android:orientation="vertical">
 
     <LinearLayout
@@ -158,7 +158,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/attendance_top_bar_color"
+            android:background="@drawable/custom_toolbar_back"
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingTop="@dimen/_10sdp"
@@ -211,7 +211,7 @@
                 android:visibility="visible" />
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_competetor_stock_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -230,7 +230,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/_20sdp">
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_competetor_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

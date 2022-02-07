@@ -11,8 +11,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
 import android.speech.tts.TextToSpeech
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.InputFilter
 import android.text.TextUtils
 import android.util.Log
@@ -539,6 +539,9 @@ class AddBillingFragment : BaseFragment(), View.OnClickListener {
         var uniqKeyObj=AppDatabase.getDBInstance()!!.shopActivityDao().getNewShopActivityKey(shop.shop_id,false)
         addShopData.shop_revisit_uniqKey=uniqKeyObj?.shop_revisit_uniqKey!!
 
+        addShopData.project_name = shop.project_name
+        addShopData.landline_number = shop.landline_number
+        addShopData.agency_name = shop.agency_name
 
         callAddShopApi(addShopData, shop.shopImageLocalPath, shop.doc_degree, billing)
         //}
@@ -808,6 +811,30 @@ class AddBillingFragment : BaseFragment(), View.OnClickListener {
 
             shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
 
+            /*10-12-2021*/
+            shopDurationData.updated_by = Pref.user_id
+            try{
+                shopDurationData.updated_on = shopActivity.updated_on!!
+            }catch (Ex:Exception){
+                shopDurationData.updated_on = ""
+            }
+
+
+            if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                shopDurationData.pros_id = shopActivity.pros_id!!
+            else
+                shopDurationData.pros_id = ""
+
+            if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                shopDurationData.agency_name =shopActivity.agency_name!!
+            else
+                shopDurationData.agency_name = ""
+
+            if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+            else
+                shopDurationData.approximate_1st_billing_value = ""
+
             shopDataList.add(shopDurationData)
         }
         else {
@@ -865,6 +892,31 @@ class AddBillingFragment : BaseFragment(), View.OnClickListener {
                 shopDurationData.out_location = shopActivity.out_loc
 
                 shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
+
+                /*10-12-2021*/
+                shopDurationData.updated_by = Pref.user_id
+
+                try{
+                    shopDurationData.updated_on = shopActivity.updated_on!!
+                }catch (ex:Exception){
+                    shopDurationData.updated_on =""
+                }
+
+
+                if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                    shopDurationData.pros_id = shopActivity.pros_id!!
+                else
+                    shopDurationData.pros_id = ""
+
+                if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                    shopDurationData.agency_name =shopActivity.agency_name!!
+                else
+                    shopDurationData.agency_name = ""
+
+                if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                    shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+                else
+                    shopDurationData.approximate_1st_billing_value = ""
 
                 shopDataList.add(shopDurationData)
             }
@@ -1010,6 +1062,8 @@ class AddBillingFragment : BaseFragment(), View.OnClickListener {
                                             assignToDD.dd_phn_no = list[i].phn_no
                                             assignToDD.pp_id = list[i].assigned_to_pp_id
                                             assignToDD.type_id = list[i].type_id
+                                            assignToDD.dd_latitude = list[i].dd_latitude
+                                            assignToDD.dd_longitude = list[i].dd_longitude
                                             AppDatabase.getDBInstance()?.ddListDao()?.insert(assignToDD)
                                         }
 
@@ -1123,6 +1177,13 @@ class AddBillingFragment : BaseFragment(), View.OnClickListener {
         addOrder.latitude = orderLat
         addOrder.longitude = orderLong
 
+        if (orderListDetails!!.scheme_amount != null)
+            addOrder.scheme_amount = orderListDetails!!.scheme_amount
+        else
+            addOrder.scheme_amount = ""
+
+
+
         if (remarks != null)
             addOrder.remarks = remarks
         else
@@ -1165,6 +1226,17 @@ class AddBillingFragment : BaseFragment(), View.OnClickListener {
                 addOrder.address = ""
         }
 
+        /*06-01-2022*/
+        if (orderListDetails?.Hospital != null)
+            addOrder.Hospital = orderListDetails?.Hospital
+        else
+            addOrder.Hospital = ""
+
+        if (orderListDetails?.Email_Address != null)
+            addOrder.Email_Address = orderListDetails?.Email_Address
+        else
+            addOrder.Email_Address = ""
+
         val list = AppDatabase.getDBInstance()!!.orderProductListDao().getDataAccordingToShopAndOrderId(order_id!!, shop_id!!)
         val productList = ArrayList<AddOrderInputProductList>()
 
@@ -1175,6 +1247,12 @@ class AddBillingFragment : BaseFragment(), View.OnClickListener {
             product.rate = list[i].rate
             product.total_price = list[i].total_price
             product.product_name = list[i].product_name
+            product.scheme_qty = list[i].scheme_qty
+            product.scheme_rate = list[i].scheme_rate
+            product.total_scheme_price = list[i].total_scheme_price
+
+            product.MRP = list[i].MRP
+
             productList.add(product)
         }
 

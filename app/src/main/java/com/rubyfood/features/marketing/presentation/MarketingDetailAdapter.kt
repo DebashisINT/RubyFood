@@ -1,7 +1,7 @@
 package com.rubyfood.features.marketing.presentation
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,7 +38,7 @@ class MarketingDetailAdapter(context: Context, marketing_list: ArrayList<Marketi
         holder.bindItems(context, marketing_list.get(position),listener)
     }
 
-    class MyViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {
+    class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         fun bindItems(context: Context, marketingitem:MarketingDetailData,listener: RecyclerViewClickListener) {
             var name= AppDatabase.getDBInstance()!!.marketingCategoryMasterDao().getMarketingCategoryNameFromId(marketingitem.material_id.toString())
             itemView.marketing_item_name_TV.text=name

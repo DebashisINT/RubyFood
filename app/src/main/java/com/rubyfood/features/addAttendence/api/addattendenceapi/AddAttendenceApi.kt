@@ -2,9 +2,7 @@ package com.rubyfood.features.addAttendence.api.addattendenceapi
 
 import com.rubyfood.app.NetworkConstant
 import com.rubyfood.base.BaseResponse
-import com.rubyfood.features.addAttendence.model.AddAttendenceInpuModel
-import com.rubyfood.features.addAttendence.model.LeaveListResponseModel
-import com.rubyfood.features.addAttendence.model.SendLeaveApprovalInputParams
+import com.rubyfood.features.addAttendence.model.*
 import io.reactivex.Observable
 import okhttp3.MultipartBody
 import retrofit2.Retrofit
@@ -39,6 +37,14 @@ interface AddAttendenceApi {
     @POST("Leave/GetLeaveList")
     fun leaveList(@Field("session_token") session_token: String, @Field("user_id") user_id: String, @Field("from_date") from_date: String,
                        @Field("to_date") to_date: String): Observable<LeaveListResponseModel>
+
+    @FormUrlEncoded
+    @POST("UserHierarchy/UserReportToInfo")
+    fun getReportToUserIDAPI(@Field("user_id") user_id: String,@Field("session_token") session_token: String): Observable<GetReportToResponse>
+
+    @FormUrlEncoded
+    @POST("Devicetoken/UserDeviceTokenInfo")
+    fun getReportToFCMInfoAPI(@Field("user_id") user_id: String,@Field("session_token") session_token: String): Observable<GetReportToFCMResponse>
 
     /**
      * Companion object to create the GithubApiService

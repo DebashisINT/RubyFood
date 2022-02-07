@@ -5,10 +5,13 @@ import android.net.Uri
 import android.text.TextUtils
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.rubyfood.app.FileUtils
+import com.rubyfood.app.Pref
 import com.rubyfood.base.BaseResponse
+import com.rubyfood.features.addshop.model.AddQuestionSubmitRequestData
 import com.rubyfood.features.addshop.model.AddShopRequestCompetetorImg
 import com.rubyfood.features.addshop.model.AddShopRequestData
 import com.rubyfood.features.addshop.model.AddShopResponse
+import com.rubyfood.features.addshop.model.assigntopplist.AddShopUploadImg
 import com.rubyfood.features.dashboard.presentation.DashboardActivity
 import com.google.gson.Gson
 import io.reactivex.Observable
@@ -22,6 +25,14 @@ import java.io.File
  * Created by Pratishruti on 22-11-2017.
  */
 class AddShopRepository(val apiService: AddShopApi) {
+
+    fun addQues(questionSubmit: AddQuestionSubmitRequestData): Observable<BaseResponse> {
+        return apiService.getAddQuestionSubmit(questionSubmit)
+    }
+
+    fun addQuesUpdate(questionSubmit: AddQuestionSubmitRequestData): Observable<BaseResponse> {
+        return apiService.getAddQuestionUpdateSubmit(questionSubmit)
+    }
 
     fun addShop(shop: AddShopRequestData): Observable<AddShopResponse> {
         return apiService.getAddShop(shop)
@@ -219,6 +230,68 @@ class AddShopRepository(val apiService: AddShopApi) {
         return  apiService.getAddShopCompetetorImage(jsonInString, profile_img_data)
     }
 
+
+    /*9-12-2021*/
+    fun addShopWithImageuploadImg1(image: AddShopUploadImg, upload_image: String?, context: Context): Observable<BaseResponse> {
+        var img_data: MultipartBody.Part? = null
+        if (!TextUtils.isEmpty(upload_image)) {
+            val profile_img_file = FileUtils.getFile(context, Uri.parse(upload_image))
+            if (profile_img_file != null && profile_img_file.exists()) {
+                val profileImgBody = RequestBody.create(MediaType.parse("multipart/form-data"), profile_img_file)
+                img_data = MultipartBody.Part.createFormData("rubylead_image1", profile_img_file.name.replace("cropped","").replace("5",""), profileImgBody)
+            } else {
+                var mFile: File
+                mFile = (context as DashboardActivity).getShopDummyImageFile()
+                val profileImgBody = RequestBody.create(MediaType.parse("multipart/form-data"), mFile)
+                img_data = MultipartBody.Part.createFormData("rubylead_image1", mFile.name, profileImgBody)
+            }
+        } else{
+
+        }
+
+        var jsonInString = ""
+        try {
+            jsonInString = Gson().toJson(image)
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+
+        return  apiService.getAddShopUploadImage(jsonInString, img_data)
+    }
+
+
+    fun addShopWithImageuploadImg2(image: AddShopUploadImg, upload_image: String?, context: Context): Observable<BaseResponse> {
+        var img_data: MultipartBody.Part? = null
+        if (!TextUtils.isEmpty(upload_image)) {
+            val profile_img_file = FileUtils.getFile(context, Uri.parse(upload_image))
+            if (profile_img_file != null && profile_img_file.exists()) {
+                val profileImgBody = RequestBody.create(MediaType.parse("multipart/form-data"), profile_img_file)
+                img_data = MultipartBody.Part.createFormData("rubylead_image2", profile_img_file.name.replace("cropped","").replace("5",""), profileImgBody)
+            } else {
+                var mFile: File
+                mFile = (context as DashboardActivity).getShopDummyImageFile()
+                val profileImgBody = RequestBody.create(MediaType.parse("multipart/form-data"), mFile)
+                img_data = MultipartBody.Part.createFormData("rubylead_image2", mFile.name, profileImgBody)
+            }
+        } else{
+
+        }
+
+        var jsonInString = ""
+        try {
+            jsonInString = Gson().toJson(image)
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+
+        return  apiService.getAddShopUploadImage2(jsonInString, img_data)
+    }
+
+
+
+
+
+
     fun uploadImage(shop_image: String, context: Context): Observable<BaseResponse> {
         var profile_img_data: MultipartBody.Part? = null
         if (!TextUtils.isEmpty(shop_image)) {
@@ -229,5 +302,12 @@ class AddShopRepository(val apiService: AddShopApi) {
 
         return apiService.uploadImage(profile_img_data)
     }
+
+    //02-11-2021
+    fun getShopPhoneNumberAllStatus(new_shop_phone:String): Observable<BaseResponse> {
+        return apiService.getDuplicationshopPhoneNumber(Pref.user_id!!,Pref.session_token!! ,new_shop_phone)
+    }
+
+
 
 }

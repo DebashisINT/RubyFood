@@ -2,7 +2,7 @@ package com.rubyfood.features.dashboard.presentation
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
+import androidx.fragment.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,8 +42,8 @@ class InternetStatusDialog : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.window?.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
+        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.window?.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
         val v = inflater.inflate(R.layout.dialog_net_status, container, false)
 
         initView(v)
@@ -59,7 +59,7 @@ class InternetStatusDialog : DialogFragment() {
             dialog_header_TV = findViewById(R.id.dialog_header_TV)
         }
 
-        dialog_header_TV.text = AppUtils.hiFirstNameText()
+        dialog_header_TV.text = AppUtils.hiFirstNameText()+"!"
         tv_net_status.text = internetStatus
 
         ok_TV.setOnClickListener {

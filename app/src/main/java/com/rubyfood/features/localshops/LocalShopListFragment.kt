@@ -1,12 +1,14 @@
 package com.rubyfood.features.localshops
 
+import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.location.Location
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.AppCompatTextView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.core.content.ContextCompat
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +25,10 @@ import com.rubyfood.app.types.FragType
 import com.rubyfood.app.uiaction.IntentActionable
 import com.rubyfood.app.utils.AppUtils
 import com.rubyfood.app.utils.FTStorageUtils
+import com.rubyfood.app.utils.PermissionUtils
+import com.rubyfood.app.utils.Toaster
 import com.rubyfood.base.presentation.BaseFragment
+import com.rubyfood.features.commondialogsinglebtn.AddFeedbackSingleBtnDialog
 import com.rubyfood.features.dashboard.presentation.DashboardActivity
 import com.rubyfood.features.location.LocationWizard.Companion.NEARBY_RADIUS
 import com.rubyfood.features.location.SingleShotLocationProvider
@@ -151,7 +156,35 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
 
         noShopAvailable.text = "No Registered " + Pref.shopText + " Available"
 
+        if(Pref.IsnewleadtypeforRuby){
+            initPermissionCheck()
+        }
+
         fetchNearbyShops()
+    }
+
+    private var permissionUtils: PermissionUtils? = null
+    private fun initPermissionCheck() {
+        permissionUtils = PermissionUtils(mContext as Activity, object : PermissionUtils.OnPermissionListener {
+            override fun onPermissionGranted() {
+                /*if(SDK_INT >= 30){
+                    if (!Environment.isExternalStorageManager()){
+                        requestPermission()
+                    }else{
+                        callUSerListApi()
+                    }
+                }else{
+                    callUSerListApi()
+                }*/
+
+                //callUSerListApi()
+            }
+
+            override fun onPermissionNotGranted() {
+                (mContext as DashboardActivity).showSnackMessage(getString(R.string.accept_permission))
+            }
+
+        }, arrayOf<String>(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
     }
 
     override fun onClick(v: View?) {
@@ -187,6 +220,10 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
                         (mContext as DashboardActivity).loadFragment(FragType.QuotationListFragment, true, nearbyShop.shop_id)
                     }
 
+                    override fun onReturnClick(position: Int) {
+                        (mContext as DashboardActivity).loadFragment(FragType.ViewAllReturnListFragment, true,list[position])
+                    }
+
                     override fun onCallClick(shop: Any) {
                         val nearbyShop: AddShopDBModelEntity = shop as AddShopDBModelEntity
                         IntentActionable.initiatePhoneCall(mContext, nearbyShop.ownerContactNumber)
@@ -194,7 +231,15 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
 
                     override fun onOrderClick(shop: Any) {
                         val nearbyShop: AddShopDBModelEntity = shop as AddShopDBModelEntity
-                        (mContext as DashboardActivity).loadFragment(FragType.ViewAllOrderListFragment, true, nearbyShop)
+                        if(Pref.IsActivateNewOrderScreenwithSize){
+                            (mContext as DashboardActivity).loadFragment(FragType.NewOrderScrOrderDetailsFragment, true, nearbyShop.shop_id)
+
+//                            (mContext as DashboardActivity).loadFragment(FragType.NewOrderScrActiFragment, true, nearbyShop)
+                        }else{
+                            (mContext as DashboardActivity).loadFragment(FragType.ViewAllOrderListFragment, true, nearbyShop)
+                        }
+
+
                     }
 
                     override fun onLocationClick(shop: Any) {
@@ -203,11 +248,17 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
                     }
 
                     override fun visitShop(shop: Any) {
-                        if (!Pref.isAddAttendence)
-                            (mContext as DashboardActivity).checkToShowAddAttendanceAlert()
-                        else {
-                            val nearbyShop: AddShopDBModelEntity = shop as AddShopDBModelEntity
-                            (mContext as DashboardActivity).callShopVisitConfirmationDialog(nearbyShop.shopName, nearbyShop.shop_id)
+                        var list  = AppDatabase.getDBInstance()!!.shopActivityDao().getAll()
+                        var shopType = AppDatabase.getDBInstance()?.addShopEntryDao()?.getShopType((shop as AddShopDBModelEntity).shop_id).toString()
+                        if(list.size==0 && shopType.equals("16") && Pref.IsnewleadtypeforRuby){
+                            Toaster.msgShort(mContext, "please wait,background data under snyc")
+                        }else{
+                            if (!Pref.isAddAttendence)
+                                (mContext as DashboardActivity).checkToShowAddAttendanceAlert()
+                            else {
+                                val nearbyShop: AddShopDBModelEntity = shop as AddShopDBModelEntity
+                                (mContext as DashboardActivity).callShopVisitConfirmationDialog(nearbyShop.shopName, nearbyShop.shop_id)
+                            }
                         }
                     }
 
@@ -295,15 +346,15 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
         SingleShotLocationProvider.requestSingleUpdate(mContext,
                 object : SingleShotLocationProvider.LocationCallback {
                     override fun onStatusChanged(status: String) {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
                     }
 
                     override fun onProviderEnabled(status: String) {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
                     }
 
                     override fun onProviderDisabled(status: String) {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
                     }
 
                     override fun onNewLocationAvailable(location: Location) {
@@ -349,6 +400,8 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
             if (userId == Pref.user_id)*/
                 newList.add(allShopList[i])
         }
+
+
 
         if (newList != null && newList.size > 0) {
             XLog.d("Local Shop List: all shop list size======> " + newList.size)

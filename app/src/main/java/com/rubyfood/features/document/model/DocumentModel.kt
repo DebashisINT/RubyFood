@@ -7,7 +7,9 @@ data class DocumentTypeResponseModel(var type_list: ArrayList<DocumentTypeDataMo
 
 data class DocumentTypeDataModel(var id: String = "",
                                  var type: String = "",
-                                 var image: String = ""): Serializable
+                                 var image: String = "",
+                                var IsForOrganization:Boolean,
+                                    var IsForOwn:Boolean): Serializable
 
 
 data class DocumentListResponseModel(var doc_list: ArrayList<DocumentListDataModel>?= null): Serializable, BaseResponse()
@@ -15,7 +17,8 @@ data class DocumentListResponseModel(var doc_list: ArrayList<DocumentListDataMod
 data class DocumentListDataModel(var id: String = "",
                                  var type_id: String = "",
                                  var date_time: String = "",
-                                 var attachment: String = ""): Serializable
+                                 var attachment: String = "",
+                                 var document_name: String = ""): Serializable
 
 data class AddEditDocumentInputParams(var session_token: String = "",
                                       var user_id: String = ""): Serializable

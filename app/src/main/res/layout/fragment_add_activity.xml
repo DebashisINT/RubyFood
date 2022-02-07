@@ -5,7 +5,7 @@
     android:id="@+id/rl_add_activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/smoke_white">
+    android:background="@color/color_silver">
 
     <com.rubyfood.widgets.AppCustomTextView
         android:id="@+id/tv_pick_date"
@@ -83,7 +83,7 @@
                         android:padding="@dimen/_3sdp"
                         android:src="@drawable/ic_gray_down_arrow_icon" />
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_party_cross_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -259,7 +259,7 @@
                     android:textSize="@dimen/_15sdp"
                     android:visibility="gone"/>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -281,7 +281,7 @@
                         android:singleLine="true"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -343,7 +343,7 @@
                         android:padding="@dimen/_3sdp"
                         android:src="@drawable/ic_gray_down_arrow_icon" />
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_activity_cross_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -430,7 +430,7 @@
                         android:padding="@dimen/_3sdp"
                         android:src="@drawable/ic_gray_down_arrow_icon" />
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_type_cross_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -518,7 +518,7 @@
                         android:padding="@dimen/_3sdp"
                         android:src="@drawable/ic_gray_down_arrow_icon" />
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_product_cross_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -570,7 +570,7 @@
                     android:layout_marginRight="@dimen/_2sdp"
                     android:background="@color/light_gray" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_subject"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -588,7 +588,7 @@
                         android:inputType="text"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.rubyfood.widgets.AppCustomTextView
                     android:id="@+id/tv_subject_asterisk_mark"
@@ -619,7 +619,7 @@
                     android:layout_marginRight="@dimen/_2sdp"
                     android:background="@color/light_gray" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_details"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -637,7 +637,7 @@
                         android:inputType="text"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.rubyfood.widgets.AppCustomTextView
                     android:id="@+id/tv_details_asterisk_mark"
@@ -759,7 +759,7 @@
                         android:padding="@dimen/_3sdp"
                         android:src="@drawable/ic_gray_down_arrow_icon" />
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_priority_cross_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -931,7 +931,7 @@
                     android:layout_marginRight="@dimen/_2sdp"
                     android:background="@color/light_gray" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_attachment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -949,7 +949,7 @@
                         android:focusable="false"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.rubyfood.widgets.AppCustomTextView
                     android:id="@+id/tv_attachment_asterisk_mark"
@@ -982,7 +982,7 @@
                     android:layout_marginRight="@dimen/_2sdp"
                     android:background="@color/light_gray" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_photo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -1000,7 +1000,7 @@
                         android:focusable="false"
                         android:textSize="@dimen/_13sdp"
                         app:theme="@style/EvoEditTextTheme" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.rubyfood.widgets.AppCustomTextView
                     android:id="@+id/tv_photo_asterisk_mark"
@@ -1024,7 +1024,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/selector_order_history_bg"
+        android:background="@drawable/shape_custom_border_blue_button"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center"

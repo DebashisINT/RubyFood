@@ -80,4 +80,28 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@android:color/black</item>
     </style>-->
+
+    <style name="CustomDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:paddingTop">20dp</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="windowFixedWidthMajor">90%</item>
+        <item name="windowFixedWidthMinor">90%</item>
+    </style>
+
+
+
+
+<!--    &lt;!&ndash; The beef: background color for Action Bar overflow menu &ndash;&gt;-->
+<!--    <style name="MyApp.PopupMenu" parent="android:Widget.Holo.Light.ListPopupWindow">-->
+<!--        <item name="android:popupBackground">@drawable/menu_dropdown_panel</item>-->
+<!--    </style>-->
+
+    <!-- Bonus: if you want to style whole Action Bar, not just the menu -->
+
+
 </resources>

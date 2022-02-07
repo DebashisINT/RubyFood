@@ -1,8 +1,8 @@
 package com.rubyfood.app.domain;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import static com.rubyfood.app.AppConstant.SHOP_TABLE;
 
@@ -246,6 +246,89 @@ public class AddShopDBModelEntity {
 
     @ColumnInfo(name = "actual_address")
     private String actual_address = null;
+
+    @ColumnInfo(name = "agency_name")
+    private String agency_name = null;
+
+    @ColumnInfo(name = "lead_contact_number")
+    private String lead_contact_number = null;
+
+
+    @ColumnInfo(name = "rubylead_image1")
+    private String rubylead_image1 = null;
+
+    @ColumnInfo(name = "rubylead_image2")
+    private String rubylead_image2 = null;
+
+    @ColumnInfo(name = "project_name")
+    private String project_name = null;
+
+    @ColumnInfo(name = "landline_number")
+    private String landline_number = null;
+
+
+    public String getProject_name() {
+        return project_name;
+    }
+
+    public void setProject_name(String project_name) {
+        this.project_name = project_name;
+    }
+
+    public String getLandline_number() {
+        return landline_number;
+    }
+
+    public void setLandline_number(String landline_number) {
+        this.landline_number = landline_number;
+    }
+
+
+
+    public String getRubylead_image1() {
+        return rubylead_image1;
+    }
+
+    public void setRubylead_image1(String rubylead_image1) {
+        this.rubylead_image1 = rubylead_image1;
+    }
+
+    public String getRubylead_image2() {
+        return rubylead_image2;
+    }
+
+    public void setRubylead_image2(String rubylead_image2) {
+        this.rubylead_image2 = rubylead_image2;
+    }
+
+
+
+    public String getAgency_name() {
+        return agency_name;
+    }
+
+    public void setAgency_name(String agency_name) {
+        this.agency_name = agency_name;
+    }
+
+    public String getLead_contact_number() {
+        return lead_contact_number;
+    }
+
+    public void setLead_contact_number(String lead_contact_number) {
+        this.lead_contact_number = lead_contact_number;
+    }
+
+
+
+    public void setCompetitor_img2(String rubylead_image2) {
+        this.rubylead_image2 = rubylead_image2;
+    }
+
+
+
+
+
 
     public String getIs_otp_verified() {
         return is_otp_verified;

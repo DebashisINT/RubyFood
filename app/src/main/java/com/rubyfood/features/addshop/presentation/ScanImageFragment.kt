@@ -1,6 +1,7 @@
 package com.rubyfood.features.addshop.presentation
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.os.Build
@@ -74,14 +75,15 @@ class ScanImageFragment : BaseFragment(), View.OnClickListener {
         }
 
         surface_view.holder.addCallback(object : SurfaceHolder.Callback {
-            override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
+            override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
             }
 
-            override fun surfaceDestroyed(holder: SurfaceHolder?) {
+            override fun surfaceDestroyed(holder: SurfaceHolder) {
                 mCameraSource.stop()
             }
 
-            override fun surfaceCreated(holder: SurfaceHolder?) {
+            @SuppressLint("MissingPermission")
+            override fun surfaceCreated(holder: SurfaceHolder) {
                 try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                         initPermissionCheck()

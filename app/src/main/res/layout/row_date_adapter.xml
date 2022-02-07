@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/_60sdp"
     android:layout_height="@dimen/_60sdp"
@@ -14,7 +14,7 @@
         android:gravity="center">
 
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvDateText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
             android:textColor="@color/date_text_unselected_color"
             android:textStyle="bold"/>
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvMonthText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,4 +35,4 @@
 
 
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

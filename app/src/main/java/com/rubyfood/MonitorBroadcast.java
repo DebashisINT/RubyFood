@@ -1,41 +1,31 @@
 package com.rubyfood;
 
 import android.annotation.SuppressLint;
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.location.LocationManager;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
-import android.media.Ringtone;
 import android.media.RingtoneManager;
-import android.media.VolumeShaper;
 import android.net.Uri;
 import android.os.Build;
-import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 
 import com.rubyfood.app.utils.AppUtils;
 import com.rubyfood.features.splash.presentation.SplashActivity;
 import com.elvishew.xlog.XLog;
 
-
-import java.util.Calendar;
-
-import static android.content.Context.ALARM_SERVICE;
-
 public class MonitorBroadcast extends BroadcastReceiver {
 
     public static MediaPlayer player = null;
     public static Vibrator vibrator = null;
+    public static Boolean isSound = false;
 
     @SuppressLint("NewApi")
     @Override
@@ -121,7 +111,7 @@ public class MonitorBroadcast extends BroadcastReceiver {
     private void funcc(Context context){
 
         //Uri soundUriAlarm= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        Uri soundUriAlarm = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://"+ context.getPackageName() + "/" + R.raw.custom_alarm_sound);
+        Uri soundUriAlarm = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://"+ context.getPackageName() + "/" + R.raw.beethoven);
         if(soundUriAlarm == null){
             //soundUriAlarm= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             soundUriAlarm= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
@@ -133,6 +123,9 @@ public class MonitorBroadcast extends BroadcastReceiver {
         player = MediaPlayer.create(context, soundUriAlarm);
         player.setLooping(true);
         player.start();
+
+        if(!isSound)
+            player.stop();
 
         vibrator=(Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         long[] pattern = {0,5,10,20,40,80,120,100,600,700,500,500,500};

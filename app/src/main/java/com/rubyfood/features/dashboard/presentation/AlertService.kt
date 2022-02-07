@@ -2,7 +2,7 @@ package com.rubyfood.features.dashboard.presentation
 
 import android.app.IntentService
 import android.content.Intent
-import android.support.v4.content.LocalBroadcastManager
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.text.TextUtils
 import android.util.Log
 import com.rubyfood.app.AppDatabase

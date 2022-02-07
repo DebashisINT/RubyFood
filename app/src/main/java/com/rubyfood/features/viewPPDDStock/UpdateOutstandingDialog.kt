@@ -2,7 +2,7 @@ package com.rubyfood.features.viewPPDDStock
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
+import androidx.fragment.app.DialogFragment
 import android.text.Editable
 import android.text.Selection
 import android.text.TextUtils
@@ -73,8 +73,8 @@ class UpdateOutstandingDialog : DialogFragment(), View.OnClickListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.window!!.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
+        dialog?.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.window!!.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
         val v = inflater.inflate(R.layout.dialog_update_stock, container, false)
 
         isCancelable = false
@@ -156,7 +156,7 @@ class UpdateOutstandingDialog : DialogFragment(), View.OnClickListener {
 
                 addressUpdateClickListener.updateOutstanding(et_mo.text.toString().trim(), et_co.text.toString().trim(), et_po.text.toString().trim())
 
-                dialog.dismiss()
+                dialog?.dismiss()
             }
         })
         shop_name_TV.text = addShopData.shopName
@@ -176,7 +176,7 @@ class UpdateOutstandingDialog : DialogFragment(), View.OnClickListener {
                     et_mo.removeTextChangedListener(moChangeListener)
 
                     et_mo.setText(resources.getString(R.string.rupee_symbol_with_space));
-                    Selection.setSelection(et_mo.text, et_mo.text.length)
+                    Selection.setSelection(et_mo.text, et_mo.text!!.length)
 
                     et_mo.addTextChangedListener(moChangeListener)
 
@@ -207,7 +207,7 @@ class UpdateOutstandingDialog : DialogFragment(), View.OnClickListener {
                     et_po.removeTextChangedListener(poChangeListener)
 
                     et_po.setText(resources.getString(R.string.rupee_symbol_with_space));
-                    Selection.setSelection(et_po.text, et_po.text.length)
+                    Selection.setSelection(et_po.text, et_po.text!!.length)
 
                     et_po.addTextChangedListener(poChangeListener)
                 }
@@ -236,7 +236,7 @@ class UpdateOutstandingDialog : DialogFragment(), View.OnClickListener {
                     et_co.removeTextChangedListener(coChangeListener)
 
                     et_co.setText(resources.getString(R.string.rupee_symbol_with_space));
-                    Selection.setSelection(et_co.text, et_co.text.length)
+                    Selection.setSelection(et_co.text, et_co.text!!.length)
 
                     et_co.addTextChangedListener(coChangeListener)
                 }

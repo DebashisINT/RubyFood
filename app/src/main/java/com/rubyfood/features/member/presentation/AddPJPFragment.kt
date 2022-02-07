@@ -5,10 +5,10 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
-import android.support.v7.widget.AppCompatImageView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.*
 import android.widget.ImageView
@@ -261,7 +261,7 @@ class AddPJPFragment : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
 
                         iv_customer_cross_icon.visibility = View.VISIBLE
 
-                    }).show(fragmentManager, "")
+                    }).show(fragmentManager!!, "")
                 } else
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_available))
             }
@@ -282,7 +282,7 @@ class AddPJPFragment : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
 
                         iv_customer_cross_icon.visibility = View.VISIBLE
 
-                    }).show(fragmentManager, "")
+                    }).show(fragmentManager!!, "")
                 } else
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_available))
             }

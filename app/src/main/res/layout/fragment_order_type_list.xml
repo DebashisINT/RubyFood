@@ -30,7 +30,7 @@
                 android:textSize="@dimen/_13sdp"
                 android:visibility="gone" />
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_5sdp"
@@ -89,15 +89,15 @@
                             android:layout_height="0.5dp"
                             android:background="@android:color/black" />
 
-                        <android.support.v7.widget.RecyclerView
+                        <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rv_brand_type_list"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_5sdp"
@@ -156,15 +156,15 @@
                             android:layout_height="0.5dp"
                             android:background="@android:color/black" />
 
-                        <android.support.v7.widget.RecyclerView
+                        <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rv_category_type_list"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_5sdp"
@@ -223,13 +223,13 @@
                             android:layout_height="0.5dp"
                             android:background="@android:color/black" />
 
-                        <android.support.v7.widget.RecyclerView
+                        <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rv_watt_type_list"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
             <com.rubyfood.widgets.AppCustomTextView
                 android:layout_width="match_parent"
@@ -248,7 +248,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_product_type_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

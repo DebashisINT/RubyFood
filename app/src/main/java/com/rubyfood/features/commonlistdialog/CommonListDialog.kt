@@ -2,9 +2,9 @@ package com.rubyfood.features.commonlistdialog
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +20,7 @@ class CommonListDialog : DialogFragment(), View.OnClickListener {
 
     private lateinit var mContext: Context
     private lateinit var adapter:CommonListDialogAdapter
-    private lateinit var data_list_RCV:RecyclerView
+    private lateinit var data_list_RCV: RecyclerView
     private lateinit var layoutManager: RecyclerView.LayoutManager
 
     companion object {
@@ -42,8 +42,8 @@ class CommonListDialog : DialogFragment(), View.OnClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCanceledOnTouchOutside(true)
+        dialog?.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.setCanceledOnTouchOutside(true)
         val v = inflater?.inflate(R.layout.dialog_common_list, container, false)
         initView(v)
         return v
@@ -54,7 +54,7 @@ class CommonListDialog : DialogFragment(), View.OnClickListener {
         adapter= CommonListDialogAdapter(mContext,mList, object : CommonListDialogClickListener
         {
             override fun onItemClick(position: Int) {
-                dialog.dismiss()
+                dialog?.dismiss()
                 mListener.onItemClick(position)
             }
 

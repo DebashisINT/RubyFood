@@ -1,8 +1,8 @@
 package com.rubyfood.app.domain
 
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.Query
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
 import com.rubyfood.app.AppConstant
 
 /**
@@ -23,4 +23,7 @@ interface ShopTypeDao {
 
     @Query("DELETE FROM " + AppConstant.SHOP_TYPE)
     fun deleteAll()
+
+    @Query("SELECT shoptype_name FROM " + AppConstant.SHOP_TYPE + " where shoptype_id=:shoptype_id")
+    fun getShopNameById(shoptype_id: String): String
 }

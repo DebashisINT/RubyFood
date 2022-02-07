@@ -4,8 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.FragmentManager
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -69,8 +69,8 @@ class OTPVerificationDialog : DialogFragment(), View.OnClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.window?.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
+        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.window?.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
         val v = inflater.inflate(R.layout.dialog_otp_verification, container, false)
         initView(v)
         isCancelable = false
@@ -100,7 +100,7 @@ class OTPVerificationDialog : DialogFragment(), View.OnClickListener {
         et_otp_6 = v.findViewById(R.id.et_otp_6)
         tv_timer = v.findViewById(R.id.tv_timer)
 
-        dialogHeader.text = AppUtils.hiFirstNameText()
+        dialogHeader.text = AppUtils.hiFirstNameText()+"!"
 
         dialogCancel.setOnClickListener(this)
         dialogOk.setOnClickListener(this)
@@ -274,7 +274,7 @@ class OTPVerificationDialog : DialogFragment(), View.OnClickListener {
         }
     }
 
-    override fun show(manager: FragmentManager?, tag: String?) {
+    override fun show(manager: FragmentManager, tag: String?) {
         try {
             val ft = manager?.beginTransaction()
             ft?.add(this, tag)

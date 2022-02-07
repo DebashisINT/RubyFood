@@ -21,7 +21,7 @@ interface DocumentApi {
 
     @FormUrlEncoded
     @POST("AttachmentDocumentType/DocumentList")
-    fun getDocList(@Field("session_token") session_token: String, @Field("user_id") user_id: String): Observable<DocumentListResponseModel>
+    fun getDocList(@Field("session_token") session_token: String, @Field("user_id") user_id: String,@Field("type_id") type_id: String): Observable<DocumentListResponseModel>
 
     @Multipart
     @POST("AttachDocumnet/AddDocumnet")

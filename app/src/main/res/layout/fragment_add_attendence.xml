@@ -5,12 +5,12 @@
     xmlns:wheel="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/smoke_white">
+    android:background="@color/color_silver">
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/smoke_white">
+        android:background="@color/color_silver">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -19,7 +19,7 @@
             android:paddingBottom="@dimen/_5sdp"
             android:paddingTop="@dimen/_5sdp">
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_5sdp"
@@ -91,7 +91,7 @@
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
             <LinearLayout
                 android:id="@+id/ll_add_attendance_leave_type"
@@ -110,7 +110,7 @@
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="@dimen/_11sdp" />
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
@@ -168,15 +168,15 @@
                                 android:layout_height="0.5dp"
                                 android:background="@android:color/black" />
 
-                            <android.support.v7.widget.RecyclerView
+                            <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/rv_leave_type_list"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" />
                         </LinearLayout>
                     </LinearLayout>
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
@@ -206,7 +206,7 @@
                             android:textColorHint="@color/light_gray"
                             android:textSize="@dimen/_13sdp" />
                     </RelativeLayout>
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
             </LinearLayout>
 
             <LinearLayout
@@ -216,7 +216,7 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
@@ -274,15 +274,15 @@
                                 android:layout_height="0.5dp"
                                 android:background="@android:color/black" />
 
-                            <android.support.v7.widget.RecyclerView
+                            <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/rv_work_type_list"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" />
                         </LinearLayout>
                     </LinearLayout>
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:id="@+id/cv_route"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -342,15 +342,15 @@
                                 android:layout_height="0.5dp"
                                 android:background="@android:color/black" />
 
-                            <android.support.v7.widget.RecyclerView
+                            <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/rv_route_list"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" />
                         </LinearLayout>
                     </LinearLayout>
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:id="@+id/cv_dd_field"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -409,7 +409,7 @@
                                         android:src="@drawable/ic_rupee_icon"
                                         android:visibility="gone" />
 
-                                    <android.support.design.widget.TextInputLayout
+                                    <com.google.android.material.textfield.TextInputLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center"
@@ -427,7 +427,7 @@
                                             android:singleLine="true"
                                             android:textSize="@dimen/_13sdp"
                                             app:theme="@style/EvoEditTextTheme" />
-                                    </android.support.design.widget.TextInputLayout>
+                                    </com.google.android.material.textfield.TextInputLayout>
                                 </LinearLayout>
 
                                 <LinearLayout
@@ -451,7 +451,7 @@
                                         android:src="@drawable/ic_rupee_icon"
                                         android:visibility="gone" />
 
-                                    <android.support.design.widget.TextInputLayout
+                                    <com.google.android.material.textfield.TextInputLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center"
@@ -469,14 +469,14 @@
                                             android:singleLine="true"
                                             android:textSize="@dimen/_13sdp"
                                             app:theme="@style/EvoEditTextTheme" />
-                                    </android.support.design.widget.TextInputLayout>
+                                    </com.google.android.material.textfield.TextInputLayout>
                                 </LinearLayout>
                             </LinearLayout>
                         </RelativeLayout>
                     </LinearLayout>
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:id="@+id/cv_visit_plan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -525,7 +525,7 @@
                                     android:gravity="center"
                                     android:orientation="horizontal">
 
-                                    <android.support.design.widget.TextInputLayout
+                                    <com.google.android.material.textfield.TextInputLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center"
@@ -544,7 +544,7 @@
                                             android:drawableRight="@drawable/ic_gray_down_arrow_icon"
                                             android:drawablePadding="@dimen/_5sdp"
                                             app:theme="@style/EvoEditTextTheme" />
-                                    </android.support.design.widget.TextInputLayout>
+                                    </com.google.android.material.textfield.TextInputLayout>
                                 </LinearLayout>
 
                                 <LinearLayout
@@ -558,7 +558,7 @@
                                     android:gravity="center"
                                     android:orientation="horizontal">
 
-                                    <android.support.design.widget.TextInputLayout
+                                    <com.google.android.material.textfield.TextInputLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center"
@@ -577,14 +577,14 @@
                                             android:drawableRight="@drawable/ic_gray_down_arrow_icon"
                                             android:drawablePadding="@dimen/_5sdp"
                                             app:theme="@style/EvoEditTextTheme" />
-                                    </android.support.design.widget.TextInputLayout>
+                                    </com.google.android.material.textfield.TextInputLayout>
                                 </LinearLayout>
                             </LinearLayout>
                         </RelativeLayout>
                     </LinearLayout>
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:id="@+id/cv_distance"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -614,7 +614,7 @@
                             android:layout_marginRight="@dimen/_5sdp"
                             android:background="@android:color/black" />
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -631,12 +631,12 @@
                                 android:focusable="false"
                                 android:textSize="@dimen/_13sdp"
                                 app:theme="@style/EvoEditTextTheme" />
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
                 
                 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:id="@+id/cv_todays_target"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -695,7 +695,7 @@
                                         android:contentDescription="@null"
                                         android:src="@drawable/ic_rupee_icon" />
 
-                                    <android.support.design.widget.TextInputLayout
+                                    <com.google.android.material.textfield.TextInputLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center"
@@ -713,7 +713,7 @@
                                             android:singleLine="true"
                                             android:textSize="@dimen/_13sdp"
                                             app:theme="@style/EvoEditTextTheme" />
-                                    </android.support.design.widget.TextInputLayout>
+                                    </com.google.android.material.textfield.TextInputLayout>
                                 </LinearLayout>
 
                                 <LinearLayout
@@ -736,7 +736,7 @@
                                         android:contentDescription="@null"
                                         android:src="@drawable/ic_rupee_icon" />
 
-                                    <android.support.design.widget.TextInputLayout
+                                    <com.google.android.material.textfield.TextInputLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center"
@@ -754,7 +754,7 @@
                                             android:singleLine="true"
                                             android:textSize="@dimen/_13sdp"
                                             app:theme="@style/EvoEditTextTheme" />
-                                    </android.support.design.widget.TextInputLayout>
+                                    </com.google.android.material.textfield.TextInputLayout>
                                 </LinearLayout>
 
                                 <LinearLayout
@@ -774,7 +774,7 @@
                                         android:contentDescription="@null"
                                         android:src="@drawable/ic_add_shop_name_icon" />
 
-                                    <android.support.design.widget.TextInputLayout
+                                    <com.google.android.material.textfield.TextInputLayout
                                         android:id="@+id/shop_name_TL"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
@@ -793,7 +793,7 @@
                                             android:singleLine="true"
                                             android:textSize="@dimen/_13sdp"
                                             app:theme="@style/EvoEditTextTheme" />
-                                    </android.support.design.widget.TextInputLayout>
+                                    </com.google.android.material.textfield.TextInputLayout>
                                 </LinearLayout>
 
                                 <LinearLayout
@@ -815,7 +815,7 @@
                                         android:contentDescription="@null"
                                         android:src="@drawable/ic_add_shop_name_icon" />
 
-                                    <android.support.design.widget.TextInputLayout
+                                    <com.google.android.material.textfield.TextInputLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center"
@@ -833,20 +833,20 @@
                                             android:singleLine="true"
                                             android:textSize="@dimen/_13sdp"
                                             app:theme="@style/EvoEditTextTheme" />
-                                    </android.support.design.widget.TextInputLayout>
+                                    </com.google.android.material.textfield.TextInputLayout>
                                 </LinearLayout>
                             </LinearLayout>
 
-                            <android.support.v7.widget.RecyclerView
+                            <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/rv_primary_value_list"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:visibility="gone" />
                         </RelativeLayout>
                     </LinearLayout>
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
@@ -876,9 +876,9 @@
                             android:textColorHint="@color/light_gray"
                             android:textSize="@dimen/_13sdp" />
                     </RelativeLayout>
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
@@ -911,7 +911,7 @@
                                 android:layout_marginTop="@dimen/_5sdp"
                                 android:textColor="@android:color/black"
                                 android:textSize="@dimen/_13sdp"
-                                android:text="@string/current_date_time" />
+                                android:text="Current Date &amp; Time    :" />
 
                             <com.rubyfood.widgets.AppCustomTextView
                                 android:id="@+id/tv_current_date_time"
@@ -933,7 +933,7 @@
                                 android:layout_marginTop="@dimen/_5sdp"
                                 android:textColor="@android:color/black"
                                 android:textSize="@dimen/_13sdp"
-                                android:text="@string/applicable_in_time" />
+                                android:text="Applicable In Time       :" />
 
                             <com.rubyfood.widgets.AppCustomTextView
                                 android:id="@+id/tv_approved_in_time"
@@ -941,15 +941,15 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/_5sdp"
                                 android:textColor="@color/colorPrimary"
-                                android:textSize="@dimen/_13sdp"
+                                android:textSize="@dimen/_11sdp"
                                 android:layout_marginLeft="@dimen/_5sdp"/>
                         </LinearLayout>
 
 
                     </LinearLayout>
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_150sdp"
                     android:layout_margin="@dimen/_5sdp"
@@ -983,7 +983,7 @@
                             android:textStyle="bold" />
 
                     </RelativeLayout>
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
             </LinearLayout>
 
@@ -994,7 +994,7 @@
                 android:layout_marginLeft="@dimen/_10sdp"
                 android:layout_marginRight="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_15sdp"
-                android:background="@drawable/selector_blue_botton_bg"
+                android:background="@drawable/shape_custom_border_blue_button"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
@@ -1005,7 +1005,7 @@
                 android:textStyle="bold"
                 android:visibility="gone" />
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <com.pnikosis.materialishprogress.ProgressWheel
         android:id="@+id/progress_wheel"
@@ -1016,7 +1016,7 @@
         wheel:matProg_barColor="@color/default_text_color"
         wheel:matProg_progressIndeterminate="true" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_work_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

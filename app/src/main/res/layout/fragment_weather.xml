@@ -6,7 +6,7 @@
     android:id="@+id/rl_weather_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/color_silver">
 
     <RelativeLayout
         android:id="@+id/rl_weather_body"
@@ -26,7 +26,7 @@
             android:textSize="@dimen/_80sdp"
             tools:text="34\u00B0C" />
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_weather_pic"
             android:layout_width="@dimen/_40sdp"
             android:layout_height="@dimen/_40sdp"
@@ -35,7 +35,7 @@
             android:layout_toRightOf="@+id/tv_temp"
             app:srcCompat="@drawable/ic_wb_sunny" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_forcast_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -2,9 +2,9 @@ package com.rubyfood.features.commondialogsinglebtn
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.FragmentManager
-import android.support.v7.widget.AppCompatImageView
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
+import androidx.appcompat.widget.AppCompatImageView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -68,9 +68,9 @@ class CommonDialogSingleBtn : DialogFragment(), View.OnClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCanceledOnTouchOutside(false)
-        dialog.window!!.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
+        dialog?.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.setCanceledOnTouchOutside(false)
+        dialog?.window!!.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
         val v = inflater.inflate(R.layout.dialog_commondialog_single_btn, container, false)
         initView(v)
 
@@ -131,7 +131,7 @@ class CommonDialogSingleBtn : DialogFragment(), View.OnClickListener {
         dialogOk.isSelected = false
     }
 
-    override fun show(manager: FragmentManager?, tag: String?) {
+    override fun show(manager: FragmentManager, tag: String?) {
         try {
             //if (!dialog.isShowing) {
                 val ft = manager?.beginTransaction()

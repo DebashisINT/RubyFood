@@ -3,7 +3,7 @@ package com.rubyfood.features.nearbyshops.presentation
 import android.content.Context
 import android.location.Location
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
+import androidx.fragment.app.DialogFragment
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -50,8 +50,8 @@ class UpdateShopAddressDialog : DialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.window!!.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
+        dialog?.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.window!!.setBackgroundDrawableResource(R.drawable.rounded_corner_white_bg)
         val v = inflater?.inflate(R.layout.dialog_update_shop_address, container, false)
         addShopData = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopDetail(shopId)
         initView(v)
@@ -123,7 +123,7 @@ class UpdateShopAddressDialog : DialogFragment() {
             else {
                 addShopData.address = new_address_EDT.text.toString()
                 addressUpdateClickListener.onUpdateClick(addShopData)
-                dialog.dismiss()
+                dialog?.dismiss()
             }
         })
         shop_name_TV.text = addShopData.shopName

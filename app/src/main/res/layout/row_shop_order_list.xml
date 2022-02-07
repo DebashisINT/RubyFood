@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,7 +7,7 @@
 
     >
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardBackgroundColor="@color/white"
@@ -29,14 +29,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/order_no"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_12sdp"/>
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvOrderNumber"
                     android:layout_width="0px"
                     android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
                     android:ellipsize="end"/>
 
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvOrderPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -66,14 +66,14 @@
                 android:orientation="horizontal"
                 android:layout_marginTop="@dimen/_5sdp">
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/order_date"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_12sdp"/>
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvOrderDate"
                     android:layout_width="0px"
                     android:layout_height="wrap_content"
@@ -87,7 +87,7 @@
                     android:ellipsize="end"/>
 
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/reorder"
@@ -104,6 +104,6 @@
         </LinearLayout>
 
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

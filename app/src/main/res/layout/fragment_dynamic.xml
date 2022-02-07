@@ -4,9 +4,9 @@
     android:id="@+id/rl_add_dynamic_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@color/color_silver">
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
@@ -19,7 +19,7 @@
             android:layout_margin="@dimen/_10sdp"
             android:orientation="vertical" />
 
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <com.pnikosis.materialishprogress.ProgressWheel
         android:id="@+id/progress_wheel"

@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:text="Header"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="@dimen/_12sdp" />
+            android:textSize="@dimen/_11sdp" />
 
         <TextView
             android:id="@+id/text_small"

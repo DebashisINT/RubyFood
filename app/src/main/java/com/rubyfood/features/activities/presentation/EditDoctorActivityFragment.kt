@@ -3,10 +3,10 @@ package com.rubyfood.features.activities.presentation
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
-import android.support.design.widget.TextInputLayout
-import android.support.v7.widget.AppCompatImageView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.textfield.TextInputLayout
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextUtils

@@ -1,9 +1,8 @@
 package com.rubyfood.app.domain
 
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.Query
+import androidx.room.*
 import com.rubyfood.app.AppConstant
+import com.rubyfood.features.login.model.productlistmodel.ProductListDataModel
 
 /**
  * Created by Saikat on 08-11-2018.
@@ -89,6 +88,14 @@ interface ProductListDao {
 
     @Insert
     fun insert(vararg leaveType: ProductListEntity)
+
+/*    @Insert
+    fun insertAll(vararg product_list: ArrayList<ProductListEntity>)*/
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @JvmSuppressWildcards
+    abstract fun insertAll(kist: List<ProductListEntity>)
+
 
     @Query("SELECT * FROM " + AppConstant.PRODUCT_LIST_TABLE +" where id=:id")
     fun getSingleProduct(id: Int): ProductListEntity

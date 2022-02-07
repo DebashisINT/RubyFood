@@ -2,7 +2,7 @@ package com.rubyfood.features.login.presentation
 
 import android.app.IntentService
 import android.content.Intent
-import android.support.v4.content.LocalBroadcastManager
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.rubyfood.R
 import com.rubyfood.app.AppDatabase
 import com.rubyfood.app.NetworkConstant

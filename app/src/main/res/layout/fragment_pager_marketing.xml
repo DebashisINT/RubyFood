@@ -20,7 +20,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/selector_order_history_bg"
+            android:background="@drawable/selected_new_order_bg"
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
@@ -28,14 +28,14 @@
             android:text="@string/retail_marketing"
             android:textStyle="bold"
             android:textSize="@dimen/_10sdp"
-            android:textColor="@drawable/selector_text_clor_blue_white" />
+            android:textColor="@drawable/selector_text_clor_blue_white_new" />
 
         <com.rubyfood.widgets.AppCustomTextView
             android:id="@+id/pop_material_TV"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/selector_order_history_bg"
+            android:background="@drawable/selected_new_order_bg"
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
@@ -43,7 +43,7 @@
             android:text="@string/pop_material"
             android:textSize="@dimen/_10sdp"
             android:textStyle="bold"
-            android:textColor="@drawable/selector_text_clor_blue_white" />
+            android:textColor="@drawable/selector_text_clor_blue_white_new" />
 
     </LinearLayout>
 
@@ -54,7 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/marketing_img_HRCV"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_100sdp"/>
@@ -79,7 +79,7 @@
             android:visibility="visible" />
 
     </RelativeLayout>
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/marketing_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

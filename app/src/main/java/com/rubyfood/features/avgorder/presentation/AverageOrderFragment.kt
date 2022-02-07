@@ -4,10 +4,10 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.AppCompatTextView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.core.content.ContextCompat
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -165,6 +165,14 @@ class AverageOrderFragment : BaseFragment(), DatePickerListener {
 //        getLocationList()
         averageShopListAdapter = AverageOrderListAdapter(mContext, list, object : AverageShopListClickListener {
             override fun onSyncClick(position: Int) {
+
+            }
+
+            override fun onQuestionnarieClick(shopId: String) {
+
+            }
+
+            override fun onReturnClick(position: Int) {
 
             }
 

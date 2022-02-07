@@ -33,6 +33,8 @@ class SystemEventReceiver : BroadcastReceiver() {
             }else if(intent.action == "android.intent.action.ACTION_SHUTDOWN"){
                 val locationName = LocationWizard.getLocationName(context, Pref.latitude!!.toDouble(), Pref.longitude!!.toDouble())
                 XLog.e("\n======================== \n Phone Shutdown || DateTime : ${AppUtils.getCurrentDateTime()} || Location : last_lat: ${Pref.latitude} || last_long: ${Pref.longitude} || LocationName ${locationName} \n=======================")
+            }else if(intent.action == "android.os.action.POWER_SAVE_MODE_CHANGED"){
+                XLog.e("\n android.os.action.POWER_SAVE_MODE_CHANGED")
             }
 
         }

@@ -2,8 +2,8 @@ package com.rubyfood.features.stockAddCurrentStock
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -67,7 +67,6 @@ class UpdateShopStockFragment : BaseFragment(), View.OnClickListener{
         val view = inflater.inflate(R.layout.fragment_update_shop_stock, container, false)
 
         initView(view)
-
         return view
     }
 
@@ -81,7 +80,7 @@ class UpdateShopStockFragment : BaseFragment(), View.OnClickListener{
             if (AppUtils.isOnline(mContext)){
                 getCurrentStockApi()
             }else{
-                //(mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
+                (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
                 return
             }
         }

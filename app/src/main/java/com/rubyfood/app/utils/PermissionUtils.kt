@@ -3,8 +3,8 @@ package com.rubyfood.app.utils
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.pm.PackageManager
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 
 /**
  * Created by Saikat on 14-11-2018.

@@ -4,10 +4,10 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v7.widget.AppCompatImageView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.fragment.app.DialogFragment
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -59,8 +59,8 @@ class ShowCardDetailsDialog : DialogFragment(), View.OnClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCanceledOnTouchOutside(true)
+        dialog?.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.setCanceledOnTouchOutside(true)
 
         val v = inflater.inflate(R.layout.dialog_card_details, container, false)
 
@@ -94,9 +94,10 @@ class ShowCardDetailsDialog : DialogFragment(), View.OnClickListener {
             }
 
             R.id.iv_copy -> {
-                val clipboard: ClipboardManager = mContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip: ClipData = ClipData.newPlainText("Copy All Text", cardDetailsText)
-                clipboard.primaryClip = clip
+                var clipboard: ClipboardManager = mContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                var clip: ClipData = ClipData.newPlainText("Copy All Text", cardDetailsText)
+                //clipboard.primaryClip=clip
+                clipboard.setPrimaryClip(clip)
 
                 Toaster.msgShort(mContext, "All Text Copied")
             }

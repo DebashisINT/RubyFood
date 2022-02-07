@@ -8,7 +8,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 import com.elvishew.xlog.XLog
 import com.rubyfood.app.Pref
 

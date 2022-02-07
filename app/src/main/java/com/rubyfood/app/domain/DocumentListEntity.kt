@@ -1,8 +1,8 @@
 package com.rubyfood.app.domain
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.rubyfood.app.AppConstant
 
 @Entity(tableName = AppConstant.DOCUMENT_LIST_TABLE)
@@ -26,4 +26,9 @@ class DocumentListEntity {
 
     @ColumnInfo(name = "isUploaded")
     var isUploaded: Boolean = false
+
+    @ColumnInfo(name = "document_name")
+    var document_name: String? = null
+
+
 }

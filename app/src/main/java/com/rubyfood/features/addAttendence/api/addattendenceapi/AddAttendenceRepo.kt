@@ -5,10 +5,7 @@ import android.net.Uri
 import com.rubyfood.app.FileUtils
 import com.rubyfood.app.Pref
 import com.rubyfood.base.BaseResponse
-import com.rubyfood.features.addAttendence.model.AddAttendenceImageInput
-import com.rubyfood.features.addAttendence.model.AddAttendenceInpuModel
-import com.rubyfood.features.addAttendence.model.LeaveListResponseModel
-import com.rubyfood.features.addAttendence.model.SendLeaveApprovalInputParams
+import com.rubyfood.features.addAttendence.model.*
 import com.rubyfood.features.dashboard.presentation.DashboardActivity
 import com.rubyfood.features.location.LocationFuzedService
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -70,4 +67,13 @@ class AddAttendenceRepo(val apiService: AddAttendenceApi) {
     fun leaveList(fromDate: String, toDate: String): Observable<LeaveListResponseModel> {
         return apiService.leaveList(Pref.session_token!!, Pref.user_id!!, fromDate, toDate)
     }
+
+    fun getReportToUserID(user_id: String, session_token: String): Observable<GetReportToResponse> {
+        return apiService.getReportToUserIDAPI(user_id,session_token)
+    }
+
+    fun getReportToFCMInfo(user_id: String, session_token: String): Observable<GetReportToFCMResponse> {
+        return apiService.getReportToFCMInfoAPI(user_id,session_token)
+    }
+
 }
