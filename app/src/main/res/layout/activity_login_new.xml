@@ -63,12 +63,11 @@
                     android:layout_height="wrap_content"
                     android:gravity="center|center_horizontal"
                     android:layout_gravity="center"
-                    android:textStyle="bold"
                     android:layout_centerHorizontal="true"
-                    android:textColor="#287fb2"
-                    android:text="@string/name_filed_managenent_system"
+                    android:textColor="@color/black"
+                    android:text="Ruby Food"
                     android:textSize="@dimen/_12sdp"
-                    android:layout_marginTop="@dimen/_10sdp"/>
+                    android:layout_marginTop="@dimen/_12sdp"/>
 
                 <com.rubyfood.widgets.AppCustomTextView
                     android:id="@+id/app_title_TV"
