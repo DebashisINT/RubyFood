@@ -3537,7 +3537,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
 
                             } else {
                                 progress_wheel.stopSpinning()
-                                showSnackMessage(newSettings.message!!)
+                                openDialogPopup(newSettings.message!!)
                                 login_TV.isEnabled = true
                             }
                             isApiInitiated = false
@@ -3863,8 +3863,16 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
                                 Toaster.msgLong(this, loginResponse.message!!)
                             }
                             else {
+                                if(loginResponse.message!!.contains("IMEI",ignoreCase = true))
+                                {
+                                    openDialogPopup("Current Login ID has already been used from another mobile device. You are not allowed to " +
+                                            "login from your current device due to IMEI BLOCKED! Please talk to Admin.")
+                                }else{
+                                    openDialogPopup(loginResponse.message!!)
+                                }
+
                                 progress_wheel.stopSpinning()
-                                showSnackMessage(loginResponse.message!!)
+//                                showSnackMessage(loginResponse.message!!)
                                 login_TV.isEnabled = true
                             }
                             isApiInitiated = false
@@ -6727,6 +6735,20 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
             gotoHomeActivity()
         }
 
+    }
+
+    fun openDialogPopup(text:String){
+        val simpleDialog = Dialog(mContext)
+        simpleDialog.setCancelable(false)
+        simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        simpleDialog.setContentView(R.layout.dialog_ok)
+        val dialogHeader = simpleDialog.findViewById(R.id.dialog_yes_header_TV) as AppCustomTextView
+        dialogHeader.text = text
+        val dialogYes = simpleDialog.findViewById(R.id.tv_dialog_yes) as AppCustomTextView
+        dialogYes.setOnClickListener({ view ->
+            simpleDialog.cancel()
+        })
+        simpleDialog.show()
     }
 
 
