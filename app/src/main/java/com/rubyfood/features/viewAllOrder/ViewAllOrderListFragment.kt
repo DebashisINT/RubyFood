@@ -2481,7 +2481,7 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
         if (orderListDetails!!.scheme_amount != null)
             addOrder.scheme_amount = orderListDetails!!.scheme_amount
         else
-            addOrder.scheme_amount = ""
+            addOrder.scheme_amount = "0"
 
         if (remarks != null)
             addOrder.remarks = remarks

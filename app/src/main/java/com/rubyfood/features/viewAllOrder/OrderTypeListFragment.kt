@@ -677,6 +677,10 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                 (mContext as DashboardActivity).rateList.clear()
                 (mContext as DashboardActivity).totalPrice.clear()
 
+                (mContext as DashboardActivity).totalScPrice.clear()
+                (mContext as DashboardActivity).schemarateList.clear()
+                (mContext as DashboardActivity).schemaqtyList.clear()
+
                 for (j in productList?.indices!!) {
 
                     /*for (i in selectedProductList.indices) {
@@ -688,16 +692,22 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
                     selectedProductList.add(productList?.get(j)!!)
                     (mContext as DashboardActivity).qtyList.add("0")
+                    (mContext as DashboardActivity).schemaqtyList.add("0")
 
-                    if (!Pref.isRateNotEditable)
+                    (mContext as DashboardActivity).mrpList.add("0.00")
+
+                    if (!Pref.isRateNotEditable){
                         (mContext as DashboardActivity).rateList.add("0.00")
+                        (mContext as DashboardActivity).schemarateList.add("0.00")
+                    }
                     else {
                         if (Pref.isRateOnline) {
                             if (productRateList != null && productRateList!!.size > 0)
                                 (mContext as DashboardActivity).rateList.add(productRateList?.get(j)?.rate!!)
                             else
                                 (mContext as DashboardActivity).rateList.add("0.00")
-                        } else {
+                        }
+                        else {
                             val shop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(shopId)
                             if (productRateListDb != null && productRateListDb?.size!! > 0) {
                                 when (shop.type) {
@@ -713,12 +723,15 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                             } else
                                 (mContext as DashboardActivity).rateList.add("0.00")
                         }
+                        (mContext as DashboardActivity).schemarateList.add("0.00")
                     }
+
 
                     //(mContext as DashboardActivity).loadFragment(FragType.CartFragment, true, selectedProductList)
 
                     //val totalPrice = String.format("%.2f", (amount.toFloat() * desc.toInt()).toFloat())
                     (mContext as DashboardActivity).totalPrice.add(0.00)
+                    (mContext as DashboardActivity).totalScPrice.add(0.00)
 
                     (mContext as DashboardActivity).tv_cart_count.text = selectedProductList.size.toString()
                     (mContext as DashboardActivity).tv_cart_count.visibility = View.VISIBLE
