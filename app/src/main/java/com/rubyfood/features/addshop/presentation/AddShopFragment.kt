@@ -442,7 +442,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
 
 
             if (AppUtils.mLocation != null) {
-                if (AppUtils.mLocation!!.accuracy <= 100) {
+                if (AppUtils.mLocation!!.accuracy <= Pref.gpsAccuracy.toInt()) {
                     getAddressFromLatLng(AppUtils.mLocation!!)
                 } else {
                     XLog.d("======Saved current location is inaccurate (Add Shop)========")
@@ -479,11 +479,12 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                     }
 
                     override fun onNewLocationAvailable(location: Location) {
+                        isGetLocation = -1
                         if (isGetLocation == -1) {
                             isGetLocation = 0
                             progress_wheel.stopSpinning()
                             try {
-                                if (location != null && location.accuracy > 100) {
+                                if (location != null && location.accuracy > Pref.gpsAccuracy.toInt()) {
                                     if (dialog == null) {
                                         dialog = AccuracyIssueDialog()
                                         dialog?.show((mContext as DashboardActivity).supportFragmentManager, "AccuracyIssueDialog")
@@ -508,7 +509,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                     }
                 })
 
-        val t = Timer()
+        /*val t = Timer()
         t.schedule(object : TimerTask() {
             override fun run() {
                 try {
@@ -522,7 +523,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                     e.printStackTrace()
                 }
             }
-        }, 15000)
+        }, 15000)*/
     }
 
     private fun getAddressFromLatLng(location: Location) {

@@ -255,7 +255,6 @@ class SplashActivity : BaseActivity(), GpsStatusDetector.GpsStatusDetectorCallBa
     }
 
     private fun callVersionCheckingApi() {
-
         if (!AppUtils.isOnline(this)) {
             goToNextScreen()
             return
