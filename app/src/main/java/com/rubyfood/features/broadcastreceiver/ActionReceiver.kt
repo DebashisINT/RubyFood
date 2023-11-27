@@ -1,5 +1,6 @@
 package com.rubyfood.features.broadcastreceiver
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -9,7 +10,7 @@ import com.rubyfood.features.dashboard.presentation.DashboardActivity
 /**
  * Created by Dhiraj on 14-11-2017.
  */
-
+@SuppressLint("MissingPermission")
 class ActionReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {

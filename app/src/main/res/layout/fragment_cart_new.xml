@@ -288,43 +288,52 @@
         android:id="@+id/ll_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_emailaddress"
         android:background="#5ea5b6"
         android:gravity="center"
-        android:layout_below="@+id/rl_emailaddress"
         android:orientation="horizontal"
         android:padding="@dimen/_10sdp">
 
         <com.rubyfood.widgets.AppCustomTextView
             android:id="@+id/tv_particular"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2.5"
+            android:layout_weight="1"
             android:gravity="center"
             android:text="@string/selected_product"
             android:textColor="@color/white"
             android:textSize="@dimen/_11sdp"
             android:textStyle="bold" />
 
+        <!--//1.0  AppV 4.0.6  CartFragment 0025623 discount is editable work-->
+        <com.rubyfood.widgets.AppCustomTextView
+            android:id="@+id/tv_frag_new_cart_discount"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Discount (\%)\n0.00"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_11sdp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
 
         <com.rubyfood.widgets.AppCustomTextView
             android:id="@+id/tv_mrp"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/_50sdp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
             android:gravity="center"
-            android:visibility="gone"
             android:text="MRP (\u20B9)\n0.00"
             android:textColor="@color/white"
             android:textSize="@dimen/_11sdp"
-            android:textStyle="bold" />
-
+            android:textStyle="bold"
+            android:visibility="gone" />
 
 
         <com.rubyfood.widgets.AppCustomTextView
             android:id="@+id/tv_brand"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/_50sdp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
             android:gravity="center"
             android:text="Rate (\u20B9)\n0.00"
             android:textColor="@color/white"
@@ -332,12 +341,10 @@
             android:textStyle="bold" />
 
 
-
         <com.rubyfood.widgets.AppCustomTextView
             android:id="@+id/tv_category"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/_50sdp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
             android:gravity="center"
             android:text="Qty\n0"
             android:textColor="@color/white"
@@ -354,7 +361,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/_11sdp"
             android:textStyle="bold"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </LinearLayout>
 
 
@@ -609,7 +616,7 @@
             android:id="@+id/rv_cart_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/_5sdp"/>
+            android:layout_marginTop="@dimen/_5sdp" />
 
         <com.rubyfood.widgets.AppCustomTextView
             android:id="@+id/tv_no_data_available"

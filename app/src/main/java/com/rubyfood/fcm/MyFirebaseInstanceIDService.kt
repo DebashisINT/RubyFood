@@ -8,7 +8,7 @@ import com.rubyfood.app.utils.AppUtils
 import com.rubyfood.base.BaseResponse
 import com.rubyfood.base.presentation.BaseActivity
 import com.rubyfood.fcm.api.UpdateDeviceTokenRepoProvider
-import com.elvishew.xlog.XLog
+
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync

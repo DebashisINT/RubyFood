@@ -75,6 +75,18 @@ class AddShopRequestData {
     var lead_contact_number: String?= null
     var landline_number: String?= null
     var project_name: String?= null
+    var alternateNoForCustomer: String?= null
+    var whatsappNoForCustomer: String?= null
+
+    var isShopDuplicate: Boolean?= null
+    var purpose: String?= null
+
+    var GSTN_Number:String?= null
+    var ShopOwner_PAN:String?= null
+    var shopStatusUpdate:String?= null
+    var FSSAILicNo:String?= null
+
+    var isUpdateAddressFromShopMaster:Boolean?= null
 
 
 

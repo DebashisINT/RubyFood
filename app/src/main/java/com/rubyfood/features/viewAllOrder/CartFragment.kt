@@ -36,6 +36,7 @@ import kotlinx.android.synthetic.main.fragment_cart_new.*
 /**
  * Created by Saikat on 09-11-2018.
  */
+// 1.0  AppV 4.0.6  CartFragment  Saheli    25/01/2023 0025623 discount is editable work
 class CartFragment : BaseFragment(), View.OnClickListener {
 
     private lateinit var mContext: Context
@@ -61,11 +62,15 @@ class CartFragment : BaseFragment(), View.OnClickListener {
     private lateinit var rl_lab: RelativeLayout
     private lateinit var rl_emailaddress: RelativeLayout
 
+
+
     private lateinit var et_lab: AppCustomEditText
     private lateinit var et_emailaddress: AppCustomEditText
 
     private var remarks = ""
     private var imagePath = ""
+
+    private lateinit var tv_discount: AppCustomTextView  //1.0  AppV 4.0.6  CartFragment 0025623 discount is editable work
 
     companion object {
         private var selectedProductList: ArrayList<ProductListEntity>? = null
@@ -119,6 +124,9 @@ class CartFragment : BaseFragment(), View.OnClickListener {
         rl_emailaddress =  view.findViewById(R.id.rl_emailaddress)
         et_lab = view.findViewById(R.id.et_lab)
         et_emailaddress = view.findViewById(R.id.et_emailaddress)
+
+        tv_discount = view.findViewById(R.id.tv_frag_new_cart_discount)//1.0  AppV 4.0.6  CartFragment 0025623 discount is editable work
+
 
 
 
@@ -178,6 +186,14 @@ class CartFragment : BaseFragment(), View.OnClickListener {
             tv_mrp.visibility = View.GONE
         }
 
+        //1.0  AppV 4.0.6  CartFragment 0025623 discount is editable work
+        if(Pref.IsDiscountEditableInOrder){
+            tv_discount.visibility = View.VISIBLE
+        }
+        else{
+            tv_discount.visibility = View.GONE
+        }
+
         if(AppUtils.stockStatus != 0){
             ll_schemeRoot.visibility=View.GONE
         }
@@ -232,7 +248,8 @@ class CartFragment : BaseFragment(), View.OnClickListener {
                 try {
                     if (!TextUtils.isEmpty((mContext as DashboardActivity).rateList[adapterPosition]) && !TextUtils.isEmpty((mContext as DashboardActivity).qtyList[adapterPosition])) {
 
-                        val totalPrice = String.format("%.2f", ((mContext as DashboardActivity).rateList[adapterPosition].toDouble() * (mContext as DashboardActivity).qtyList[adapterPosition].toInt()))
+                        //val totalPrice = String.format("%.2f", ((mContext as DashboardActivity).rateList[adapterPosition].toDouble() * (mContext as DashboardActivity).qtyList[adapterPosition].toInt()))
+                        val totalPrice = String.format("%.2f", ((mContext as DashboardActivity).rateList[adapterPosition].toDouble() * (mContext as DashboardActivity).qtyList[adapterPosition].toDouble()))
                         (mContext as DashboardActivity).totalPrice[adapterPosition] = totalPrice.toDouble()
 
                     } else
@@ -564,17 +581,21 @@ class CartFragment : BaseFragment(), View.OnClickListener {
                 if (rateList[i].endsWith(".")) {
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.enter_valid_rate))
                     return
-                } else if (rateList[i].toDouble() == 0.00) {
+                }
+
+                else if (rateList[i].toDouble() == 0.00) {
                     if (AppUtils.stockStatus == 0)
                         tempRateList.remove(rateList[i])
                 }
             }
 
             for (i in qtyList.indices) {
-                if (qtyList[i].length > 1 && qtyList[i].startsWith("0")) {
+                //if (qtyList[i].length > 1 && qtyList[i].startsWith("0")) {
+                if (qtyList[i].length > 1 && qtyList[i].equals("0")) {
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.enter_valid_qty))
                     return
-                } else if (qtyList[i].toInt() == 0) {
+                //} else if (qtyList[i].toInt() == 0) {
+                } else if (qtyList[i].toDouble() == 0.0) {
                     tempQtyList.remove(qtyList[i])
                 }
             }
@@ -660,10 +681,9 @@ class CartFragment : BaseFragment(), View.OnClickListener {
                 } else
                     saveData()
             }
-
+            
             override fun onRightClick(editableData: String) {
             }
-
         }).show((mContext as DashboardActivity).supportFragmentManager, "")
     }
 
@@ -671,7 +691,6 @@ class CartFragment : BaseFragment(), View.OnClickListener {
         AddRemarksSignDialog.getInstance(remarks, imagePath, { remark, imgPath ->
             remarks = remark
             imagePath = imgPath
-
             saveData()
         }, {
             saveData()

@@ -26,6 +26,7 @@
                 android:layout_height="wrap_content">
 
                 <RelativeLayout
+                    android:id="@+id/rl_revisit_nearby_shop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -51,34 +52,43 @@
                         android:padding="@dimen/_5sdp"
                         android:singleLine="true"
                         android:text=""
-                        android:textColor="@color/maroon"
+                        android:textColor="@color/color_custom_green"
                         android:textSize="@dimen/_12sdp"
                         android:textStyle="bold" />
                 </RelativeLayout>
 
-                <com.rubyfood.widgets.AppCustomTextView
-                    android:id="@+id/approx_distance_header"
+                <LinearLayout
+                    android:id="@+id/ll_approx_dist_show_root"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginTop="@dimen/_5sdp"
-                    android:padding="@dimen/_5sdp"
-                    android:text="@string/approx_distance"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/_11sdp" />
+                    android:orientation="horizontal">
 
-                <com.rubyfood.widgets.AppCustomTextView
-                    android:id="@+id/approx_distance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/approx_distance_header"
-                    android:layout_marginTop="@dimen/_5sdp"
-                    android:text="50 mtr"
-                    android:textColor="@color/navy_blue_dot"
-                    android:textSize="@dimen/_11sdp"
-                    android:textStyle="bold"/>
+                    <com.rubyfood.widgets.AppCustomTextView
+                        android:id="@+id/approx_distance_header"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:padding="@dimen/_5sdp"
+                        android:text="@string/approx_distance"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/_11sdp" />
+
+                    <com.rubyfood.widgets.AppCustomTextView
+                        android:id="@+id/approx_distance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@+id/approx_distance_header"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:text="50 mtr"
+                        android:textColor="@color/navy_blue_dot"
+                        android:textSize="@dimen/_11sdp"
+                        android:textStyle="bold"/>
+
+                </LinearLayout>
+
             </RelativeLayout>
 
             <RelativeLayout
@@ -147,10 +157,36 @@
                         android:textSize="@dimen/_11sdp" />
 
                     <com.rubyfood.widgets.AppCustomTextView
-                        android:id="@+id/project_name"
+                        android:id="@+id/myshop_pancard_TV"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/myshop_address_TV"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:singleLine="true"
+                        android:text="PAN     : N.A"
+                        android:drawablePadding="@dimen/_5sdp"
+                        android:drawableLeft="@drawable/pan_card_icon"
+                        android:textColor="@color/light_gray"
+                        android:textSize="@dimen/_11sdp" />
+
+                    <com.rubyfood.widgets.AppCustomTextView
+                        android:id="@+id/myshop_gstin_TV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/myshop_pancard_TV"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:singleLine="true"
+                        android:text="GSTIN : N.A"
+                        android:drawablePadding="@dimen/_5sdp"
+                        android:drawableLeft="@drawable/gst_icon"
+                        android:textColor="@color/light_gray"
+                        android:textSize="@dimen/_11sdp" />
+
+                    <com.rubyfood.widgets.AppCustomTextView
+                        android:id="@+id/project_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/myshop_gstin_TV"
                         android:layout_marginBottom="@dimen/_3sdp"
                         android:singleLine="true"
                         android:text="Project Name:"
@@ -161,8 +197,8 @@
                     <LinearLayout
                         android:id="@+id/LLphone"
                         android:layout_width="match_parent"
-                        android:layout_below="@id/project_name"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/project_name">
 
                         <com.rubyfood.widgets.AppCustomTextView
                             android:id="@+id/tv_shop_contact_no"
@@ -185,10 +221,10 @@
                             android:drawablePadding="@dimen/_5sdp"
                             android:gravity="center_vertical"
                             android:text=""
-                            android:visibility="gone"
                             android:textColor="@color/light_gray"
                             android:textSize="@dimen/_11sdp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:visibility="gone" />
 
 
                     </LinearLayout>
@@ -290,6 +326,38 @@
                     android:layout_marginLeft="@dimen/_5sdp"
                     android:layout_marginTop="@dimen/_5sdp"
                     android:layout_toRightOf="@id/tv_entity_header"
+                    android:singleLine="true"
+                    android:text="N.A."
+                    android:textColor="@color/login_txt_color"
+                    android:textSize="@dimen/_11sdp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_retailer_entity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_7sdp"
+                android:paddingTop="@dimen/_5sdp">
+
+                <com.rubyfood.widgets.AppCustomTextView
+                    android:id="@+id/tv_retailer_entity_header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:singleLine="true"
+                    android:text="Party Category"
+                    android:textColor="@color/light_gray"
+                    android:textSize="@dimen/_11sdp" />
+
+                <com.rubyfood.widgets.AppCustomTextView
+                    android:id="@+id/tv_retailer_entity_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:layout_toRightOf="@id/tv_retailer_entity_header"
                     android:singleLine="true"
                     android:text="N.A."
                     android:textColor="@color/login_txt_color"
@@ -439,10 +507,52 @@
 
             </RelativeLayout>
 
+            <ImageView
+                android:id="@+id/shop_IV_flased"
+                android:layout_width="@dimen/_43sdp"
+                android:layout_height="0dp"
+                android:contentDescription="@null"
+                android:visibility="gone" />
+
+            <RelativeLayout
+                android:id="@+id/last_visited_RL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_7sdp"
+                android:layout_toRightOf="@+id/shop_IV_flased">
+
+                <com.rubyfood.widgets.AppCustomTextView
+                    android:id="@+id/last_visited_TV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:singleLine="true"
+                    android:text="@string/last_visits"
+                    android:textColor="@color/light_gray"
+                    android:textSize="@dimen/_11sdp" />
+
+                <com.rubyfood.widgets.AppCustomTextView
+                    android:id="@+id/last_visited_date_TV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:layout_toRightOf="@id/last_visited_TV"
+                    android:singleLine="true"
+                    android:text="@string/zero_order_in_value"
+                    android:textColor="@color/login_txt_color"
+                    android:textSize="@dimen/_11sdp" />
+
+
+            </RelativeLayout>
+
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
                 android:paddingLeft="@dimen/_7sdp">
 
                 <LinearLayout
@@ -455,6 +565,73 @@
                     android:orientation="horizontal"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingTop="@dimen/_5sdp">
+
+                    <LinearLayout
+                        android:id="@+id/shop_rv_survey_ll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:layout_width="@dimen/_21sdp"
+                            android:layout_height="@dimen/_23sdp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/ic_surveys_audit"
+                            android:backgroundTint="@color/dark_gray"/>
+
+                        <com.rubyfood.widgets.AppCustomTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:singleLine="true"
+                            android:text="Survey"
+                            android:textColor="@color/login_txt_color"
+                            android:textSize="@dimen/_8sdp"  />
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/shop_rv_survey_view"
+                        android:layout_width="@dimen/_1sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_marginLeft="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
+                        android:visibility="gone"
+                        android:background="@color/popup_window_bar_color" />
+
+                    <LinearLayout
+                        android:id="@+id/shop_damage_ll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="@dimen/_20sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/ic_damage" />
+
+                        <com.rubyfood.widgets.AppCustomTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:singleLine="true"
+                            android:text="Damage"
+                            android:textColor="@color/login_txt_color"
+                            android:textSize="@dimen/_8sdp"  />
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/shop_damage_view"
+                        android:layout_width="@dimen/_1sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_marginLeft="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
+                        android:background="@color/popup_window_bar_color" />
+
+
 
                     <!--16-12-2021-->
                     <LinearLayout
@@ -484,6 +661,40 @@
 
                     <View
                         android:id="@+id/lead_return_vvview"
+                        android:layout_width="@dimen/_1sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_marginLeft="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
+                        android:background="@color/popup_window_bar_color" />
+
+                    <LinearLayout
+                        android:id="@+id/history_llll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/history_iv"
+                            android:layout_width="@dimen/_25sdp"
+                            android:layout_height="@dimen/_25sdp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/ic_add_order_report_icon"
+                            android:backgroundTint="@color/black"/>
+
+                        <com.rubyfood.widgets.AppCustomTextView
+                            android:id="@+id/history_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:singleLine="true"
+                            android:text="History"
+                            android:textColor="@color/login_txt_color"
+                            android:textSize="@dimen/_8sdp"  />
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/history_vvview"
                         android:layout_width="@dimen/_1sdp"
                         android:layout_height="@dimen/_20sdp"
                         android:layout_marginLeft="@dimen/_5sdp"
@@ -617,48 +828,7 @@
 
                 </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/shop_IV_flased"
-                    android:layout_width="@dimen/_43sdp"
-                    android:layout_height="0dp"
-                    android:contentDescription="@null"
-                    android:visibility="gone" />
 
-                <RelativeLayout
-                    android:id="@+id/last_visited_RL"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/shop_IV_flased"
-
-
-                    >
-
-                    <com.rubyfood.widgets.AppCustomTextView
-                        android:id="@+id/last_visited_TV"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:singleLine="true"
-                        android:text="@string/last_visits"
-                        android:textColor="@color/light_gray"
-                        android:textSize="@dimen/_11sdp" />
-
-                    <com.rubyfood.widgets.AppCustomTextView
-                        android:id="@+id/last_visited_date_TV"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/_2sdp"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:layout_toRightOf="@id/last_visited_TV"
-                        android:singleLine="true"
-                        android:text="@string/zero_order_in_value"
-                        android:textColor="@color/login_txt_color"
-                        android:textSize="@dimen/_11sdp" />
-
-
-                </RelativeLayout>
 
 
             </RelativeLayout>

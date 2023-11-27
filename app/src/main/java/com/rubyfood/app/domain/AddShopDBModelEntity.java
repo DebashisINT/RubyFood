@@ -6,9 +6,13 @@ import androidx.room.PrimaryKey;
 
 import static com.rubyfood.app.AppConstant.SHOP_TABLE;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by sayantan.sarkar on 2/11/17.
  */
+// Revision History
+// 1.0 SHOP_TABLE  AppV 4.0.6  shopStatusUpdate add col
 @Entity(tableName = SHOP_TABLE)
 public class AddShopDBModelEntity {
 
@@ -265,6 +269,124 @@ public class AddShopDBModelEntity {
 
     @ColumnInfo(name = "landline_number")
     private String landline_number = null;
+
+    @ColumnInfo(name = "alternateNoForCustomer")
+    private String alternateNoForCustomer = null;
+
+    @ColumnInfo(name = "whatsappNoForCustomer")
+    private String whatsappNoForCustomer = null;
+
+    @ColumnInfo(name = "isShopDuplicate")
+    private boolean isShopDuplicate = false;
+
+    @ColumnInfo(name = "isOwnshop")
+    private boolean isOwnshop = true;
+    // 3.0   AppV 4.0.6  shopStatusUpdate table added
+    @ColumnInfo(name = "shopStatusUpdate")
+    private String shopStatusUpdate = "1";
+
+    public String getShopStatusUpdate() {
+        return shopStatusUpdate;
+    }
+
+    public void setShopStatusUpdate(String shopStatusUpdate) {
+        this.shopStatusUpdate = shopStatusUpdate;
+    }
+
+    public String getGSTN_Number() {
+        return GSTN_Number;
+    }
+
+
+
+    @ColumnInfo(name = "GSTN_Number")
+    private String GSTN_Number = null;
+
+    public void setGSTN_Number(String GSTN_Number) {
+        this.GSTN_Number = GSTN_Number;
+    }
+
+    public String getShopOwner_PAN() {
+        return ShopOwner_PAN;
+    }
+
+    public void setShopOwner_PAN(String shopOwner_PAN) {
+        ShopOwner_PAN = shopOwner_PAN;
+    }
+
+    @ColumnInfo(name = "ShopOwner_PAN")
+    private String ShopOwner_PAN =null;
+
+    public boolean isOwnshop() {
+        return isOwnshop;
+    }
+    public void setOwnshop(boolean ownshop) {
+        isOwnshop = ownshop;
+    }
+
+    public boolean getIsShopDuplicate() {
+        return isShopDuplicate;
+    }
+    public void setIsShopDuplicate(boolean isShopDuplicate) {
+        this.isShopDuplicate = isShopDuplicate;
+    }
+
+    public String getPurpose() {
+        return purpose;
+    }
+
+    public void setPurpose(String purpose) {
+        this.purpose = purpose;
+    }
+
+    @ColumnInfo(name = "purpose")
+    private String purpose = null;
+
+
+    @ColumnInfo(name = "FSSAILicNo")
+    public String FSSAILicNo = null;
+
+    @ColumnInfo(name = "isUpdateAddressFromShopMaster")
+    public Boolean isUpdateAddressFromShopMaster = false;
+
+    public Boolean getUpdateAddressFromShopMaster() {
+        return isUpdateAddressFromShopMaster;
+    }
+
+    public void setUpdateAddressFromShopMaster(Boolean updateAddressFromShopMaster) {
+        isUpdateAddressFromShopMaster = updateAddressFromShopMaster;
+    }
+
+
+
+
+
+
+    public String getFSSAILicNo() {
+        return FSSAILicNo;
+    }
+
+    public void setFSSAILicNo(String FSSAILicNo) {
+        this.FSSAILicNo = FSSAILicNo;
+    }
+
+    public String getAlternateNoForCustomer() {
+        return alternateNoForCustomer;
+    }
+
+    public void setAlternateNoForCustomer(String alternateNoForCustomer) {
+        this.alternateNoForCustomer = alternateNoForCustomer;
+    }
+
+    public String getWhatsappNoForCustomer() {
+        return whatsappNoForCustomer;
+    }
+
+    public void setWhatsappNoForCustomer(String whatsappNoForCustomer) {
+        this.whatsappNoForCustomer = whatsappNoForCustomer;
+    }
+
+
 
 
     public String getProject_name() {

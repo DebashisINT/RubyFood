@@ -5,6 +5,7 @@ import com.rubyfood.base.BaseResponse
 import com.rubyfood.features.addAttendence.model.ApprovalLeaveResponseModel
 import com.rubyfood.features.addAttendence.model.LeaveTypeResponseModel
 import com.rubyfood.features.leaveapplynew.model.ApprovalRejectReqModel
+import com.rubyfood.features.leaveapplynew.model.clearAttendanceonRejectReqModelRejectReqModel
 import io.reactivex.Observable
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -30,6 +31,10 @@ interface LeaveTypeApi {
 
     @POST("LeaveApproval/UserLeaveForApprovalStatus")
     fun postApprovalRejectclick(@Body ApprovalRejectReqModel: ApprovalRejectReqModel?): Observable<BaseResponse>
+
+
+    @POST("Attendance/DeleteLeaveAttendance")
+    fun clearAttendanceonRejectclick(@Body clearAttendanceonRejectReModel: clearAttendanceonRejectReqModelRejectReqModel?): Observable<BaseResponse>
 
     /**
      * Companion object to create the GithubApiService

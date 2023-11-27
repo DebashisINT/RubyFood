@@ -22,16 +22,32 @@
             android:textColor="@android:color/black"
             android:textSize="@dimen/_11sdp"/>
 
-        <com.rubyfood.widgets.AppCustomTextView
-            android:id="@+id/tv_notification_date"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="25 Feb, 2019 12:15 PM"
-            android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/_10sdp"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:drawableLeft="@drawable/ic_calender"
-            android:drawablePadding="@dimen/_5sdp"/>
+            android:orientation="horizontal">
+
+            <com.rubyfood.widgets.AppCustomTextView
+                android:id="@+id/tv_notification_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="25 Feb, 2019 12:15 PM"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:drawableLeft="@drawable/ic_calender"
+                android:drawablePadding="@dimen/_5sdp"/>
+
+            <ImageView
+                android:id="@+id/iv_noti_item_whatsapp"
+                android:layout_width="@dimen/_22sdp"
+                android:layout_height="@dimen/_22sdp"
+                android:src="@drawable/ic_whatsapp"/>
+
+        </LinearLayout>
+
+
 
         <View
             android:id="@+id/view"

@@ -120,7 +120,7 @@ class CartReturnFragment : BaseFragment(), View.OnClickListener {
                 try {
 
                     if (!TextUtils.isEmpty((mContext as DashboardActivity).rateList[adapterPosition]) &&
-                            !TextUtils.isEmpty((mContext as DashboardActivity).qtyList[adapterPosition])) {
+                        !TextUtils.isEmpty((mContext as DashboardActivity).qtyList[adapterPosition])) {
                         val totalPrice = String.format("%.2f", ((mContext as DashboardActivity).rateList[adapterPosition].toDouble()
                                 * (mContext as DashboardActivity).qtyList[adapterPosition].toInt()))
                         (mContext as DashboardActivity).totalPrice[adapterPosition] = totalPrice.toDouble()
@@ -223,7 +223,7 @@ class CartReturnFragment : BaseFragment(), View.OnClickListener {
                     (mContext as DashboardActivity).onBackPressed()
                     if ((mContext as DashboardActivity).getFragment() is ReturnTypeListFragment)
                         ((mContext as DashboardActivity).getFragment() as ReturnTypeListFragment).saveOrder(tv_total_order_amount.text.toString().trim(),
-                                selectedProductList, list)
+                            selectedProductList, list)
                 } else
                     (mContext as DashboardActivity).showSnackMessage("Please select a product first")
             }
@@ -389,7 +389,7 @@ class CartReturnFragment : BaseFragment(), View.OnClickListener {
                 }
 
                 if (tv_total_order_amount.text.toString().trim() == "0.00" || tv_total_order_amount.text.toString().trim() == "0.0" ||
-                        tv_total_order_amount.text.toString().trim() == "0") {
+                    tv_total_order_amount.text.toString().trim() == "0") {
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.error_enter_values))
                     return
                 }
@@ -450,7 +450,7 @@ class CartReturnFragment : BaseFragment(), View.OnClickListener {
             override fun onLeftClick() {
                 if (AppUtils.stockStatus == 2) {
 //                    if (!Pref.isShowOrderRemarks && !Pref.isShowOrderSignature)
-                        saveData()
+                    saveData()
 //                    else
 //                        showRemarksAlert()
                 }
@@ -473,7 +473,7 @@ class CartReturnFragment : BaseFragment(), View.OnClickListener {
             AddShopFragment.isOrderEntryPressed=false
             if (AppUtils.stockStatus == 2) {
                 ((mContext as DashboardActivity).getFragment() as ReturnTypeListFragment).saveOrder(tv_total_order_amount.text.toString().trim(),
-                        selectedProductList, list)
+                    selectedProductList, list)
             }
         }
     }

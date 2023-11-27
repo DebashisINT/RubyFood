@@ -2,6 +2,7 @@ package com.rubyfood.features.orderList.api.neworderlistapi
 
 import com.rubyfood.app.Pref
 import com.rubyfood.base.BaseResponse
+import com.rubyfood.features.login.model.ShopFeedbackResponseModel
 import com.rubyfood.features.orderList.model.NewOrderListResponseModel
 import com.rubyfood.features.orderList.model.ReturnListResponseModel
 import io.reactivex.Observable
@@ -18,7 +19,9 @@ class NewOrderListRepo(val apiService: NewOrderListApi) {
         return apiService.getReturnList(sessiontoken, user_id, date)
     }
 
-
+    fun getShopFeedback(user_id: String,from_date:String,to_date : String,date_span:String): Observable<ShopFeedbackResponseModel> {
+        return apiService.getShopFeedbackApi(user_id,from_date,to_date,date_span)
+    }
 
     fun sendOrderEmail(shopId: String, orderId: String, type: String): Observable<BaseResponse> {
         return apiService.sendOrderEmail(Pref.session_token!!, Pref.user_id!!, orderId, shopId, type)

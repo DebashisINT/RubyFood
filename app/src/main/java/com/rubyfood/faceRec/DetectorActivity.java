@@ -51,6 +51,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.rubyfood.CustomStatic;
 import com.rubyfood.R;
+import com.rubyfood.app.Pref;
 import com.rubyfood.app.types.FragType;
 import com.rubyfood.faceRec.customview.OverlayView;
 import com.rubyfood.faceRec.env.BorderedText;
@@ -58,7 +59,7 @@ import com.rubyfood.faceRec.env.ImageUtils;
 import com.rubyfood.faceRec.env.Logger;
 import com.rubyfood.faceRec.tflite.SimilarityClassifier;
 import com.rubyfood.faceRec.tracking.MultiBoxTracker;
-import com.elvishew.xlog.XLog;
+;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.mlkit.vision.common.InputImage;
@@ -76,6 +77,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static java.sql.DriverManager.println;
+
+import timber.log.Timber;
 
 /**
  * An activity that uses a TensorFlowMultiBoxDetector and ObjectTracker to detect and then track
@@ -151,6 +154,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
+
     fabAdd = findViewById(R.id.fab_add);
     fabAdd.setVisibility(View.GONE);
     fabAdd.setOnClickListener(new View.OnClickListener() {
@@ -165,8 +169,8 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             new FaceDetectorOptions.Builder()
                     .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
                     //.setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
-                    .setContourMode(FaceDetectorOptions.LANDMARK_MODE_NONE)
-                    //.setContourMode(FaceDetectorOptions.CONTOUR_MODE_NONE)
+                    //.setContourMode(FaceDetectorOptions.LANDMARK_MODE_NONE)
+                    .setContourMode(FaceDetectorOptions.CONTOUR_MODE_NONE)
                     .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
                     .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
                     .build();
@@ -650,9 +654,9 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             upperLi=1.0f;
           }
 //          if (conf>0.78f && conf < 1.0f) {
-          XLog.d("DetectorActivity face _conf CustomStatic.FaceDetectionAccuracyLower : "+CustomStatic.FaceDetectionAccuracyLower.toString());
-          XLog.d("DetectorActivity face _conf lowerLi: "+lowerLi.toString() + " upperLi : "+upperLi.toString()+" conf: "+String.valueOf(conf));
-          if (conf>lowerLi && conf < 0.99f) {
+          Timber.d("DetectorActivity face _conf CustomStatic.FaceDetectionAccuracyLower : "+CustomStatic.FaceDetectionAccuracyLower.toString());
+          Timber.d("DetectorActivity face _conf lowerLi: "+lowerLi.toString() + " upperLi : "+upperLi.toString()+" conf: "+String.valueOf(conf));
+          if (conf>lowerLi && conf < 1.0f) {
             //if (conf>lowerLi && conf < upperLi) {
           //if (conf >0.6f && conf < 1.0f) {  //  it will toughen the matching process which will create problem in real life
             confidence = conf;

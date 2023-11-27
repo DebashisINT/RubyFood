@@ -1,8 +1,12 @@
 package com.rubyfood.features.shopdetail.presentation.api
 
 import com.rubyfood.app.NetworkConstant
+import com.rubyfood.base.BaseResponse
 import com.rubyfood.features.addshop.model.AddShopRequestData
 import com.rubyfood.features.addshop.model.AddShopResponse
+import com.rubyfood.features.addshop.model.LogFileResponse
+import com.rubyfood.features.login.model.WhatsappApiData
+import com.rubyfood.features.login.model.WhatsappApiFetchData
 import io.reactivex.Observable
 import okhttp3.MultipartBody
 import retrofit2.Retrofit
@@ -18,6 +22,13 @@ interface EditShopApi {
     @POST("Shoplist/EditShop")
     fun editShop(@Body addShop: AddShopRequestData?): Observable<AddShopResponse>
 
+    @POST("WhatsAppMessageInfo/WhatsAppMsgSave")
+    fun whatsAppStatusSyncApi(@Body addShop: WhatsappApiData?): Observable<BaseResponse>
+
+    @FormUrlEncoded
+    @POST("WhatsAppMessageInfo/WhatsAppMsgList")
+    fun whatsAppStatusFetchApi(@Field("user_id") user_id: String): Observable<WhatsappApiFetchData>
+
     @Multipart
     @POST("ShopRegistration/NewShopEdit")
     fun editShopWithDegImage(@Query("data") addShop: String, @Part deg_img_data: MultipartBody.Part?): Observable<AddShopResponse>
@@ -26,6 +37,10 @@ interface EditShopApi {
     @Multipart
     @POST("ShopRegistration/EditShop")
     fun editShopWithImage(@Query("data") addShop: String, @Part logo_img_data: MultipartBody.Part?): Observable<AddShopResponse>
+
+    @Multipart
+    @POST("APPLogFilesDetection/APPLogFilesSave")
+    fun logshareFile(@Query("data") userId: String, @Part attachments: MultipartBody.Part?): Observable<LogFileResponse>
 
     /**
      * Companion object to create the GithubApiService

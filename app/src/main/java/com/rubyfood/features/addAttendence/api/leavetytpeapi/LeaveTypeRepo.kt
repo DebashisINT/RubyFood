@@ -5,6 +5,7 @@ import com.rubyfood.base.BaseResponse
 import com.rubyfood.features.addAttendence.model.ApprovalLeaveResponseModel
 import com.rubyfood.features.addAttendence.model.LeaveTypeResponseModel
 import com.rubyfood.features.leaveapplynew.model.ApprovalRejectReqModel
+import com.rubyfood.features.leaveapplynew.model.clearAttendanceonRejectReqModelRejectReqModel
 import io.reactivex.Observable
 
 /**
@@ -22,5 +23,9 @@ class LeaveTypeRepo(val apiService: LeaveTypeApi) {
 
     fun postApprovalRejectclick(ApprovalRejectReqModel: ApprovalRejectReqModel): Observable<BaseResponse> {
         return apiService.postApprovalRejectclick(ApprovalRejectReqModel)
+    }
+
+    fun clearAttendanceonRejectclick(clearAttendanceonRejectReModel: clearAttendanceonRejectReqModelRejectReqModel): Observable<BaseResponse> {
+        return apiService.clearAttendanceonRejectclick(clearAttendanceonRejectReModel)
     }
 }

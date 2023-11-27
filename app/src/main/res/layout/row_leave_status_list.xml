@@ -185,6 +185,34 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:orientation="horizontal"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/_30sdp"
+            android:paddingStart="@dimen/_10sdp"
+            android:gravity="center|start">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Reason : "
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/_12sdp"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/tv_leave_reason"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="OK"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_11sdp"
+                android:gravity="center"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
             android:layout_height="@dimen/_30sdp"
             android:paddingStart="@dimen/_10sdp">
 
@@ -208,9 +236,6 @@
                 android:gravity="center"/>
 
         </LinearLayout>
-
-
-
 
 
 

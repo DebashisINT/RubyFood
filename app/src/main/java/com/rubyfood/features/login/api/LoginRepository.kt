@@ -5,6 +5,7 @@ import android.net.Uri
 import com.rubyfood.app.FileUtils
 import com.rubyfood.app.Pref
 import com.rubyfood.base.BaseResponse
+import com.rubyfood.features.login.model.GetConcurrentUserResponse
 import com.rubyfood.features.login.model.LoginImageInput
 import com.rubyfood.features.login.model.LoginResponse
 import com.rubyfood.features.login.model.NewSettingsResponseModel
@@ -24,6 +25,18 @@ class LoginRepository(val apiService: LoginApi) {
     fun login(username: String, password: String, latitude: String, longitude: String, login_time: String, imei: String, version: String, location: String,
               device_token: String): Observable<LoginResponse> {
         return apiService.getLoginResponse(username, password, latitude, longitude, login_time, imei, version, location, device_token)
+    }
+
+    fun getConcurrentUserDtls(username: String): Observable<GetConcurrentUserResponse> {
+        return apiService.getConcurrentUserDtlsApi(username)
+    }
+
+    fun insertConcurrentUserDtls(username: String,imei:String,dateTime:String): Observable<BaseResponse> {
+        return apiService.insertConcurrentUserDtlsApi(username,imei,dateTime)
+    }
+
+    fun deleteConcurrentUserDtls(username: String): Observable<BaseResponse> {
+        return apiService.deleteConcurrentUserDtlsApi(username)
     }
 
     fun getMeetingList(): Observable<MeetingListResponseModel> {

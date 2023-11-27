@@ -14,9 +14,12 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.RelativeLayout
+import com.rubyfood.CustomStatic
 import com.rubyfood.R
+import com.rubyfood.app.AppDatabase
 import com.rubyfood.app.NetworkConstant
 import com.rubyfood.app.Pref
+import com.rubyfood.app.domain.PjpListEntity
 import com.rubyfood.app.types.FragType
 import com.rubyfood.app.utils.AppUtils
 import com.rubyfood.base.BaseResponse
@@ -24,18 +27,18 @@ import com.rubyfood.base.presentation.BaseActivity
 import com.rubyfood.base.presentation.BaseFragment
 import com.rubyfood.features.dashboard.presentation.DashboardActivity
 import com.rubyfood.features.member.api.TeamRepoProvider
-import com.rubyfood.features.member.model.AddpjpInputParams
-import com.rubyfood.features.member.model.CustomerDataModel
-import com.rubyfood.features.member.model.CustomerResponseModel
-import com.rubyfood.features.member.model.TeamPjpConfigResponseModel
+import com.rubyfood.features.member.model.*
 import com.rubyfood.features.reimbursement.presentation.CustomerListDialog
 import com.rubyfood.features.reimbursement.presentation.DateAdapter
 import com.rubyfood.widgets.AppCustomEditText
 import com.rubyfood.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import com.pnikosis.materialishprogress.ProgressWheel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
+import timber.log.Timber
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -191,7 +194,7 @@ class AddPJPFragment : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as TeamPjpConfigResponseModel
-                            XLog.d("GET TEAM PJP CONFIG DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("GET TEAM PJP CONFIG DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             progress_wheel.stopSpinning()
                             if (response.status == NetworkConstant.SUCCESS) {
                                 tv_supervisor_name.text = response.supervisor_name
@@ -202,7 +205,7 @@ class AddPJPFragment : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
 
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("GET TEAM PJP CONFIG DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("GET TEAM PJP CONFIG DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                         })
@@ -223,7 +226,7 @@ class AddPJPFragment : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as CustomerResponseModel
-                            XLog.d("GET TEAM CUSTOMER DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("GET TEAM CUSTOMER DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             progress_wheel.stopSpinning()
                             if (response.status == NetworkConstant.SUCCESS) {
 
@@ -237,7 +240,7 @@ class AddPJPFragment : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
 
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("GET TEAM CUSTOMER DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("GET TEAM CUSTOMER DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                         })
@@ -333,19 +336,72 @@ class AddPJPFragment : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as BaseResponse
-                            XLog.d("ADD PJP DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("ADD PJP DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             progress_wheel.stopSpinning()
                             (mContext as DashboardActivity).showSnackMessage(response.message!!)
 
                             if (response.status == NetworkConstant.SUCCESS) {
                                 (mContext as DashboardActivity).isAddedEdited = true
+                                CustomStatic.IsPJPAddEdited=true
+                                getPjpListApi()
+                                //(mContext as DashboardActivity).onBackPressed()
+                            }
+                        }, { error ->
+                            progress_wheel.stopSpinning()
+                            Timber.d("ADD PJP DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            error.printStackTrace()
+                            (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                        })
+        )
+    }
+
+    private fun getPjpListApi() {
+        progress_wheel.spin()
+        val repository = TeamRepoProvider.teamRepoProvider()
+        BaseActivity.compositeDisposable.add(
+                repository.getUserPJPList(AppUtils.getCurrentDateForShopActi())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            val response = result as UserPjpResponseModel
+                            Timber.d("GET USER PJP DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            if (response.status == NetworkConstant.SUCCESS) {
+                                if (response.pjp_list != null && response.pjp_list.isNotEmpty()) {
+                                    doAsync {
+                                        AppDatabase.getDBInstance()?.pjpListDao()?.deleteAll()
+                                        response.pjp_list.forEach {
+                                            val pjpEntity = PjpListEntity()
+                                            AppDatabase.getDBInstance()?.pjpListDao()?.insert(pjpEntity.apply {
+                                                pjp_id = it.id
+                                                from_time = it.from_time
+                                                to_time = it.to_time
+                                                customer_name = it.customer_name
+                                                customer_id = it.customer_id
+                                                location = it.location
+                                                date = it.date
+                                                remarks = it.remarks
+                                            })
+                                        }
+
+                                        uiThread {
+                                            progress_wheel.stopSpinning()
+                                            (mContext as DashboardActivity).onBackPressed()
+                                        }
+                                    }
+                                } else {
+                                    progress_wheel.stopSpinning()
+                                    (mContext as DashboardActivity).onBackPressed()
+                                }
+
+                            } else {
+                                progress_wheel.stopSpinning()
                                 (mContext as DashboardActivity).onBackPressed()
                             }
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("ADD PJP DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("GET USER PJP DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
-                            (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                            (mContext as DashboardActivity).onBackPressed()
                         })
         )
     }

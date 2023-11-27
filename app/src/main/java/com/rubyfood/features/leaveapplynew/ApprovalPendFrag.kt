@@ -20,7 +20,9 @@ import com.rubyfood.MySingleton
 import com.rubyfood.R
 import com.rubyfood.app.NetworkConstant
 import com.rubyfood.app.Pref
+import com.rubyfood.app.types.FragType
 import com.rubyfood.app.utils.AppUtils
+import com.rubyfood.app.utils.Toaster
 import com.rubyfood.base.BaseResponse
 import com.rubyfood.base.presentation.BaseActivity
 import com.rubyfood.base.presentation.BaseFragment
@@ -32,13 +34,15 @@ import com.rubyfood.features.addAttendence.model.Leave_list_Response
 import com.rubyfood.features.dashboard.presentation.DashboardActivity
 import com.rubyfood.features.leaveapplynew.adapter.AdapterAppliedLeaveList
 import com.rubyfood.features.leaveapplynew.model.ApprovalRejectReqModel
+import com.rubyfood.features.leaveapplynew.model.clearAttendanceonRejectReqModelRejectReqModel
 import com.rubyfood.widgets.AppCustomEditText
 import com.rubyfood.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONArray
 import org.json.JSONObject
+import timber.log.Timber
 import java.util.HashMap
 
 class ApprovalPendFrag: BaseFragment(), View.OnClickListener {
@@ -154,9 +158,13 @@ class ApprovalPendFrag: BaseFragment(), View.OnClickListener {
         val dialogYes = simpleDialog.findViewById(R.id.dialog_remark_ok) as AppCustomTextView
 
         dialogYes.setOnClickListener({ view ->
-            simpleDialog.cancel()
-            remark =  dialog_remark.text.toString().trim()
-            apiCallOnClick(status,obj)
+            if(dialog_remark.text.toString().trim().length>0){
+                simpleDialog.cancel()
+                remark =  dialog_remark.text.toString().trim()
+                apiCallOnClick(status,obj)
+            }else{
+                Toaster.msgShort(mContext,"Please enter remarks.")
+            }
         })
 
         simpleDialog.show()
@@ -180,11 +188,45 @@ class ApprovalPendFrag: BaseFragment(), View.OnClickListener {
                         .subscribe({ result ->
                             val response = result as BaseResponse
                             if (response.status == NetworkConstant.SUCCESS) {
-                                getDeviceTokerOfAppliedUser(status)
+                                if(status.equals("REJECT")){
+                                    apiCallOnClearAttenReject(status,obj)
+                                }else{
+                                    getDeviceTokerOfAppliedUser(status)
+                                }
+
                        /*         Handler().postDelayed(Runnable {
                                     progress_wheel.stopSpinning()
                                     getApprovalPendingList()
                                 }, 3500)*/
+                            }
+                        }, { error ->
+                            progress_wheel.stopSpinning()
+                            (mContext as DashboardActivity).showSnackMessage("ERROR")
+                        })
+        )
+    }
+
+
+
+
+    private fun apiCallOnClearAttenReject(status:String,obj:Leave_list_Response) {
+        var req : clearAttendanceonRejectReqModelRejectReqModel = clearAttendanceonRejectReqModelRejectReqModel()
+        req.user_id=userId
+        req.leave_apply_date=AppUtils.getFormatedDateNew(obj.from_date,"dd-mm-yyyy","yyyy-mm-dd")
+        req.isOnLeave=true
+
+
+        val repository = LeaveTypeRepoProvider.leaveTypeListRepoProvider()
+        progress_wheel.spin()
+        BaseActivity.compositeDisposable.add(
+                repository.clearAttendanceonRejectclick(req)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            val response = result as BaseResponse
+                            if (response.status == NetworkConstant.SUCCESS) {
+                                getDeviceTokerOfAppliedUser(status)
+
                             }
                         }, { error ->
                             progress_wheel.stopSpinning()
@@ -209,7 +251,7 @@ class ApprovalPendFrag: BaseFragment(), View.OnClickListener {
                                 }
 
                             }, { error ->
-                                XLog.d("Apply Leave Response ERROR=========> " + error.message)
+                                Timber.d("Apply Leave Response ERROR=========> " + error.message)
                                 BaseActivity.isApiInitiated = false
                                 progress_wheel.stopSpinning()
                                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
@@ -258,7 +300,7 @@ class ApprovalPendFrag: BaseFragment(), View.OnClickListener {
                         if(leave_status.equals("APPROVE")){
                             msg="APPROVED"
                         }else{
-                            msg="REJECTD"
+                            msg="REJECTED"
                         }
                         dialogHeader.text = "Leave status updated as : "+msg
 
@@ -281,7 +323,7 @@ class ApprovalPendFrag: BaseFragment(), View.OnClickListener {
             @Throws(AuthFailureError::class)
             override fun getHeaders(): Map<String, String> {
                 val params: MutableMap<String, String> = HashMap()
-                params["Authorization"] = "key=AAAAIoWfCpc:APA91bEMOPyfjsyziPC1WYJiPHjzdmTQJmAOKP0fM24iXI9BgrmyhH4uLY6Jd-6Lpjp8mvSdpSp-zm20ApTOYQ3Ean4m6LicJ5CoECS_v5u2PUAwA8E6FLsu2ZC6_WxuSYnTTLzlUi4E"
+                params["Authorization"] = getString(R.string.firebase_key)
                 params["Content-Type"] = "application/json"
                 return params
             }

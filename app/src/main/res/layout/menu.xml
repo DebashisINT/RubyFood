@@ -3,26 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/shape_custom_side_menu"
+    android:background="@drawable/sidebar_image_3"
     android:gravity="end">
+    <!--android:background="@drawable/shape_custom_side_menu" -->
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+      <ScrollView
+          android:layout_width="match_parent"
+          android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:id="@+id/menu_RL"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="end">
+          <RelativeLayout
+              android:id="@+id/menu_RL"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="end">
 
-            <!--        <android.support.v7.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/_8sdp"
-                        android:layout_marginTop="?actionBarSize"
-                        app:cardElevation="@dimen/_5sdp"
-                        app:cardUseCompatPadding="true">-->
+              <!--        <android.support.v7.widget.CardView
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_marginEnd="@dimen/_8sdp"
+                          android:layout_marginTop="?actionBarSize"
+                          app:cardElevation="@dimen/_5sdp"
+                          app:cardUseCompatPadding="true">-->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -33,7 +34,8 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/ic_menu_header_image">
+                    android:background="@drawable/ic_menu_header_image"
+                    android:backgroundTint="#1A2F8FF7">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -158,7 +160,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
-                    android:drawableStart="@drawable/ic_add_order_icon"
+                    android:drawableStart="@drawable/icon_home_svg"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
@@ -179,6 +181,7 @@
                     android:paddingRight="@dimen/_17sdp"
                     android:paddingTop="@dimen/_15sdp"
                     android:text="Photo Registration"
+                    android:drawableTint="@color/white"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp"
                     android:visibility="visible"
@@ -190,6 +193,7 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
                     android:drawableStart="@drawable/ic_attendance_machine"
+                    android:drawableTint="@color/white"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
@@ -200,11 +204,60 @@
                     android:visibility="visible" />
 
                 <com.rubyfood.widgets.AppCustomTextView
+                    android:id="@+id/tb_auto_revisit_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_nearby_new"
+                    android:drawablePadding="@dimen/_15sdp"
+                    android:paddingLeft="@dimen/_17sdp"
+                    android:paddingTop="@dimen/_15sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:paddingBottom="@dimen/_7sdp"
+                    android:text="Revisit"
+                    android:textColor="@color/lightest_gray"
+                    android:textSize="@dimen/_12sdp"
+                    android:visibility="visible" />
+
+                <!-- 3.0  AppV 4.0.6  DashboardActivity -->
+                <com.rubyfood.widgets.AppCustomTextView
+                    android:id="@+id/tb_total_visit_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_nearby_new"
+                    android:drawablePadding="@dimen/_15sdp"
+                    android:paddingLeft="@dimen/_17sdp"
+                    android:paddingTop="@dimen/_15sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:paddingBottom="@dimen/_7sdp"
+                    android:text="Total Visit"
+                    android:textColor="@color/lightest_gray"
+                    android:textSize="@dimen/_12sdp"
+                    android:visibility="visible" />
+
+
+                <!--clear Attendance -->
+                <com.rubyfood.widgets.AppCustomTextView
+                    android:id="@+id/tv_clear_attendance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/_15sdp"
+                    android:drawableStart="@drawable/ic_attendance"
+                    android:drawableTint="@color/white"
+                    android:paddingBottom="@dimen/_7sdp"
+                    android:paddingLeft="@dimen/_17sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:paddingTop="@dimen/_15sdp"
+                    android:text="Attendance Clear"
+                    android:textColor="@color/lightest_gray"
+                    android:textSize="@dimen/_12sdp"
+                    android:visibility="visible" />
+
+                <com.rubyfood.widgets.AppCustomTextView
                     android:id="@+id/chat_bot_TV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
-                    android:drawableStart="@drawable/ic_bot"
+                    android:drawableStart="@drawable/ic_bot1"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
@@ -215,11 +268,27 @@
                     android:visibility="visible" />
 
                 <com.rubyfood.widgets.AppCustomTextView
+                    android:id="@+id/distributor_wise_order_list_TV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/_15sdp"
+                    android:drawableStart="@drawable/ic_order_icon"
+                    android:paddingBottom="@dimen/_7sdp"
+                    android:paddingLeft="@dimen/_17sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:drawableTint="@color/white"
+                    android:paddingTop="@dimen/_15sdp"
+                    android:text="Distributor Wise Order List"
+                    android:textColor="@color/lightest_gray"
+                    android:textSize="@dimen/_12sdp"
+                    android:visibility="visible" />
+
+                <com.rubyfood.widgets.AppCustomTextView
                     android:id="@+id/tv_change_pwd"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
-                    android:drawableStart="@drawable/ic_changepas"
+                    android:drawableStart="@drawable/ic_changepas1"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
@@ -233,7 +302,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
-                    android:drawableStart="@drawable/ic_add_attendance_icon"
+                    android:drawableStart="@drawable/ic_add_attendance_icon_1"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
@@ -247,7 +316,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
-                    android:drawableStart="@drawable/ic_attendance_icon"
+                    android:drawableStart="@drawable/ic_view_attendance"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
@@ -261,7 +330,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
-                    android:drawableStart="@drawable/ic_add_attendance_icon"
+                    android:drawableStart="@drawable/ic_add_attendance_icon2"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
@@ -275,7 +344,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
-                    android:drawableStart="@drawable/ic_applyleave"
+                    android:drawableStart="@drawable/ic_applyleave1"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
@@ -302,16 +371,107 @@
                     android:id="@+id/nearby_shop_TV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_nearby_new"
+                    android:drawablePadding="@dimen/_15sdp"
+                    android:paddingLeft="@dimen/_17sdp"
+                    android:paddingTop="@dimen/_15sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:paddingBottom="@dimen/_7sdp"
+                    android:text="@string/nearby_shops"
+                    android:textColor="@color/lightest_gray"
+                    android:textSize="@dimen/_12sdp"
+                    android:visibility="visible" />
+
+                <com.rubyfood.widgets.AppCustomTextView
+                    android:id="@+id/menu_beat_TV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/_15sdp"
+                    android:drawableStart="@drawable/ic_nearby_new1"
+                    android:paddingBottom="@dimen/_7sdp"
+                    android:paddingLeft="@dimen/_17sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:paddingTop="@dimen/_15sdp"
+                    android:text="Beat"
+                    android:textColor="@color/lightest_gray"
+                    android:textSize="@dimen/_12sdp"
+                    android:visibility="visible" />
+
+                <com.rubyfood.widgets.AppCustomTextView
+                    android:id="@+id/menu_market_assist_TV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/_15sdp"
+                    android:drawableStart="@drawable/ic_machine_learning"
+                    android:paddingBottom="@dimen/_7sdp"
+                    android:paddingLeft="@dimen/_17sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:paddingTop="@dimen/_15sdp"
+                    android:text="Market Assistant"
+                    android:textColor="@color/lightest_gray"
+                    android:textSize="@dimen/_12sdp"
+                    android:visibility="visible" />
+
+                <com.rubyfood.widgets.AppCustomTextView
+                    android:id="@+id/tv_pending_out_loc_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
                     android:drawableStart="@drawable/ic_nearby_new"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
                     android:paddingTop="@dimen/_15sdp"
-                    android:text="@string/nearby_shops"
+                    android:text="Pending Out Location"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp"
                     android:visibility="visible" />
+
+                <com.rubyfood.widgets.AppCustomTextView
+                    android:id="@+id/assigned_survey_TV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/_15sdp"
+                    android:drawableStart="@drawable/ic_surveys_audit"
+                    android:paddingBottom="@dimen/_7sdp"
+                    android:paddingLeft="@dimen/_17sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:paddingTop="@dimen/_15sdp"
+                    android:text="Survey"
+                    android:drawableTint="@color/white"
+                    android:textColor="@color/lightest_gray"
+                    android:textSize="@dimen/_12sdp" />
+
+                <!--mantis 0026023 A new Menu named as
+                ‘Task Management’ should be implemented in the menu bar.-->
+
+                <com.rubyfood.widgets.AppCustomTextView
+                    android:id="@+id/assigned_lead_TV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_professional_skills_lead"
+                    android:drawablePadding="@dimen/_15sdp"
+                    android:paddingLeft="@dimen/_17sdp"
+                    android:paddingTop="@dimen/_15sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:paddingBottom="@dimen/_7sdp"
+                    android:text="Assigned Lead"
+                    android:textColor="@color/lightest_gray"
+                    android:textSize="@dimen/_12sdp" />
+
+                <com.rubyfood.widgets.AppCustomTextView
+                    android:id="@+id/task_management_TV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/_15sdp"
+                    android:drawableStart="@drawable/ic_professional_skills_lead1"
+                    android:paddingBottom="@dimen/_7sdp"
+                    android:paddingLeft="@dimen/_17sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:paddingTop="@dimen/_15sdp"
+                    android:text="Task Management"
+                    android:textColor="@color/lightest_gray"
+                    android:textSize="@dimen/_12sdp" />
 
                 <com.rubyfood.widgets.AppCustomTextView
                     android:id="@+id/nearby_user_TV"
@@ -342,6 +502,7 @@
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp"
                     android:visibility="visible"
+                    android:drawableTint="@color/white"
                     android:gravity="center_vertical"/>
 
                 <com.rubyfood.widgets.AppCustomTextView
@@ -349,12 +510,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
-                    android:drawableStart="@drawable/ic_order_history_icon"
+                    android:drawableStart="@drawable/ic_order_history_icon1"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
                     android:paddingTop="@dimen/_15sdp"
                     android:text="@string/history"
+                    android:textColor="@color/lightest_gray"
+                    android:textSize="@dimen/_12sdp" />
+                <!--Performace Menu In Menu bar 24-03-2023 by saheli-->
+                <com.rubyfood.widgets.AppCustomTextView
+                    android:id="@+id/tv_performance_teamMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/_15sdp"
+                    android:drawableStart="@drawable/ic_performance1"
+                    android:paddingBottom="@dimen/_7sdp"
+                    android:paddingLeft="@dimen/_17sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:paddingTop="@dimen/_15sdp"
+                    android:text="Performance Insights"
+                    android:visibility="visible"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp" />
 
@@ -369,6 +545,7 @@
                     android:paddingRight="@dimen/_17sdp"
                     android:paddingTop="@dimen/_15sdp"
                     android:text="@string/quotation"
+                    android:drawableTint="@color/white"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp" />
 
@@ -377,7 +554,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
-                    android:drawableStart="@drawable/ic_order_icon"
+                    android:drawableStart="@drawable/ic_order_icon1"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
@@ -428,7 +605,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:drawablePadding="@dimen/_15sdp"
-                        android:drawableStart="@drawable/ic_collection"
+                        android:drawableStart="@drawable/ic_collection1"
                         android:paddingBottom="@dimen/_7sdp"
                         android:paddingLeft="@dimen/_17sdp"
                         android:paddingRight="@dimen/_17sdp"
@@ -573,7 +750,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
-                    android:drawableStart="@drawable/ic_reimbursement_icon"
+                    android:drawableStart="@drawable/ic_reimbursement_icon1"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
@@ -595,6 +772,7 @@
                     android:paddingTop="@dimen/_15sdp"
                     android:text="@string/list_of_party"
                     android:textColor="@color/lightest_gray"
+                    android:drawableTint="@color/white"
                     android:textSize="@dimen/_12sdp"
                     android:visibility="visible"
                     android:gravity="center_vertical"/>
@@ -674,6 +852,7 @@
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp"
                     android:visibility="visible"
+                    android:drawableTint="@color/white"
                     android:gravity="center_vertical"/>
 
                 <com.rubyfood.widgets.AppCustomTextView
@@ -716,17 +895,17 @@
                         android:id="@+id/reports_TV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:drawablePadding="@dimen/_15sdp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_toLeftOf="@+id/iv_drop_down_icon"
                         android:drawableStart="@drawable/ic_add_order_report_icon"
-                        android:paddingBottom="@dimen/_7sdp"
+                        android:drawablePadding="@dimen/_15sdp"
                         android:paddingLeft="@dimen/_17sdp"
-                        android:paddingRight="@dimen/_17sdp"
                         android:paddingTop="@dimen/_15sdp"
+                        android:paddingRight="@dimen/_17sdp"
+                        android:paddingBottom="@dimen/_7sdp"
                         android:text="@string/reports"
                         android:textColor="@color/lightest_gray"
-                        android:textSize="@dimen/_12sdp"
-                        android:layout_toLeftOf="@+id/iv_drop_down_icon"
-                        android:layout_alignParentLeft="true"/>
+                        android:textSize="@dimen/_12sdp" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_drop_down_icon"
@@ -821,6 +1000,7 @@
                     android:text="@string/dynamic"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp"
+                    android:drawableTint="@color/white"
                     android:visibility="visible"
                     android:gravity="center_vertical"/>
 
@@ -835,6 +1015,7 @@
                     android:paddingRight="@dimen/_17sdp"
                     android:paddingTop="@dimen/_15sdp"
                     android:text="@string/map_view"
+                    android:drawableTint="@color/white"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp"
                     android:visibility="visible" />
@@ -850,6 +1031,7 @@
                     android:paddingRight="@dimen/_17sdp"
                     android:paddingTop="@dimen/_15sdp"
                     android:text="@string/share_log"
+                    android:drawableTint="@color/white"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp"
                     android:visibility="visible" />
@@ -865,6 +1047,7 @@
                     android:paddingRight="@dimen/_17sdp"
                     android:paddingTop="@dimen/_15sdp"
                     android:text="@string/share_loc"
+                    android:drawableTint="@color/white"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp"
                     android:visibility="visible" />
@@ -912,6 +1095,7 @@
                     android:text="@string/doc_repo"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp"
+                    android:drawableTint="@color/white"
                     android:visibility="visible" />
 
                 <com.rubyfood.widgets.AppCustomTextView
@@ -963,12 +1147,12 @@
                     android:id="@+id/permission_info_TV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawablePadding="@dimen/_15sdp"
                     android:drawableStart="@drawable/ic_permisioninfo_new"
-                    android:paddingBottom="@dimen/_7sdp"
+                    android:drawablePadding="@dimen/_15sdp"
                     android:paddingLeft="@dimen/_17sdp"
-                    android:paddingRight="@dimen/_17sdp"
                     android:paddingTop="@dimen/_15sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:paddingBottom="@dimen/_7sdp"
                     android:text="@string/permission_info"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp"
@@ -1021,6 +1205,38 @@
                     android:visibility="visible" />
 
                 <com.rubyfood.widgets.AppCustomTextView
+                    android:id="@+id/check_custom_status_TV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/_15sdp"
+                    android:drawableStart="@drawable/ic_machine_learning"
+                    android:paddingBottom="@dimen/_7sdp"
+                    android:paddingLeft="@dimen/_17sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:paddingTop="@dimen/_15sdp"
+                    android:text="Service Check"
+                    android:textColor="@color/lightest_gray"
+                    android:textSize="@dimen/_12sdp"
+                    android:visibility="gone" />
+
+                <!--mantis 0025783 In-app privacy policy working in menu & Login -->
+
+                <com.rubyfood.widgets.AppCustomTextView
+                    android:id="@+id/privacy_policy_tv_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/_15sdp"
+                    android:drawableStart="@drawable/ic_party_status"
+                    android:drawableTint="@color/white"
+                    android:paddingBottom="@dimen/_7sdp"
+                    android:paddingLeft="@dimen/_17sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:paddingTop="@dimen/_15sdp"
+                    android:text="Privacy policy"
+                    android:textColor="@color/lightest_gray"
+                    android:textSize="@dimen/_12sdp" />
+
+                <com.rubyfood.widgets.AppCustomTextView
                     android:id="@+id/logout_TV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -1031,8 +1247,10 @@
                     android:paddingRight="@dimen/_17sdp"
                     android:paddingTop="@dimen/_15sdp"
                     android:text="@string/sync_logout"
+                    android:drawableTint="@color/white"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp" />
+
 
                 <com.rubyfood.widgets.AppCustomTextView
                     android:id="@+id/version_name_TV"
@@ -1046,6 +1264,8 @@
                     android:textColor="@color/color_custom_red"
                     android:textStyle="bold"
                     android:textSize="@dimen/_12sdp" />
+
+
 
             </LinearLayout>
 

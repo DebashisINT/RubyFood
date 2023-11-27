@@ -153,7 +153,87 @@ class MemberListAdapter(context: Context, val teamList: ArrayList<TeamListDataMo
                 listener.onLocClick(teamList[adapterPosition])
             }
 
+            itemView.iv_coll.setOnClickListener{
+                listener.onCollClick(teamList[adapterPosition])
+            }
+
             itemView.iv_job.visibility=View.GONE
+
+            if(Pref.IsShowRepeatOrdersNotificationinTeam){
+                itemView.iv_zero_order.visibility = View.VISIBLE
+            }else{
+                itemView.iv_zero_order.visibility = View.GONE
+            }
+
+            itemView.iv_zero_order.setOnClickListener{
+                listener.onZeroOrderClick(teamList[adapterPosition])
+            }
+
+            if(Pref.IsBeatRouteReportAvailableinTeam){
+                itemView.iv_beat.visibility = View.VISIBLE
+            }else{
+                itemView.iv_beat.visibility = View.GONE
+            }
+
+            itemView.iv_beat.setOnClickListener{
+                listener.onBeatClick(teamList[adapterPosition])
+            }
+
+            if(Pref.IsShowStateInTeam){
+                itemView.ll_state_root.visibility = View.VISIBLE
+            }else{
+                itemView.ll_state_root.visibility = View.GONE
+            }
+            if(Pref.IsShowBranchInTeam){
+                itemView.ll_branch_root.visibility = View.VISIBLE
+            }else{
+                itemView.ll_branch_root.visibility = View.GONE
+            }
+            if(Pref.IsShowDesignationInTeam){
+                itemView.ll_design_root.visibility = View.VISIBLE
+            }else{
+                itemView.ll_design_root.visibility = View.GONE
+            }
+
+
+            itemView.tv_state_member_list_show.text  = teamList[adapterPosition].State
+            itemView.tv_branch_member_list_show.text  = teamList[adapterPosition].Branch
+            itemView.tv_des_member_list_show.text  = teamList[adapterPosition].Designation
+
+            itemView.tv_empcode_member_list_show.text  = teamList[adapterPosition].Employee_Code
+
+            //start 1.0  OfflineMemberAdapter AppV 4.1.5 Saheli    06/06/2023  mantis 0026301: Team Details page working
+            if(Pref.isOfflineTeam){
+                itemView.iv_beat.visibility=View.GONE
+                itemView.iv_zero_order.visibility = View.GONE
+                itemView.iv_coll.visibility = View.GONE
+                itemView.iv_leave.visibility = View.GONE
+            }
+            else{
+                if(Pref.IsBeatRouteReportAvailableinTeam){
+                    itemView.iv_beat.visibility = View.VISIBLE
+                }else{
+                    itemView.iv_beat.visibility = View.GONE
+                }
+                if(Pref.IsShowRepeatOrdersNotificationinTeam){
+                    itemView.iv_zero_order.visibility = View.VISIBLE
+                }else{
+                    itemView.iv_zero_order.visibility = View.GONE
+                }
+                itemView.iv_coll.visibility = View.VISIBLE
+                if(Pref.Leaveapprovalfromsupervisorinteam){
+                    itemView.iv_leave.visibility = View.VISIBLE
+                }
+                else{
+                    itemView.iv_leave.visibility = View.GONE
+                }
+            }
+
+            itemView.tv_team_details_all_party.setOnClickListener {
+                listener.onAllPartyClick(teamList[adapterPosition])
+            }
+            //end 1.0  OfflineMemberAdapter AppV 4.1.5 Saheli    06/06/2023  mantis 0026301: Team Details page working
+
         }
     }
 
@@ -170,7 +250,15 @@ class MemberListAdapter(context: Context, val teamList: ArrayList<TeamListDataMo
 
         fun onLocClick(team: TeamListDataModel)
 
+        fun onCollClick(team: TeamListDataModel)
+
+        fun onZeroOrderClick(team: TeamListDataModel)
+
+        fun onBeatClick(team: TeamListDataModel)
+
         fun getSize(size: Int)
+
+        fun onAllPartyClick(team: TeamListDataModel)
     }
 
     override fun getFilter(): Filter {

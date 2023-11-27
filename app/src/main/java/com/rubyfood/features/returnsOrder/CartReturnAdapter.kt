@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.item_right_menu.view.*
 
 
 class CartReturnAdapter(private val context: Context, private val selectedProductList: ArrayList<ProductListEntity>?, private val listener: OnProductClickListener) :
-        RecyclerView.Adapter<CartReturnAdapter.MyViewHolder>() {
+    RecyclerView.Adapter<CartReturnAdapter.MyViewHolder>() {
 
     private val layoutInflater: LayoutInflater = LayoutInflater.from(context)
 
@@ -52,6 +52,8 @@ class CartReturnAdapter(private val context: Context, private val selectedProduc
                     listener.onDelete(adapterPosition)
                 }
                 itemView.tv_particular_item.text = categoryList?.get(adapterPosition)?.product_name
+                itemView.et_rate.setText(((context as DashboardActivity).rateList.get(adapterPosition)))
+
                 if (Pref.isRateOnline) {
                     val list = AppUtils.loadSharedPreferencesProductRateList(context)
 
@@ -67,18 +69,21 @@ class CartReturnAdapter(private val context: Context, private val selectedProduc
                             else
                                 itemView.et_rate.setText("")
                         }
-                    } else if (AppUtils.stockStatus == 1) {
+                    }
+                    else if (AppUtils.stockStatus == 1) {
                         itemView.et_rate.isEnabled = true
 
                         if ((context as DashboardActivity).rateList[adapterPosition] > "0.00")
                             itemView.et_rate.setText(((context as DashboardActivity).rateList[adapterPosition]/*.toFloat().toInt()*/).toString())
                         else
                             itemView.et_rate.setText("")
-                    }else if (AppUtils.stockStatus == 2){
+                    }
+                    else if (AppUtils.stockStatus == 2){
                         if (Pref.isRateNotEditable && list != null && list.size > 0) {
                             itemView.et_rate.isEnabled = false
                             itemView.et_rate.setText(((context as DashboardActivity).rateList[adapterPosition]))
-                        } else {
+                        }
+                        else {
                             itemView.et_rate.isEnabled = true
 
                             if ((context as DashboardActivity).rateList[adapterPosition] > "0.00")
@@ -95,7 +100,8 @@ class CartReturnAdapter(private val context: Context, private val selectedProduc
                         if (Pref.isRateNotEditable && list != null && list.size > 0) {
                             itemView.et_rate.isEnabled = false
                             itemView.et_rate.setText(((context as DashboardActivity).rateList[adapterPosition]))
-                        } else {
+                        }
+                        else {
                             itemView.et_rate.isEnabled = true
 
                             if ((context as DashboardActivity).rateList[adapterPosition] > "0.00")
@@ -103,11 +109,18 @@ class CartReturnAdapter(private val context: Context, private val selectedProduc
                             else
                                 itemView.et_rate.setText("")
                         }
-                    } else if (AppUtils.stockStatus == 1) {
+                    }
+                    else if (AppUtils.stockStatus == 1) {
                         itemView.et_rate.isEnabled = true
 
                         if ((context as DashboardActivity).rateList[adapterPosition] > "0.00")
                             itemView.et_rate.setText(((context as DashboardActivity).rateList[adapterPosition]/*.toFloat().toInt()*/).toString())
+                        else
+                            itemView.et_rate.setText("")
+                    }
+                    else{
+                        if ((context as DashboardActivity).rateList[adapterPosition] > "0.00")
+                            itemView.et_rate.setText(((context as DashboardActivity).rateList[adapterPosition]))
                         else
                             itemView.et_rate.setText("")
                     }
@@ -160,6 +173,8 @@ class CartReturnAdapter(private val context: Context, private val selectedProduc
                     itemView.et_qty.setText((context as DashboardActivity).qtyList[adapterPosition])
                 else
                     itemView.et_qty.setText("")
+
+
 
                 itemView.et_qty.addTextChangedListener(object : TextWatcher {
                     override fun afterTextChanged(p0: Editable?) {

@@ -33,6 +33,7 @@
     <string name="add_order" translatable="false">Add Order</string>
     <string name="photo_registration" translatable="false">Photo Registration</string>
     <string name="team_attendance" translatable="false">Team Attendance</string>
+    <string name="clear_attendance" translatable="false">Attendance clear</string>
     <string name="photo_attd" translatable="false">Photo Attendance</string>
     <string name="view_order" translatable="false">View Order</string>
     <string name="add" translatable="false">Add</string>
@@ -79,6 +80,7 @@
     <string name="view_cart" translatable="false">View Cart</string>
     <string name="product_details" translatable="false">Product Details</string>
     <string name="search_product" translatable="false">Search Product(s)</string>
+    <string name="sel_product" translatable="false">Select Product(s)</string>
     <string name="stock_details_pp_dd" translatable="false">Stock Details - PP/DD</string>
     <string name="outstanding_details_pp_dd" translatable="false">Outstanding Details - PP/DD</string>
     <string name="outstanding_list" translatable="false">Outstanding List</string>
@@ -158,6 +160,7 @@
     <string name="add_shop" translatable="false">Add Shop</string>
     <string name="nearby_shops" translatable="false">Nearby Shops</string>
     <string name="share_log" translatable="false">Share Logs</string>
+    <string name="share_db" translatable="false">Share db</string>
     <string name="map_view" translatable="false">Map View</string>
     <string name="shops" translatable="false">Shops</string>
     <string name="my_orders" translatable="false">My Orders</string>
@@ -174,8 +177,14 @@
     <string name="address" translatable="false">Address</string>
     <string name="pin_code" translatable="false">Pin Code</string>
     <string name="owner_name" translatable="false">Owner Name</string>
+    <string name="owner_name1" translatable="false">Contact Name</string>
     <string name="owner_contact_number" translatable="false">Owner Contact Number</string>
+    <string name="owner_contact_number1" translatable="false">Contact Number</string>
+    <string name="GSTIN" translatable="false">GSTIN Number</string>
+    <string name="FSSAILic" translatable="false">FSSAI Lic Number</string>
+    <string name="pan" translatable="false">PAN Number</string>
     <string name="owner_email" translatable="false">Owner Email</string>
+    <string name="owner_email1" translatable="false">Email</string>
     <string name="only_email" translatable="false">Email</string>
     <string name="dob" translatable="false">Date of Birth</string>
     <string name="date_aniversary" translatable="false">Date of Anniversary</string>
@@ -201,6 +210,7 @@
     <string name="amount_error" translatable="false">Please enter amount</string>
     <string name="valid_amount_error" translatable="false">Please enter valid amount</string>
     <string name="feedback" translatable="false">Feedback</string>
+    <string name="feedback1" translatable="false">Type your feedback</string>
     <string name="type_your_feedback" translatable="false">Type your Feedback</string>
     <string name="error_enter_valid_phn_no" translatable="false">Mobile number should start only with 6 or 7 or 8 or 9</string>
     <string name="area" translatable="false">Area</string>
@@ -218,6 +228,7 @@
     <string name="enter_type" translatable="false">Enter Type</string>
     <string name="enter_product" translatable="false">Enter Product</string>
     <string name="next_visit_date" translatable="false">Next Visit Date</string>
+    <string name="next_visit_date1" translatable="false">Select next visit date</string>
     <string name="select_next_visit_date" translatable="false">Select Next Visit Date</string>
     <string name="audio_record" translatable="false">Audio Record</string>
     <string name="competitor_image" translatable="false">Attach Competitor Image</string>
@@ -248,6 +259,7 @@
     <string name="error_enter_chemist_name" translatable="false">Please enter chemist name</string>
     <string name="error_enter_chemist_address" translatable="false">Please enter chemist address</string>
     <string name="error_enter_chemist_pincode" translatable="false">Please enter chemist pincode</string>
+    <string name="error_enter_beat" translatable="false">Please enter beat type</string>
     <string name="contact_email" translatable="false">Contact Email</string>
     <string name="confirm_revisit" translatable="false">Confirm Revisit</string>
     <string name="entity_type" translatable="false">Entity Type</string>
@@ -255,6 +267,7 @@
     <string name="select_retailer" translatable="false">Select Retailer/Entity</string>
     <string name="select_dealer" translatable="false">Select GPTPL/Distributor</string>
     <string name="select_beat" translatable="false">Select Beat/Group</string>
+    <string name="select_purpose" translatable="false">Select Purpose</string>
 
     <!--my order-->
     <string name="capital_electronics" translatable="false">Capital Electronics</string>
@@ -284,6 +297,7 @@
     <string name="price_txt" translatable="false">20.00</string>V
     <string name="total_txt" translatable="false">2000.00</string>
     <string name="total_items" translatable="false">Total item(s):</string>
+    <string name="total_qtys" translatable="false">Total Qty(s):</string>
     <string name="total_amount" translatable="false">Total Amount:</string>
     <string name="order_items" translatable="false">Order item(s):</string>
     <string name="return_items" translatable="false">Return item(s):</string>
@@ -506,6 +520,7 @@
     <string name="no_attendance" translatable="false">No Registered Shops Available</string>
     <string name="no_data_available" translatable="false">No Data Available</string>
     <string name="no_notification_available" translatable="false">No Notification Available</string>
+    <string name="no_collect_available" translatable="false">No Pending Collection Available</string>
     <string name="no_billing_available" translatable="false">No Bill(Invoice) found in the system.</string>
     <string name="monthly" translatable="false">Monthly</string>
     <string name="daily" translatable="false">Daily</string>
@@ -567,6 +582,8 @@
     <string name="no_internet" translatable="false">Please check your internet connection.</string>
     <string name="alert_nolocation" translatable="false">Please enable your device location.</string>
     <string name="something_went_wrong" translatable="false">Something went wrong. Please try again later</string>
+    <string name="something_went_wrong_new" translatable="false">Something went wrong. Please try again later..</string>
+    <string name="something_went_wrong1" translatable="false">Something went wrong. Please try again later...............</string>
     <string name="no_value" translatable="false">Please Insert Value</string>
     <string name="unable_to_sync" translatable="false">Unable to sync</string>
     <string name="unable_to_sync_order" translatable="false">Unable to sync order</string>
@@ -688,6 +705,7 @@
     <string name="product_total_order_amount" translatable="false">Total Amount (\u20B9):\u0020</string>
     <string name="total_order_amount" translatable="false">Order Amount (\u20B9):\u0020</string>
     <string name="total_order_value_with_colon" translatable="false">Total Order Value (\u20B9):\u0020</string>
+    <string name="total_value_with_colon" translatable="false">Total Value (\u20B9):\u0020</string>
     <string name="total_return_value_with_colon" translatable="false">Total Return Value (\u20B9):\u0020</string>
     <string name="total_stock_value_with_colon" translatable="false">Total Stock Value (\u20B9):\u0020</string>
     <string name="total_invoice_amount" translatable="false">Invoice Amount (\u20B9):\u0020</string>
@@ -1207,6 +1225,7 @@
     <string name="party" translatable="false">Enter Party</string>
     <string name="select_party" translatable="false">Select Party</string>
     <string name="date_time" translatable="false">Date Time</string>
+    <string name="date_time2" translatable="false">Date &amp; Time</string>
     <string name="date_and_time" translatable="false">Enter Date &amp; Time</string>
     <string name="contact_name" translatable="false">Contact Name</string>
     <string name="enter_contact_name" translatable="false">Enter Contact Name</string>
@@ -1407,10 +1426,15 @@
     <string name="note" translatable="false">Note</string>
     <string name="wait_for_preview" translatable="false">Please wait for the preview...</string>
     <string name="video_duration" translatable="false">Video duration (in HH:MM:SS):</string>
+    <string name="video_duration1" translatable="false">Video duration (hh:mm:ss) :</string>
 
     <!--Splash-->
     <string name="use_location" translatable="false">Use your location</string>
     <string name="loc_msg" translatable="false">Field Sales Management App collects location data after you open and login into the App,\u0020to identify nearby Parties location even when the app is running in the background and not in use.</string>
+    <string name="loc_msg_new" translatable="false">Field Sales Management App collects location data after you open and login into the App,\u0020to identify nearby Parties location even when the app is running in the background and not in use.This app collects location data to enable nearby shops, GPS route,
+        even when the app is closed or not in use.</string>
+
+
 
     <!--My Jobs-->
     <string name="view_details" translatable="false">View Details</string>
@@ -1486,6 +1510,7 @@
 
 
     <string name="error_message_remarks_manadatory" translatable="false">Please put the remarks</string>
+    <string name="error_message_feedback_manadatory" translatable="false">Please put the feedback</string>
 
 
     <string-array name="order_sort_gender">
@@ -1526,6 +1551,69 @@
 
     <string name="name_filed_managenent_system" translatable="false">FIELD SALES MANAGEMENT</string>
 
+    <string name="alternate_number" translatable="false">Alternate Number</string>
+    <string name="whatsapp" translatable="false">Whatsapp Number</string>
 
+    <string name="quotation_no" translatable="false">Quot No.</string>
+    <string name="date_quot" translatable="false">Date</string>
+    <string name="no_quot" translatable="false">No Quotation Available</string>
+    <string name="quotation_detail" translatable="false">Quotation Details</string>
+    <string name="quotation_detail2" translatable="false">Quot. Details</string>
+    <string name="quotation_add" translatable="false">Add Quotation</string>
+    <string name="custo_name" translatable="false">Customer Name</string>
+    <string name="project_name" translatable="false">Project Name</string>
+    <string name="colors" translatable="false">Color</string>
+    <string name="source" translatable="false">Source :\u0020</string>
+    <string name="prioritty" translatable="false">Priority :\u0020</string>
+    <string name="times" translatable="false">Time    :\u0020</string>
+    <string name="due_times" translatable="false">Due Time    :\u0020</string>
+    <string name="emails" translatable="false">Email    :\u0020</string>
+    <string name="dates" translatable="false">Date :\u0020</string>
+    <string name="due_dates" translatable="false">Due Date :\u0020</string>
+    <string name="contact_persons" translatable="false">Contact Person :\u0020</string>
+    <string name="product_req" translatable="false">Product Req        :\u0020</string>
+    <string name="qtys" translatable="false">Qty :\u0020</string>
+    <string name="order_values" translatable="false">Order Values      :\u0020</string>
+    <string name="uom" translatable="false">UOM                        :\u0020</string>
+    <string name="enquiry_dtls" translatable="false">Enquiry details   :\u0020</string>
+    <string name="task_dtls" translatable="false">Task Details   :\u0020</string>
+    <string name="statuss" translatable="false">Status                 :\u0020</string>
+    <string name="camera_back" translatable="false">Back Camera :\u0020 </string>
+    <string name="camera_front" translatable="false">Front Camera :\u0020 </string>
+    <string name="historys" translatable="false">Historys</string>
+    <string name="firebase_key" translatable="false">key=AAAAIoWfCpc:APA91bEMOPyfjsyziPC1WYJiPHjzdmTQJmAOKP0fM24iXI9BgrmyhH4uLY6Jd-6Lpjp8mvSdpSp-zm20ApTOYQ3Ean4m6LicJ5CoECS_v5u2PUAwA8E6FLsu2ZC6_WxuSYnTTLzlUi4E</string>
 
+    <string name="GenderTextNewOrd" translatable="false">Gender</string>
+    <string name="ProductTextNewOrd" translatable="false">Product Type</string>
+    <string name="try_again_later" translatable="false">Please try again later</string>
+    <string name="aadhaar_reg_guide_header" translatable="false">Aadhar Registration Guide:</string>
+    <string name="aadhaar_reg_guide_body" translatable="false">1. Avoid Background area\n
+                                            2. Take Only Aadhar Card Area, check the below sample photo.\n
+                                            3. Take Photo in Normal daylight\n
+                                            4. Make sure all the information is showing clearly in Aadhar Card\n
+                                            5. Take Closure Look photo of Aadhar Card\n
+                                            6. Please only Capture Aadhaar image and dont try with any other image. It will block your registration.</string>
+
+    <string name="voter_reg_guide_header" translatable="false">Voter Registration Guide:</string>
+    <string name="voter_reg_guide_body" translatable="false">1. Avoid Background area\n
+                                            2. Take Only Voter Card Area, check the below sample photo.\n
+                                            3. Take Photo in Normal daylight\n
+                                            4. Make sure all the information is showing clearly in Voter Card\n
+                                            5. Take Closure Look photo of Voter Card\n
+                                            6. Please only Capture Voter image and dont try with any other image. It will block your registration.</string>
+
+    <string name="pan_reg_guide_header" translatable="false">PAN Registration Guide:</string>
+    <string name="pan_reg_guide_body" translatable="false">1. Avoid Background area\n
+    2. Take Only PAN Card Area, check the below sample photo.\n
+    3. Take Photo in Normal daylight\n
+    4. Make sure all the information is showing clearly in PAN Card\n
+    5. Take Closure Look photo of PAN Card\n
+        6. Please only Capture PAN image and dont try with any other image. It will block your registration.</string>
+
+    <string name="registration_net_connected" translatable="false">Internet connection strength is good, you can Register now.</string>
+    <string name="login_logout_reg_msg" translatable="false">Good Internet connectivity is mandatory for Registration</string>
+    <string name="aadhaar_registration" translatable="false">Aadhaar Registration</string>
+    <string name="voter_registration" translatable="false">Voter Registration</string>
+    <string name="pan_registration" translatable="false">Pan Registration</string>
+    <string name="reg_net_disconnected" translatable="false">Internet is disconnected, you cannot Register, please switch on the internet</string>
 </resources>

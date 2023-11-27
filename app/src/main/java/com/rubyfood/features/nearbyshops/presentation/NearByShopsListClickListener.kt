@@ -1,5 +1,7 @@
 package com.rubyfood.features.nearbyshops.presentation
 
+import com.rubyfood.app.domain.AddShopDBModelEntity
+
 /**
  * Created by Pratishruti on 30-10-2017.
  */
@@ -23,4 +25,13 @@ interface NearByShopsListClickListener {
     fun onUpdateBankDetailsClick(position: Int)
     fun onQuestionnarieClick(shopId:String)
     fun onReturnClick(position: Int)
+
+    fun onHistoryClick(shop: Any)
+    fun onDamageClick(shop_id: String)
+    fun onSurveyClick(shop_id: String)
+    fun onMultipleImageClick(shop: Any,position: Int)
+
+    fun onExtraContactClick(shop_idSel: String)
+
+    fun onUpdateStatusClick(obj: AddShopDBModelEntity)
 }

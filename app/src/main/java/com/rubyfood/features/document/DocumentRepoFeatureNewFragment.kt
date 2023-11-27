@@ -1,5 +1,6 @@
 package com.rubyfood.features.document
 
+import android.content.Context
 import android.os.Bundle
 import androidx.viewpager.widget.ViewPager
 import android.view.LayoutInflater
@@ -7,8 +8,21 @@ import android.view.View
 import android.view.ViewGroup
 import com.rubyfood.CustomStatic
 import com.rubyfood.R
+import com.rubyfood.app.AppDatabase
+import com.rubyfood.app.NetworkConstant
+import com.rubyfood.app.domain.DocumentypeEntity
+import com.rubyfood.app.utils.AppUtils
+import com.rubyfood.base.presentation.BaseActivity
 import com.rubyfood.base.presentation.BaseFragment
+import com.rubyfood.features.dashboard.presentation.DashboardActivity
+import com.rubyfood.features.document.api.DocumentRepoProvider
+import com.rubyfood.features.document.model.DocumentTypeResponseModel
 import com.rubyfood.widgets.AppCustomTextView
+
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 
 /**
  * Created by Saheli
@@ -19,6 +33,13 @@ class DocumentRepoFeatureNewFragment : BaseFragment(), View.OnClickListener {
     private lateinit var TabPagerAdapter: TabPagerAdapter
     private lateinit var dayConsViewPager: ViewPager
 
+    private lateinit var mContext: Context
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mContext = context
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         val view = inflater.inflate(R.layout.fragment_document_repo, container, false)
@@ -28,6 +49,9 @@ class DocumentRepoFeatureNewFragment : BaseFragment(), View.OnClickListener {
     }
 
     private fun initView(view: View) {
+
+
+
         fromOrganization = view.findViewById(R.id.fromOrganization_TV)
         ownFiles = view.findViewById(R.id.ownFiles_TV)
         dayConsViewPager = view.findViewById(R.id.day_cons_viewpager)
@@ -60,6 +84,7 @@ class DocumentRepoFeatureNewFragment : BaseFragment(), View.OnClickListener {
         })
 
     }
+
 
     private fun initAdapter() {
         dayConsViewPager.adapter = TabPagerAdapter

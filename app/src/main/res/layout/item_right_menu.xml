@@ -4,13 +4,13 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/_5sdp"
-    android:background="@drawable/shape_custom_border_blue_button"
+    android:background="@color/colorPrimary"
     android:orientation="horizontal">
 
     <com.rubyfood.widgets.AppCustomTextView
         android:id="@+id/tv_post_list_item_delete"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_45sdp"
+        android:layout_height="@dimen/_65sdp"
         android:layout_gravity="center_vertical"
         android:drawablePadding="@dimen/_1sdp"
         android:drawableTop="@drawable/ic_delete_icon"

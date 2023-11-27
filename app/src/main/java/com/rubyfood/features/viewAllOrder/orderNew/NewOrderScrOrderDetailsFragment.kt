@@ -1,5 +1,6 @@
 package com.rubyfood.features.viewAllOrder.orderNew
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -34,7 +35,6 @@ import com.rubyfood.features.viewAllOrder.model.ProductOrder
 import com.rubyfood.features.viewAllOrder.presentation.AdapterNewOrdScrOrdList
 import com.rubyfood.widgets.AppCustomTextView
 import java.io.File
-import java.lang.Exception
 
 class NewOrderScrOrderDetailsFragment : BaseFragment(), View.OnClickListener {
     private lateinit var mContext: Context
@@ -81,6 +81,7 @@ class NewOrderScrOrderDetailsFragment : BaseFragment(), View.OnClickListener {
         super.onResume()
     }
 
+    @SuppressLint("UseRequireInsteadOfGet")
     private fun initView(view: View?) {
         CustomStatic.NewOrderTotalCartItem=0
         share=view!!.findViewById(R.id.add_new_order_share)
@@ -184,6 +185,19 @@ class NewOrderScrOrderDetailsFragment : BaseFragment(), View.OnClickListener {
                         //newOrderCartModel1!!.gender="MALE"
                         newOrderCartModel1!!.gender = Pref.new_ord_gender_male
 
+                        try{
+                            var totalRate = AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getNewOrderProductRateByOrdID(productIDList!!.get(j),orderIdList.get(i))!!.toDouble()
+                            var qt = AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getNewOrderProductQtyByOrdID(productIDList!!.get(j),orderIdList.get(i))!!.toDouble()
+                            //newOrderCartModel1!!.rate=(totalRate/qt).toString()
+                            newOrderCartModel1!!.rate=totalRate.toString()
+                        }catch (ex:Exception){
+                            newOrderCartModel1!!.rate="0.0"
+                        }
+                        //newOrderCartModel1!!.rate=AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getNewOrderProductRateByOrdID(productIDList!!.get(j),orderIdList.get(i))!!
+
+
+
+
                         var colorSel= AppDatabase.getDBInstance()?.newOrderColorDao()?.getNewOrderColorName(colorIDListForProduct.get(k))
                         var colorList: ColorList = ColorList(colorSel!!,colorIDListForProduct.get(k), sizeQtyListMale as ArrayList<ProductOrder>)
                         newOrderCartModel1!!.color_list.add(colorList)
@@ -196,12 +210,20 @@ class NewOrderScrOrderDetailsFragment : BaseFragment(), View.OnClickListener {
                         //newOrderCartModel2!!.gender="FEMALE"
                         newOrderCartModel2!!.gender = Pref.new_ord_gender_female
 
+                        try{
+                            var totalRate = AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getNewOrderProductRateByOrdID(productIDList!!.get(j),orderIdList.get(i))!!.toDouble()
+                            var qt = AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getNewOrderProductQtyByOrdID(productIDList!!.get(j),orderIdList.get(i))!!.toDouble()
+                            //newOrderCartModel1!!.rate=(totalRate/qt).toString()
+                            newOrderCartModel1!!.rate=totalRate.toString()
+                        }catch (ex:Exception){
+                            newOrderCartModel1!!.rate="0.0"
+                        }
+                        //newOrderCartModel2!!.rate=AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getNewOrderProductRateByOrdID(productIDList!!.get(j),orderIdList.get(i))!!
+
                         var colorSel= AppDatabase.getDBInstance()?.newOrderColorDao()?.getNewOrderColorName(colorIDListForProduct.get(k))
                         var colorList: ColorList = ColorList(colorSel!!,colorIDListForProduct.get(k), sizeQtyListFeMale as ArrayList<ProductOrder>)
                         newOrderCartModel2!!.color_list.add(colorList)
                     }
-                    
-
                 }
 
             }
@@ -248,6 +270,7 @@ class NewOrderScrOrderDetailsFragment : BaseFragment(), View.OnClickListener {
     }
 
 
+    @SuppressLint("UseRequireInsteadOfGet")
     fun onShareClickNew(){
         var heading = "ORDER SUMMARY"
         var pdfBody: String = "\n\n"

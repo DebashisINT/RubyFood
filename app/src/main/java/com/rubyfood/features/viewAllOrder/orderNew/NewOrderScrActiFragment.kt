@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
+import android.text.InputFilter
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +29,7 @@ import com.rubyfood.app.domain.NewOrderSizeEntity
 import com.rubyfood.app.types.FragType
 import com.rubyfood.app.utils.Toaster
 import com.rubyfood.base.presentation.BaseFragment
+import com.rubyfood.features.DecimalDigitsInputFilter
 import com.rubyfood.features.dashboard.presentation.DashboardActivity
 import com.rubyfood.features.viewAllOrder.interf.SizeListNewOrderOnClick
 import com.rubyfood.features.viewAllOrder.model.ColorList
@@ -73,6 +75,11 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
 
     private lateinit var ll_size_icon: LinearLayout
 
+    private lateinit var ll_rate_ll: LinearLayout
+    private lateinit var ll_stock_ll: LinearLayout
+    private lateinit var et_rate_new_ord: EditText
+    private lateinit var tv_stock_new_ord: TextView
+
     private lateinit var sizeText: TextView
 
     private lateinit var sizeIcon: ImageView
@@ -80,6 +87,8 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
     private lateinit var ColorTv: TextView
 
     private lateinit var color_IV: ImageView
+
+    private lateinit var genderTv: TextView
 
 
 
@@ -105,6 +114,7 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
         return view
     }
 
+    @SuppressLint("UseRequireInsteadOfGet")
     private fun initView(view: View?) {
         ll_root=view!!.findViewById(R.id.lll_root) as LinearLayout
         horr_scroll_v=view!!.findViewById(R.id.horr_scroll_v) as HorizontalScrollView
@@ -129,6 +139,18 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
         rv_size = view!!.findViewById(R.id.rv_order_list_size)
 
         ll_size_icon = view!!.findViewById(R.id.ll_order_list_list_icon)
+        ll_rate_ll = view!!.findViewById(R.id.ll_item_new_ord_rate_root)
+        ll_stock_ll = view!!.findViewById(R.id.ll_item_new_ord_stock_root)
+        et_rate_new_ord = view!!.findViewById(R.id.et_rate_new_ord)
+        tv_stock_new_ord = view!!.findViewById(R.id.tv_stock_new_ord)
+
+        genderTv = view!!.findViewById(R.id.genderTv)
+
+        //gender vs product type new order
+        //genderTv.text=getString(R.string.GenderTextNewOrd)
+        //genderSpinner.text="Select "+getString(R.string.GenderTextNewOrd)
+        genderTv.text=getString(R.string.ProductTextNewOrd)
+        genderSpinner.text="Select "+getString(R.string.ProductTextNewOrd)
 
 
         var horizontalLayout = LinearLayoutManager(
@@ -136,7 +158,11 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                 LinearLayoutManager.HORIZONTAL,
                 false)
         rv_size.setLayoutManager(horizontalLayout)
-
+        try {
+            et_rate_new_ord.setFilters(arrayOf<InputFilter>(DecimalDigitsInputFilter(9, 2)))
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
         ll_gender.setOnClickListener(this)
         ll_product.setOnClickListener(this)
         ll_color.setOnClickListener(this)
@@ -163,6 +189,8 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
         sizeText.setTextColor(ContextCompat.getColor(mContext, R.color.dark_gray))
 
         ll_size_icon.visibility=View.GONE
+        ll_rate_ll.visibility=View.GONE
+        ll_stock_ll.visibility=View.GONE
         var gender_list = AppDatabase.getDBInstance()?.newOrderGenderDao()?.getGenderList() as List<NewOrderGenderEntity>
         if (gender_list != null && gender_list.isNotEmpty()) {
             GenderListDialog.newInstance(gender_list as ArrayList<NewOrderGenderEntity>) {
@@ -173,7 +201,10 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                 product_list = AppDatabase.getDBInstance()?.newOrderProductDao()?.getProductListGenderWise(it.gender.toString()) as List<NewOrderProductEntity>
             }.show((mContext as DashboardActivity).supportFragmentManager, "")
         } else {
-            Toaster.msgShort(mContext, "No Gender Found")
+            //Toaster.msgShort(mContext, "No Gender Found")
+            //gender vs product type new order
+            //Toaster.msgShort(mContext, "No "+ getString(R.string.GenderTextNewOrd) +"Found")
+            Toaster.msgShort(mContext, "No "+ getString(R.string.ProductTextNewOrd) +"Found")
         }
     }
 
@@ -187,6 +218,28 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                 productSpinner.text = it.product_name
                 color_list = emptyList()
                 color_list = AppDatabase.getDBInstance()?.newOrderColorDao()?.getColorListProductWise(it.product_id!!) as List<NewOrderColorEntity>
+
+                try{
+                    if(Pref.isRateOnline){
+                    et_rate_new_ord.setText(AppDatabase.getDBInstance()?.productRateDao()?.getProductRateByProductID(it.product_id!!.toString())?.rate1.toString())
+                    }
+                }catch (ex:Exception){
+
+                }
+                if (Pref.isRateNotEditable) {
+                    et_rate_new_ord.isEnabled=false
+                }else{
+                    et_rate_new_ord.isEnabled=true
+                }
+
+                try{
+                    tv_stock_new_ord.text = AppDatabase.getDBInstance()?.productRateDao()?.getProductRateByProductID(it.product_id!!.toString())?.stock_amount.toString()
+                }catch (ex:Exception){
+
+                }
+
+
+
             }.show((mContext as DashboardActivity).supportFragmentManager, "")
         } else {
             Toaster.msgShort(mContext, "No Product Found")
@@ -196,15 +249,33 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
 
 
     private fun loadColor() {
-
-
         if (color_list != null && color_list.isNotEmpty()) {
             ColorListDialog.newInstance(color_list as ArrayList<NewOrderColorEntity>) {
                 colorSpinner.text = it.color_name
                 colorId = it.color_id!!
                 size_list = emptyList()
                 size_list = AppDatabase.getDBInstance()?.newOrderSizeDao()?.getSizeListProductWise(it.product_id!!) as List<NewOrderSizeEntity>
+
+                try{
+                    if(Pref.isRateOnline){
+                        et_rate_new_ord.setText(AppDatabase.getDBInstance()?.productRateDao()?.getProductRateByProductID(it.product_id!!.toString())?.rate1.toString())
+                    }
+                }catch (ex:Exception){
+
+                }
+                if (Pref.isRateNotEditable) {
+                    et_rate_new_ord.isEnabled=false
+                }else{
+                    et_rate_new_ord.isEnabled=true
+                }
+                try{
+                    tv_stock_new_ord.text = AppDatabase.getDBInstance()?.productRateDao()?.getProductRateByProductID(it.product_id!!.toString())?.stock_amount.toString()
+                }catch (ex:Exception){
+
+                }
+
                 loadSize()
+
             }.show((mContext as DashboardActivity).supportFragmentManager, "")
         } else {
             Toaster.msgShort(mContext, "No Color Found")
@@ -221,6 +292,9 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
 //        sizeText.setTextColor(R.color.default_text_color)
 
         ll_size_icon.visibility = View.VISIBLE
+        ll_rate_ll.visibility = View.VISIBLE
+        ll_stock_ll.visibility = View.VISIBLE
+
         if (size_list != null && size_list.isNotEmpty()) {
 
 
@@ -296,6 +370,8 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                     color_IV.setImageDrawable(getResources(). getDrawable(R.drawable.ic_colour_new_order_gray))
                     ColorTv.setTextColor(ContextCompat.getColor(mContext, R.color.dark_gray))
                     ll_size_icon.visibility = View.GONE
+                    ll_rate_ll.visibility = View.GONE
+                    ll_stock_ll.visibility = View.GONE
                     var isSame: Boolean = false
                     if (isGenderSel) {
                         if (isProductSel) {
@@ -399,11 +475,22 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                                                                           }
                           */
                                                 final_order_list.get(i).color_list.get(p).order_list = ob1
+                                                if(et_rate_new_ord.text.toString().equals("")){
+                                                    final_order_list.get(i).rate = "0"
+                                                }else{
+                                                final_order_list.get(i).rate = et_rate_new_ord.text.toString()
+                                                }
                                             }
                                         }
 
-                                        if (isSameColorObj == false)
+                                        if (isSameColorObj == false){
                                             final_order_list.get(i).color_list.add(colorList)
+                                            if(et_rate_new_ord.text.toString().equals("")){
+                                                final_order_list.get(i).rate = "0"
+                                            }else{
+                                            final_order_list.get(i).rate = et_rate_new_ord.text.toString()
+                                            }
+                                        }
                                         isSame = true
                                     }
                                 }
@@ -429,9 +516,18 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                                 var colorList: ColorList = ColorList(colorSpinner.text.toString(), colorId.toString(), order_list)
                                 cartData.color_list.add(colorList)
 
+                                if(et_rate_new_ord.text.toString().equals("")){
+                                    cartData.rate = "0"
+                                }else{
+                                cartData.rate = et_rate_new_ord.text.toString()
+                                }
+
                                 final_order_list.add(cartData)
                             }
 
+
+                            et_rate_new_ord.setText("")
+                            et_rate_new_ord.setHint("Rate  ( \u20B9 )")
 
                             isSame = false
                             genderSpinner.text=genderSpinner.text.toString()
@@ -471,7 +567,10 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                             Toaster.msgShort(mContext, "Please Select a Product")
                         }
                     } else {
-                        Toaster.msgShort(mContext, "Please Select Gender First")
+                        //Toaster.msgShort(mContext, "Please Select Gender First")
+                        //gender vs product type new order
+                        //Toaster.msgShort(mContext, "Please Select "+ getString(R.string.GenderTextNewOrd) +" First")
+                        Toaster.msgShort(mContext, "Please Select "+ getString(R.string.ProductTextNewOrd) +" First")
                     }
 
                 }
@@ -493,7 +592,10 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                         ll_root.removeAllViews()
                         loadProduct()
                     } else {
-                        Toaster.msgShort(mContext, "Please Select Gender First")
+                        //Toaster.msgShort(mContext, "Please Select Gender First")
+                        //gender vs product type new order
+                        //Toaster.msgShort(mContext, "Please Select "+ getString(R.string.GenderTextNewOrd) +"First")
+                        Toaster.msgShort(mContext, "Please Select "+ getString(R.string.ProductTextNewOrd) +"First")
                     }
                 }
                 R.id.ll_new_order_scr_color -> {
@@ -507,11 +609,12 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                             Toaster.msgShort(mContext, "Please Select a Product")
                         }
                     } else {
-                        Toaster.msgShort(mContext, "Please Select Gender First")
+                        //Toaster.msgShort(mContext, "Please Select Gender First")
+                        //gender vs product type new order
+                        //Toaster.msgShort(mContext, "Please Select "+ getString(R.string.GenderTextNewOrd) +"First")
+                        Toaster.msgShort(mContext, "Please Select "+ getString(R.string.ProductTextNewOrd) +"First")
                     }
                 }
-
-
 //                R.id.btn_nextttt ->{
 //                    (mContext as DashboardActivity).loadFragment(FragType.NeworderScrCartFragment, true, final_order_list)
 //                }
@@ -522,8 +625,9 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
 
     fun clickToCart() {
         CustomStatic.IsFromViewNewOdrScr = false
-        if ((mContext as DashboardActivity).tv_cart_count.text != "0")
+        if ((mContext as DashboardActivity).tv_cart_count.text != "0"){
             (mContext as DashboardActivity).loadFragment(FragType.NeworderScrCartFragment, true, final_order_list)
+        }
         else
             (mContext as DashboardActivity).showSnackMessage("No item is available in cart")
     }
@@ -570,7 +674,6 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                 qtyLst.setBackgroundResource(R.drawable.blue_line_custom)
             }
         })
-
 
         var x:Int
         var y:Int

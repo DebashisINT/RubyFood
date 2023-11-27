@@ -11,5 +11,10 @@ interface AverageShopListClickListener {
     fun onSyncClick(position: Int)
     fun onQuestionnarieClick(shopId:String)
     fun onReturnClick(position: Int)
+    fun onDamageClick(shop_id: String)
+    fun onSurveyClick(shop_id: String)
+    fun onMultipleImageClick(shop: Any,position: Int)
+    fun onWhatsApiClick(shop_id: String)
+
 
 }

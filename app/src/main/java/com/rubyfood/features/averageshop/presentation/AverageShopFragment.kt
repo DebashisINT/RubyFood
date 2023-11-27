@@ -1,5 +1,6 @@
 package com.rubyfood.features.averageshop.presentation
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -21,7 +22,10 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
-import com.elvishew.xlog.XLog
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.rubyfood.MySingleton
 import com.github.jhonnyx2012.horizontalpicker.DatePickerListener
 import com.github.jhonnyx2012.horizontalpicker.HorizontalPicker
 import com.google.gson.Gson
@@ -62,11 +66,13 @@ import com.rubyfood.features.login.presentation.LoginActivity
 import com.rubyfood.features.returnsOrder.ViewAllReturnListFragment
 import com.rubyfood.features.viewAllOrder.interf.QaOnCLick
 import com.rubyfood.widgets.AppCustomTextView
+import com.google.gson.JsonParser
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.joda.time.DateTime
+import timber.log.Timber
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -74,6 +80,7 @@ import kotlin.collections.ArrayList
 /**
  * Created by Pratishruti on 15-11-2017.
  */
+// 1.0 AverageShopFragment AppV 4.0.6 saheli 12-01-2023 multiple contact Data added on Api called
 class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickListener {
 
     lateinit var averageShopListAdapter: AverageShopListAdapter
@@ -113,8 +120,6 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
     }
 
     private fun initView(view: View) {
-
-
         /*NEW CALENDER*/
         picker = view.findViewById<HorizontalPicker>(R.id.datePicker)
         picker.setListener(this)
@@ -133,7 +138,6 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                 .init()
         picker.backgroundColor = Color.WHITE
         picker.setDate(DateTime())
-
 
         /*NEW CALENDER*/
 
@@ -234,17 +238,19 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                 if (!Pref.isMultipleVisitEnable) {
                     if (ShopActivityEntityList != null && ShopActivityEntityList.isNotEmpty()) {
 
-                        val list = ArrayList<ShopActivityEntity>()
+                        var list = ArrayList<ShopActivityEntity>()
 
                         for (i in ShopActivityEntityList.indices) {
                             val shop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopDetail(ShopActivityEntityList[i].shopid)
                             if (shop.isUploaded) {
                                 if (ShopActivityEntityList[i].isDurationCalculated /*&& !ShopActivityEntityList[i].isUploaded*/) {
-                                    if (AppUtils.isVisitSync == "1")
+                                    if (AppUtils.isVisitSync == "1") {
                                         list.add(ShopActivityEntityList[i])
+                                        }
                                     else {
-                                        if (!ShopActivityEntityList[i].isUploaded)
+                                        if (!ShopActivityEntityList[i].isUploaded) {
                                             list.add(ShopActivityEntityList[i])
+                                        }
                                     }
                                 }
                             }
@@ -265,13 +271,14 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                         }*/
 
 
+                        list = list.filter { it.isUploaded == false } as ArrayList<ShopActivityEntity>
 
-
-                        if (list.size > 0)
+                        if (list.size > 0) {
                             syncAllShopActivity(list[i].shopid!!, list)
-                        else
+                            }
+                        else {
                             syncShopVisitImage()
-
+                        }
                     } else {
                         syncShopVisitImage()
                     }
@@ -279,25 +286,29 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                 else {
                     if (ShopActivityEntityList != null && ShopActivityEntityList.isNotEmpty()) {
 
-                        val list = ArrayList<ShopActivityEntity>()
+                        var list = ArrayList<ShopActivityEntity>()
 
                         for (i in ShopActivityEntityList.indices) {
                             val shop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopDetail(ShopActivityEntityList[i].shopid)
                             if (shop.isUploaded) {
                                 if (ShopActivityEntityList[i].isDurationCalculated /*&& !ShopActivityEntityList[i].isUploaded*/) {
-                                    if (AppUtils.isVisitSync == "1")
+                                    if (AppUtils.isVisitSync == "1") {
                                         list.add(ShopActivityEntityList[i])
+                                    }
                                     else {
-                                        if (!ShopActivityEntityList[i].isUploaded)
+                                        if (!ShopActivityEntityList[i].isUploaded) {
                                             list.add(ShopActivityEntityList[i])
+                                        }
                                     }
                                 }
                             }
                         }
 
+                        list = list.filter { it.isUploaded == false } as ArrayList<ShopActivityEntity>
 
-                        if (list.size > 0)
+                        if (list.size > 0) {
                             syncAllShopActivityForMultiVisit(list)
+                            }
                     }
                 }
             }
@@ -381,47 +392,75 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                 shopDurationData.updated_on= ""
             }
 
+            try{
+                if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                    shopDurationData.pros_id = shopActivity.pros_id!!
+                else
+                    shopDurationData.pros_id = ""
 
-            if (!TextUtils.isEmpty(shopActivity.pros_id!!))
-                shopDurationData.pros_id = shopActivity.pros_id!!
-            else
-                shopDurationData.pros_id = ""
+                if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                    shopDurationData.agency_name =shopActivity.agency_name!!
+                else
+                    shopDurationData.agency_name = ""
 
-            if (!TextUtils.isEmpty(shopActivity.agency_name!!))
-                shopDurationData.agency_name =shopActivity.agency_name!!
-            else
+                if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                    shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+                else
+                    shopDurationData.approximate_1st_billing_value = ""
+            }
+            catch (ex:Exception){
+                shopDurationData.pros_id = "0"
                 shopDurationData.agency_name = ""
-
-            if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
-                shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
-            else
                 shopDurationData.approximate_1st_billing_value = ""
+            }
+
+
+
+            //duration garbage fix
+            try{
+                if(shopDurationData.spent_duration!!.contains("-") || shopDurationData.spent_duration!!.length != 8)
+                {
+                    shopDurationData.spent_duration="00:00:10"
+                }
+            }catch (ex:Exception){
+                shopDurationData.spent_duration="00:00:10"
+            }
+
+            //New shop Create issue
+            shopDurationData.isnewShop = shopActivity.isnewShop!!
+
+            // 1.0 AverageShopFragment AppV 4.0.6  multiple contact Data added on Api called
+            shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+            shopDurationData.multi_contact_number = shopActivity.multi_contact_number
+
+            shopDurationData.distFromProfileAddrKms = shopActivity.distFromProfileAddrKms
+            shopDurationData.stationCode = shopActivity.stationCode
 
             shopDataList.add(shopDurationData)
 
-            XLog.d("========SYNC ALL VISITED SHOP DATA (AVERAGE SHOP)=====")
-            XLog.d("SHOP ID======> " + shopDurationData.shop_id)
-            XLog.d("SPENT DURATION======> " + shopDurationData.spent_duration)
-            XLog.d("VISIT DATE=========> " + shopDurationData.visited_date)
-            XLog.d("VISIT DATE TIME==========> " + shopDurationData.visited_date)
-            XLog.d("TOTAL VISIT COUNT========> " + shopDurationData.total_visit_count)
-            XLog.d("DISTANCE TRAVELLED========> " + shopDurationData.distance_travelled)
-            XLog.d("FEEDBACK========> " + shopDurationData.feedback)
-            XLog.d("isFirstShopVisited========> " + shopDurationData.isFirstShopVisited)
-            XLog.d("distanceFromHomeLoc========> " + shopDurationData.distanceFromHomeLoc)
-            XLog.d("next_visit_date========> " + shopDurationData.next_visit_date)
-            XLog.d("early_revisit_reason========> " + shopDurationData.early_revisit_reason)
-            XLog.d("device_model========> " + shopDurationData.device_model)
-            XLog.d("android_version========> " + shopDurationData.android_version)
-            XLog.d("battery========> " + shopDurationData.battery)
-            XLog.d("net_status========> " + shopDurationData.net_status)
-            XLog.d("net_type========> " + shopDurationData.net_type)
-            XLog.d("in_time========> " + shopDurationData.in_time)
-            XLog.d("out_time========> " + shopDurationData.out_time)
-            XLog.d("start_timestamp========> " + shopDurationData.start_timestamp)
-            XLog.d("in_location========> " + shopDurationData.in_location)
-            XLog.d("out_location========> " + shopDurationData.out_location)
-            XLog.d("=======================================================")
+            Timber.d("========SYNC ALL VISITED SHOP DATA (AVERAGE SHOP)=====")
+            Timber.d("SHOP ID======> " + shopDurationData.shop_id)
+            Timber.d("SPENT DURATION======> " + shopDurationData.spent_duration)
+            Timber.d("VISIT DATE=========> " + shopDurationData.visited_date)
+            Timber.d("VISIT DATE TIME==========> " + shopDurationData.visited_date)
+            Timber.d("TOTAL VISIT COUNT========> " + shopDurationData.total_visit_count)
+            Timber.d("DISTANCE TRAVELLED========> " + shopDurationData.distance_travelled)
+            Timber.d("FEEDBACK========> " + shopDurationData.feedback)
+            Timber.d("isFirstShopVisited========> " + shopDurationData.isFirstShopVisited)
+            Timber.d("distanceFromHomeLoc========> " + shopDurationData.distanceFromHomeLoc)
+            Timber.d("next_visit_date========> " + shopDurationData.next_visit_date)
+            Timber.d("early_revisit_reason========> " + shopDurationData.early_revisit_reason)
+            Timber.d("device_model========> " + shopDurationData.device_model)
+            Timber.d("android_version========> " + shopDurationData.android_version)
+            Timber.d("battery========> " + shopDurationData.battery)
+            Timber.d("net_status========> " + shopDurationData.net_status)
+            Timber.d("net_type========> " + shopDurationData.net_type)
+            Timber.d("in_time========> " + shopDurationData.in_time)
+            Timber.d("out_time========> " + shopDurationData.out_time)
+            Timber.d("start_timestamp========> " + shopDurationData.start_timestamp)
+            Timber.d("in_location========> " + shopDurationData.in_location)
+            Timber.d("out_location========> " + shopDurationData.out_location)
+            Timber.d("=======================================================")
         }
 
         if (shopDataList.isEmpty()) {
@@ -457,7 +496,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
-                            XLog.d("ShopActivityFromAverageShop : RESPONSE STATUS:= " + result.status + ", RESPONSE MESSAGE:= " + result.message +
+                            Timber.d("ShopActivityFromAverageShop : RESPONSE STATUS:= " + result.status + ", RESPONSE MESSAGE:= " + result.message +
                                     "\nUser Id" + Pref.user_id + ", Session Token" + Pref.session_token)
                             if (result.status == NetworkConstant.SUCCESS) {
                                 shopDataList.forEach {
@@ -474,9 +513,9 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
 
                                 val dateWiseList = AppDatabase.getDBInstance()!!.shopActivityDao().getTotalShopVisitedForADay(selectedDate)
 
-                                XLog.d("=======UPDATE ADAPTER FOR SYNC ALL VISIT SHOP DATA (AVERAGE SHOP)=======")
-                                XLog.d("shop list size====> " + dateWiseList.size)
-                                XLog.d("specific date====> $selectedDate")
+                                Timber.d("=======UPDATE ADAPTER FOR SYNC ALL VISIT SHOP DATA (AVERAGE SHOP)=======")
+                                Timber.d("shop list size====> " + dateWiseList.size)
+                                Timber.d("specific date====> $selectedDate")
 
                                 averageShopListAdapter.updateList(dateWiseList)
 
@@ -486,12 +525,14 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                                 progress_wheel.stopSpinning()
                                 BaseActivity.isShopActivityUpdating = false
                             } else {
+
                                 progress_wheel.stopSpinning()
                                 (mContext as DashboardActivity).showSnackMessage(mContext.getString(R.string.unable_to_sync))
                                 BaseActivity.isShopActivityUpdating = false
                                 ShopActivityEntityList = AppDatabase.getDBInstance()!!.shopActivityDao().getTotalShopVisitedForADay(AppUtils.getCurrentDateForShopActi())
 
                                 Collections.reverse(ShopActivityEntityList)
+
                             }
 
                         }, { error ->
@@ -499,7 +540,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                             error.printStackTrace()
                             BaseActivity.isShopActivityUpdating = false
                             if (error != null) {
-                                XLog.d("ShopActivityFromAverageShop : ERROR:= " + error.localizedMessage + "\nUser Id" + Pref.user_id +
+                                Timber.d("ShopActivityFromAverageShop : ERROR:= " + error.localizedMessage + "\nUser Id" + Pref.user_id +
                                         ", Session Token" + Pref.session_token)
                                 (mContext as DashboardActivity).showSnackMessage(mContext.getString(R.string.unable_to_sync))
 
@@ -587,13 +628,13 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
 
         BaseActivity.isShopActivityUpdating = true
 
-        XLog.d("========UPLOAD REVISIT ALL IMAGE INPUT PARAMS (AVERAGE SHOP)======")
-        XLog.d("USER ID======> " + visitImageShop.user_id)
-        XLog.d("SESSION ID======> " + visitImageShop.session_token)
-        XLog.d("SHOP ID=========> " + visitImageShop.shop_id)
-        XLog.d("VISIT DATE TIME==========> " + visitImageShop.visit_datetime)
-        XLog.d("IMAGE========> " + unSyncedList[j].shop_image)
-        XLog.d("=====================================================================")
+        Timber.d("========UPLOAD REVISIT ALL IMAGE INPUT PARAMS (AVERAGE SHOP)======")
+        Timber.d("USER ID======> " + visitImageShop.user_id)
+        Timber.d("SESSION ID======> " + visitImageShop.session_token)
+        Timber.d("SHOP ID=========> " + visitImageShop.shop_id)
+        Timber.d("VISIT DATE TIME==========> " + visitImageShop.visit_datetime)
+        Timber.d("IMAGE========> " + unSyncedList[j].shop_image)
+        Timber.d("=====================================================================")
 
         val repository = ShopVisitImageUploadRepoProvider.provideAddShopRepository()
         progress_wheel.spin()
@@ -603,7 +644,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val logoutResponse = result as BaseResponse
-                            XLog.d("UPLOAD REVISIT ALL IMAGE : " + "RESPONSE : " + logoutResponse.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + logoutResponse.message)
+                            Timber.d("UPLOAD REVISIT ALL IMAGE : " + "RESPONSE : " + logoutResponse.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + logoutResponse.message)
                             if (logoutResponse.status == NetworkConstant.SUCCESS) {
                                 AppDatabase.getDBInstance()!!.shopVisitImageDao().updateisUploaded(true, unSyncedList.get(j).shop_id!!)
 
@@ -645,9 +686,9 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
 
                                         val list = AppDatabase.getDBInstance()!!.shopActivityDao().getTotalShopVisitedForADay(selectedDate)
 
-                                        XLog.d("=======UPDATE ADAPTER FOR SYNC ALL IMAGE (AVERAGE SHOP)=======")
-                                        XLog.d("shop list size====> " + list.size)
-                                        XLog.d("specific date====> $selectedDate")
+                                        Timber.d("=======UPDATE ADAPTER FOR SYNC ALL IMAGE (AVERAGE SHOP)=======")
+                                        Timber.d("shop list size====> " + list.size)
+                                        Timber.d("specific date====> $selectedDate")
 
                                         averageShopListAdapter.updateList(list)
                                     }
@@ -658,7 +699,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                                 (mContext as DashboardActivity).showSnackMessage(logoutResponse.message!!)
                             }
                         }, { error ->
-                            XLog.d("UPLOAD REVISIT ALL IMAGE : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("UPLOAD REVISIT ALL IMAGE : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             BaseActivity.isShopActivityUpdating = false
                             progress_wheel.stopSpinning()
@@ -685,13 +726,13 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
 
         BaseActivity.isShopActivityUpdating = true
 
-        XLog.d("========UPLOAD REVISIT ALL AUDIO INPUT PARAMS (AVERAGE SHOP)======")
-        XLog.d("USER ID======> " + visitImageShop.user_id)
-        XLog.d("SESSION ID======> " + visitImageShop.session_token)
-        XLog.d("SHOP ID=========> " + visitImageShop.shop_id)
-        XLog.d("VISIT DATE TIME==========> " + visitImageShop.visit_datetime)
-        XLog.d("AUDIO========> " + unSyncedList[j].audio)
-        XLog.d("=====================================================================")
+        Timber.d("========UPLOAD REVISIT ALL AUDIO INPUT PARAMS (AVERAGE SHOP)======")
+        Timber.d("USER ID======> " + visitImageShop.user_id)
+        Timber.d("SESSION ID======> " + visitImageShop.session_token)
+        Timber.d("SHOP ID=========> " + visitImageShop.shop_id)
+        Timber.d("VISIT DATE TIME==========> " + visitImageShop.visit_datetime)
+        Timber.d("AUDIO========> " + unSyncedList[j].audio)
+        Timber.d("=====================================================================")
 
         val repository = ShopVisitImageUploadRepoProvider.provideAddShopRepository()
         progress_wheel.spin()
@@ -701,7 +742,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val logoutResponse = result as BaseResponse
-                            XLog.d("UPLOAD REVISIT ALL AUDIO : " + "RESPONSE : " + logoutResponse.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + logoutResponse.message)
+                            Timber.d("UPLOAD REVISIT ALL AUDIO : " + "RESPONSE : " + logoutResponse.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + logoutResponse.message)
                             if (logoutResponse.status == NetworkConstant.SUCCESS) {
                                 AppDatabase.getDBInstance()!!.shopVisitAudioDao().updateisUploaded(true, unSyncedList.get(j).shop_id!!)
 
@@ -718,9 +759,9 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
 
                                     val list = AppDatabase.getDBInstance()!!.shopActivityDao().getTotalShopVisitedForADay(selectedDate)
 
-                                    XLog.d("=======UPDATE ADAPTER FOR SYNC ALL AUDIO (AVERAGE SHOP)=======")
-                                    XLog.d("shop list size====> " + list.size)
-                                    XLog.d("specific date====> $selectedDate")
+                                    Timber.d("=======UPDATE ADAPTER FOR SYNC ALL AUDIO (AVERAGE SHOP)=======")
+                                    Timber.d("shop list size====> " + list.size)
+                                    Timber.d("specific date====> $selectedDate")
 
                                     averageShopListAdapter.updateList(list)
                                     //callShopDurationApi()
@@ -731,7 +772,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                                 (mContext as DashboardActivity).showSnackMessage(logoutResponse.message!!)
                             }
                         }, { error ->
-                            XLog.d("UPLOAD REVISIT ALL AUDIO : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("UPLOAD REVISIT ALL AUDIO : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             BaseActivity.isShopActivityUpdating = false
                             progress_wheel.stopSpinning()
@@ -753,9 +794,9 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
             noShopAvailable.visibility = View.GONE
             shopList.visibility = View.VISIBLE
 
-            XLog.d("===========INIT ADAPTER FOR SPECIFIC DATE (AVERAGE SHOP)========")
-            XLog.d("shop list size====> " + ShopActivityEntityList.size)
-            XLog.d("specific date====> $selectedDate")
+            Timber.d("===========INIT ADAPTER FOR SPECIFIC DATE (AVERAGE SHOP)========")
+            Timber.d("shop list size====> " + ShopActivityEntityList.size)
+            Timber.d("specific date====> $selectedDate")
 
             try {
                 initAdapter()
@@ -862,35 +903,56 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
             else
                 shopDurationData.approximate_1st_billing_value = ""
 
+            //duration garbage fix
+            try{
+                if(shopDurationData.spent_duration!!.contains("-") || shopDurationData.spent_duration!!.length != 8)
+                {
+                    shopDurationData.spent_duration="00:00:10"
+                }
+            }catch (ex:Exception){
+                shopDurationData.spent_duration="00:00:10"
+            }
+            //New shop Create issue
+            shopDurationData.isnewShop = shopActivity.isnewShop!!
+
+            // 1.0 AverageShopFragment AppV 4.0.6  multiple contact Data added on Api called
+            shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+            shopDurationData.multi_contact_number = shopActivity.multi_contact_number
+
+            //Begin Rev 17 DashboardActivity AppV 4.0.8 Suman    24/04/2023 distanct+station calculation 25806
+            shopDurationData.distFromProfileAddrKms = shopActivity.distFromProfileAddrKms
+            shopDurationData.stationCode = shopActivity.stationCode
+            //End of Rev 17 DashboardActivity AppV 4.0.8 Suman    24/04/2023 distanct+station calculation 25806
+
             shopDataList.add(shopDurationData)
 
             if (shopDataList.isEmpty()) {
                 return
             }
 
-            XLog.d("===========SYNC VISITED SHOP DATA (AVERAGE SHOP)========")
-            XLog.d("SHOP ID======> " + shopDurationData.shop_id)
-            XLog.d("SPENT DURATION======> " + shopDurationData.spent_duration)
-            XLog.d("VISIT DATE=========> " + shopDurationData.visited_date)
-            XLog.d("VISIT DATE TIME==========> " + shopDurationData.visited_date)
-            XLog.d("TOTAL VISIT COUNT========> " + shopDurationData.total_visit_count)
-            XLog.d("DISTANCE TRAVELLED========> " + shopDurationData.distance_travelled)
-            XLog.d("FEEDBACK========> " + shopDurationData.feedback)
-            XLog.d("isFirstShopVisited========> " + shopDurationData.isFirstShopVisited)
-            XLog.d("distanceFromHomeLoc========> " + shopDurationData.distanceFromHomeLoc)
-            XLog.d("next_visit_date========> " + shopDurationData.next_visit_date)
-            XLog.d("early_revisit_reason========> " + shopDurationData.early_revisit_reason)
-            XLog.d("device_model========> " + shopDurationData.device_model)
-            XLog.d("android_version========> " + shopDurationData.android_version)
-            XLog.d("battery========> " + shopDurationData.battery)
-            XLog.d("net_status========> " + shopDurationData.net_status)
-            XLog.d("net_type========> " + shopDurationData.net_type)
-            XLog.d("in_time========> " + shopDurationData.in_time)
-            XLog.d("out_time========> " + shopDurationData.out_time)
-            XLog.d("start_timestamp========> " + shopDurationData.start_timestamp)
-            XLog.d("in_location========> " + shopDurationData.in_location)
-            XLog.d("out_location========> " + shopDurationData.out_location)
-            XLog.d("===========================================================")
+            Timber.d("===========SYNC VISITED SHOP DATA (AVERAGE SHOP)========")
+            Timber.d("SHOP ID======> " + shopDurationData.shop_id)
+            Timber.d("SPENT DURATION======> " + shopDurationData.spent_duration)
+            Timber.d("VISIT DATE=========> " + shopDurationData.visited_date)
+            Timber.d("VISIT DATE TIME==========> " + shopDurationData.visited_date)
+            Timber.d("TOTAL VISIT COUNT========> " + shopDurationData.total_visit_count)
+            Timber.d("DISTANCE TRAVELLED========> " + shopDurationData.distance_travelled)
+            Timber.d("FEEDBACK========> " + shopDurationData.feedback)
+            Timber.d("isFirstShopVisited========> " + shopDurationData.isFirstShopVisited)
+            Timber.d("distanceFromHomeLoc========> " + shopDurationData.distanceFromHomeLoc)
+            Timber.d("next_visit_date========> " + shopDurationData.next_visit_date)
+            Timber.d("early_revisit_reason========> " + shopDurationData.early_revisit_reason)
+            Timber.d("device_model========> " + shopDurationData.device_model)
+            Timber.d("android_version========> " + shopDurationData.android_version)
+            Timber.d("battery========> " + shopDurationData.battery)
+            Timber.d("net_status========> " + shopDurationData.net_status)
+            Timber.d("net_type========> " + shopDurationData.net_type)
+            Timber.d("in_time========> " + shopDurationData.in_time)
+            Timber.d("out_time========> " + shopDurationData.out_time)
+            Timber.d("start_timestamp========> " + shopDurationData.start_timestamp)
+            Timber.d("in_location========> " + shopDurationData.in_location)
+            Timber.d("out_location========> " + shopDurationData.out_location)
+            Timber.d("===========================================================")
 
             progress_wheel.spin()
             shopDurationApiReq.shop_list = shopDataList
@@ -903,7 +965,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
                             .subscribe({ result ->
-                                XLog.d("ShopActivityFromAverageShop : " + "User Id" + Pref.user_id + ", Session Token" + Pref.session_token + ", SHOP_ID: " + mList[0].shopid + ", SHOP: " + mList[0].shop_name + ", RESPONSE:" + result.message)
+                                Timber.d("ShopActivityFromAverageShop : " + "User Id" + Pref.user_id + ", Session Token" + Pref.session_token + ", SHOP_ID: " + mList[0].shopid + ", SHOP: " + mList[0].shop_name + ", RESPONSE:" + result.message)
                                 if (result.status == NetworkConstant.SUCCESS) {
 
                                     doAsync {
@@ -949,8 +1011,9 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                                                     }
                                                 }
 
-                                                if (unSyncedAudioList.isNotEmpty())
+                                                if (unSyncedAudioList.isNotEmpty()) {
                                                     callShopVisitAudioUploadApi(unSyncedAudioList, false, null)
+                                                        }
                                                 else {
                                                     (mContext as DashboardActivity).showSnackMessage("Sync successful")
                                                     ShopActivityEntityList = AppDatabase.getDBInstance()!!.shopActivityDao().getTotalShopVisitedForADay(AppUtils.getCurrentDateForShopActi())
@@ -973,7 +1036,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                             }, { error ->
                                 error.printStackTrace()
                                 progress_wheel.stopSpinning()
-                                XLog.d("ShopActivityFromAverageShop : " + "User Id" + Pref.user_id + ", Session Token" + Pref.session_token + ", SHOP_ID: " + mList[0].shopid + ", SHOP: " + mList[0].shop_name + ", ERROR:" + error.localizedMessage)
+                                Timber.d("ShopActivityFromAverageShop : " + "User Id" + Pref.user_id + ", Session Token" + Pref.session_token + ", SHOP_ID: " + mList[0].shopid + ", SHOP: " + mList[0].shop_name + ", ERROR:" + error.localizedMessage)
                                 (mContext as DashboardActivity).showSnackMessage(mContext.getString(R.string.unable_to_sync))
 
                                 ShopActivityEntityList = AppDatabase.getDBInstance()!!.shopActivityDao().getTotalShopVisitedForADay(AppUtils.getCurrentDateForShopActi())
@@ -999,13 +1062,13 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
 
             val repository = ShopVisitImageUploadRepoProvider.provideAddShopRepository()
 
-            XLog.d("=======UPLOAD REVISIT SINGLE IMAGE INPUT PARAMS (AVERAGE SHOP)=======")
-            XLog.d("USER ID======> " + visitImageShop.user_id)
-            XLog.d("SESSION ID======> " + visitImageShop.session_token)
-            XLog.d("SHOP ID=========> " + visitImageShop.shop_id)
-            XLog.d("VISIT DATE TIME==========> " + visitImageShop.visit_datetime)
-            XLog.d("IMAGE========> " + unSyncedList[0].shop_image)
-            XLog.d("======================================================================")
+            Timber.d("=======UPLOAD REVISIT SINGLE IMAGE INPUT PARAMS (AVERAGE SHOP)=======")
+            Timber.d("USER ID======> " + visitImageShop.user_id)
+            Timber.d("SESSION ID======> " + visitImageShop.session_token)
+            Timber.d("SHOP ID=========> " + visitImageShop.shop_id)
+            Timber.d("VISIT DATE TIME==========> " + visitImageShop.visit_datetime)
+            Timber.d("IMAGE========> " + unSyncedList[0].shop_image)
+            Timber.d("======================================================================")
 
             progress_wheel.spin()
             BaseActivity.compositeDisposable.add(
@@ -1015,7 +1078,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                             .subscribe({ result ->
                                 val logoutResponse = result as BaseResponse
                                 progress_wheel.stopSpinning()
-                                XLog.d("UPLOAD REVISIT SINGLE IMAGE : " + "RESPONSE : " + logoutResponse.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + logoutResponse.message)
+                                Timber.d("UPLOAD REVISIT SINGLE IMAGE : " + "RESPONSE : " + logoutResponse.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + logoutResponse.message)
                                 if (logoutResponse.status == NetworkConstant.SUCCESS) {
                                     AppDatabase.getDBInstance()!!.shopVisitImageDao().updateisUploaded(true, unSyncedList[0].shop_id!!)
 
@@ -1040,7 +1103,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                                 }
 
                             }, { error ->
-                                XLog.d("UPLOAD REVISIT SINGLE IMAGE : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                                Timber.d("UPLOAD REVISIT SINGLE IMAGE : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                                 error.printStackTrace()
                                 progress_wheel.stopSpinning()
                                 if (!isAllSync) {
@@ -1070,13 +1133,13 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
 
             val repository = ShopVisitImageUploadRepoProvider.provideAddShopRepository()
 
-            XLog.d("=======UPLOAD REVISIT SINGLE AUDIO INPUT PARAMS (AVERAGE SHOP)=======")
-            XLog.d("USER ID======> " + visitImageShop.user_id)
-            XLog.d("SESSION ID======> " + visitImageShop.session_token)
-            XLog.d("SHOP ID=========> " + visitImageShop.shop_id)
-            XLog.d("VISIT DATE TIME==========> " + visitImageShop.visit_datetime)
-            XLog.d("AUDIO========> " + unSyncedAudioList[0].audio)
-            XLog.d("======================================================================")
+            Timber.d("=======UPLOAD REVISIT SINGLE AUDIO INPUT PARAMS (AVERAGE SHOP)=======")
+            Timber.d("USER ID======> " + visitImageShop.user_id)
+            Timber.d("SESSION ID======> " + visitImageShop.session_token)
+            Timber.d("SHOP ID=========> " + visitImageShop.shop_id)
+            Timber.d("VISIT DATE TIME==========> " + visitImageShop.visit_datetime)
+            Timber.d("AUDIO========> " + unSyncedAudioList[0].audio)
+            Timber.d("======================================================================")
 
             progress_wheel.spin()
             BaseActivity.compositeDisposable.add(
@@ -1086,7 +1149,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                             .subscribe({ result ->
                                 val logoutResponse = result as BaseResponse
                                 progress_wheel.stopSpinning()
-                                XLog.d("UPLOAD REVISIT SINGLE IMAGE : " + "RESPONSE : " + logoutResponse.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + logoutResponse.message)
+                                Timber.d("UPLOAD REVISIT SINGLE IMAGE : " + "RESPONSE : " + logoutResponse.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + logoutResponse.message)
                                 if (logoutResponse.status == NetworkConstant.SUCCESS) {
                                     AppDatabase.getDBInstance()!!.shopVisitAudioDao().updateisUploaded(true, unSyncedAudioList[0].shop_id!!)
 
@@ -1121,7 +1184,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                                 }
 
                             }, { error ->
-                                XLog.d("UPLOAD REVISIT SINGLE IMAGE : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                                Timber.d("UPLOAD REVISIT SINGLE IMAGE : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                                 error.printStackTrace()
                                 progress_wheel.stopSpinning()
                                 if (!isAllSync) {
@@ -1151,9 +1214,9 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
         if (ShopActivityEntityList.isNotEmpty()) {
             noShopAvailable.visibility = View.GONE
 
-            XLog.d("===========INIT ADAPTER FOR CURRENT DATE (AVERAGE SHOP)========")
-            XLog.d("shop list size====> " + ShopActivityEntityList.size)
-            XLog.d("current date====> " + AppUtils.getCurrentDateForShopActi())
+            Timber.d("===========INIT ADAPTER FOR CURRENT DATE (AVERAGE SHOP)========")
+            Timber.d("shop list size====> " + ShopActivityEntityList.size)
+            Timber.d("current date====> " + AppUtils.getCurrentDateForShopActi())
 
             initAdapter()
         } else {
@@ -1163,8 +1226,9 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
     }
 
 
+    @SuppressLint("WrongConstant")
     private fun initAdapter() {
-        averageShopListAdapter = AverageShopListAdapter(mContext, ShopActivityEntityList, object : AverageShopListClickListener {
+        averageShopListAdapter = AverageShopListAdapter(mContext, ShopActivityEntityList,selectedDate, object : AverageShopListClickListener {
             override fun onSyncClick(position: Int) {
 
                 val shop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopDetail(ShopActivityEntityList[position].shopid)
@@ -1190,6 +1254,42 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                 (mContext as DashboardActivity).loadFragment(FragType.ViewAllReturnListFragment, true, ShopActivityEntityList[position])
             }
 
+            override fun onDamageClick(shop_id: String) {
+                (mContext as DashboardActivity).loadFragment(FragType.ShopDamageProductListFrag, true, shop_id+"~"+Pref.user_id)
+            }
+
+            override fun onSurveyClick(shop_id: String) {
+                if(Pref.isAddAttendence){
+                    (mContext as DashboardActivity).loadFragment(FragType.SurveyViewFrag, true, shop_id)
+                }else{
+                    (mContext as DashboardActivity).checkToShowAddAttendanceAlert()
+                }
+            }
+
+            override fun onMultipleImageClick(shop: Any,position: Int) {
+                if (AppUtils.isOnline(mContext)) {
+                    var shopIsuploaded =AppDatabase.getDBInstance()!!.addShopEntryDao().getShopDetail(ShopActivityEntityList[position].shopid).isUploaded
+                    if(shopIsuploaded){
+                        val shop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopDetail(ShopActivityEntityList[position].shopid)
+                        if(Pref.IsMultipleImagesRequired){
+                            (mContext as DashboardActivity).loadFragment(FragType.MultipleImageFragment, true, shop)
+                        }
+                    }
+                    else{
+                        (this as DashboardActivity).showSnackMessage("Please snyc shop First..")
+                    }
+
+                }
+                else{
+                    try{
+                        Toaster.msgShort(mContext,getString(R.string.no_internet))
+                        //(this as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
+                    }catch (ex:Exception){
+                        ex.printStackTrace()
+                    }
+                }
+
+            }
 
             override fun OnItemClick(position: Int) {
                 try {
@@ -1203,10 +1303,106 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                 initiatePopupWindow(view, position)
             }
 
+            override fun onWhatsApiClick(shop_id: String) {
+                var shopWiseWhatsObj = AppDatabase.getDBInstance()?.visitRevisitWhatsappStatusDao()!!.getByShopIDDate(shop_id,AppUtils.getCurrentDateForShopActi())
+                var shopObj: AddShopDBModelEntity = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(shop_id)
+                if(AppUtils.isOnline(mContext)){
+                    whatsappApi(shopWiseWhatsObj!!,shopObj,shopWiseWhatsObj.isNewShop)
+                }else{
+                    Toaster.msgShort(mContext, "Your network connection is offine. Make it online to proceed.")
+                }
+
+            }
         })
         layoutManager = LinearLayoutManager(mContext, LinearLayout.VERTICAL, false)
         shopList.layoutManager = layoutManager
         shopList.adapter = averageShopListAdapter
+    }
+
+    private fun whatsappApi(obj : VisitRevisitWhatsappStatus,shopObj: AddShopDBModelEntity,isNewShop:Boolean){
+        try{
+            var msgBody = ""
+            var templateName = ""
+            if(isNewShop){
+                msgBody= "Hey there! \n" +
+                        "\n" +
+                        "Thanks for connecting with (${Pref.user_name} - ${Pref.UserLoginContactID})\n" +
+                        "\n" +
+                        "We're thrilled to have you on board! Explore our website to discover a world of stunning ACP designs with unbeatable quality, and unmatched performance. Let's create something extraordinary together!\n" +
+                        "https://www.eurobondacp.com/download-catalogues\n\n" +
+                        "\n" +
+                        "*Team Eurobond*\n"
+                templateName = "incoming_call_response"
+            }else {
+                msgBody= "Hey there!\n" +
+                        "Hope you had a successful meeting with (${Pref.user_name} - ${Pref.UserLoginContactID})\n" +
+                        "We’ll be happy to assist you further with any inquiries or support you may require.\n" +
+                        "*Team Eurobond*\n"
+                templateName = "incoming_call_response_2"
+            }
+
+
+                val stringRequest: StringRequest = object : StringRequest(
+                    Request.Method.POST, "https://theultimate.io/WAApi/send",
+                    Response.Listener<String?> { response ->
+
+                        var resp = JsonParser.parseString(response)
+                        var statusCode = resp.asJsonObject.get("statusCode").toString().drop(1).dropLast(1)
+                        var statusMsg = resp.asJsonObject.get("reason").toString().drop(1).dropLast(1)
+                        var transId = resp.asJsonObject.get("transactionId").toString().drop(1).dropLast(1)
+                        if(transId == null){
+                            transId = ""
+                        }
+
+                        if(statusCode.equals("200",ignoreCase = true) && statusMsg.equals("success",ignoreCase = true)){
+                            AppDatabase.getDBInstance()?.visitRevisitWhatsappStatusDao()!!.updateWhatsStatus(true,"Sent Successfully",obj.sl_no,transId)
+                        }else{
+                            AppDatabase.getDBInstance()?.visitRevisitWhatsappStatusDao()!!.updateWhatsStatus(false,statusMsg.toString(),obj.sl_no,transId)
+                        }
+
+                        val simpleDialog = Dialog(mContext)
+                        simpleDialog.setCancelable(false)
+                        simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                        simpleDialog.setContentView(R.layout.dialog_ok)
+                        val dialogHeader = simpleDialog.findViewById(R.id.dialog_yes_header_TV) as AppCustomTextView
+                        dialogHeader.text = "Sent succesfully."
+                        val dialogYes = simpleDialog.findViewById(R.id.tv_dialog_yes) as AppCustomTextView
+                        dialogYes.setOnClickListener({ view ->
+                            simpleDialog.cancel()
+                            initShopList()
+                        })
+                        simpleDialog.show()
+
+                    },
+                    Response.ErrorListener { error ->
+                        var e = error.toString()
+                    })
+                {
+                    override fun getParams(): Map<String, String>? {
+                        val params: MutableMap<String, String> = HashMap()
+                        params.put("userid", "eurobondwa")
+                        params.put("msg", msgBody)
+                        params.put("wabaNumber", "917888488891")
+                        params.put("output", "json")
+                        //params.put("mobile", "918017845376")
+                        params.put("mobile", "91${obj.contactNo}")
+                        params.put("sendMethod", "quick")
+                        params.put("msgType", "text")
+                        params.put("templateName", templateName)
+                        return params
+                    }
+                    override fun getHeaders(): MutableMap<String, String> {
+                        val params: MutableMap<String, String> = HashMap()
+                        params["apikey"] = "36328e9735f7012988e6ed58f9fffaec4c7a79eb"
+                        return params
+                    }
+                }
+                MySingleton.getInstance(mContext.applicationContext)!!.addToRequestQueue(stringRequest)
+            }
+        catch (ex:Exception){
+                ex.printStackTrace()
+            }
+
     }
 
     private fun syncShop(position: Int, shop: AddShopDBModelEntity) {
@@ -1302,6 +1498,21 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
             addShopData.landline_number = shop.landline_number
             addShopData.agency_name = shop.agency_name
 
+            addShopData.alternateNoForCustomer = shop.alternateNoForCustomer
+            addShopData.whatsappNoForCustomer = shop.whatsappNoForCustomer
+
+            // duplicate shop api call
+            addShopData.isShopDuplicate=shop.isShopDuplicate
+
+            addShopData.purpose=shop.purpose
+//start AppV 4.2.2 tufan    20/09/2023 FSSAI Lic No Implementation 26813
+            try {
+                addShopData.FSSAILicNo = shop.FSSAILicNo
+            }catch (ex:Exception){
+                ex.printStackTrace()
+                addShopData.FSSAILicNo = ""
+            }
+//end AppV 4.2.2 tufan    20/09/2023 FSSAI Lic No Implementation 26813
             callAddShopApi(addShopData, shop.shopImageLocalPath, shop.doc_degree, position)
             //}
         } catch (e: Exception) {
@@ -1310,85 +1521,80 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
     }
 
     private fun callAddShopApi(addShop: AddShopRequestData, shop_imgPath: String?, degree_imgPath: String?, position: Int) {
-
-        try {
-
             if (!AppUtils.isOnline(mContext)) {
                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
                 return
             }
-
-
             progress_wheel.spin()
-
-            XLog.d("==========SyncShop Input Params (Average Shop)============")
-            XLog.d("shop id=======> " + addShop.shop_id)
+            Timber.d("==========SyncShop Input Params (Average Shop) AverageShopFragment f2============")
+            Timber.d("shop id=======> " + addShop.shop_id)
             val index = addShop.shop_id!!.indexOf("_")
-            XLog.d("decoded shop id=======> " + addShop.user_id + "_" + AppUtils.getDate(addShop.shop_id!!.substring(index + 1, addShop.shop_id!!.length).toLong()))
-            XLog.d("shop added date=======> " + addShop.added_date)
-            XLog.d("shop address=======> " + addShop.address)
-            XLog.d("assigned to dd id=======> " + addShop.assigned_to_dd_id)
-            XLog.d("assigned to pp id=======> " + addShop.assigned_to_pp_id)
-            XLog.d("date aniversery=======> " + addShop.date_aniversary)
-            XLog.d("dob=======> " + addShop.dob)
-            XLog.d("shop owner phn no=======> " + addShop.owner_contact_no)
-            XLog.d("shop owner email=======> " + addShop.owner_email)
-            XLog.d("shop owner name=======> " + addShop.owner_name)
-            XLog.d("shop pincode=======> " + addShop.pin_code)
-            XLog.d("session token=======> " + addShop.session_token)
-            XLog.d("shop lat=======> " + addShop.shop_lat)
-            XLog.d("shop long=======> " + addShop.shop_long)
-            XLog.d("shop name=======> " + addShop.shop_name)
-            XLog.d("shop type=======> " + addShop.type)
-            XLog.d("user id=======> " + addShop.user_id)
-            XLog.d("amount=======> " + addShop.amount)
-            XLog.d("area id=======> " + addShop.area_id)
-            XLog.d("model id=======> " + addShop.model_id)
-            XLog.d("primary app id=======> " + addShop.primary_app_id)
-            XLog.d("secondary app id=======> " + addShop.secondary_app_id)
-            XLog.d("lead id=======> " + addShop.lead_id)
-            XLog.d("stage id=======> " + addShop.stage_id)
-            XLog.d("funnel stage id=======> " + addShop.funnel_stage_id)
-            XLog.d("booking amount=======> " + addShop.booking_amount)
-            XLog.d("type id=======> " + addShop.type_id)
+            Timber.d("decoded shop id=======> " + addShop.user_id + "_" + AppUtils.getDate(addShop.shop_id!!.substring(index + 1, addShop.shop_id!!.length).toLong()))
+            Timber.d("shop added date=======> " + addShop.added_date)
+            Timber.d("shop address=======> " + addShop.address)
+            Timber.d("assigned to dd id=======> " + addShop.assigned_to_dd_id)
+            Timber.d("assigned to pp id=======> " + addShop.assigned_to_pp_id)
+            Timber.d("date aniversery=======> " + addShop.date_aniversary)
+            Timber.d("dob=======> " + addShop.dob)
+            Timber.d("shop owner phn no=======> " + addShop.owner_contact_no)
+            Timber.d("shop owner email=======> " + addShop.owner_email)
+            Timber.d("shop owner name=======> " + addShop.owner_name)
+            Timber.d("shop pincode=======> " + addShop.pin_code)
+            Timber.d("session token=======> " + addShop.session_token)
+            Timber.d("shop lat=======> " + addShop.shop_lat)
+            Timber.d("shop long=======> " + addShop.shop_long)
+            Timber.d("shop name=======> " + addShop.shop_name)
+            Timber.d("shop type=======> " + addShop.type)
+            Timber.d("user id=======> " + addShop.user_id)
+            Timber.d("amount=======> " + addShop.amount)
+            Timber.d("area id=======> " + addShop.area_id)
+            Timber.d("model id=======> " + addShop.model_id)
+            Timber.d("primary app id=======> " + addShop.primary_app_id)
+            Timber.d("secondary app id=======> " + addShop.secondary_app_id)
+            Timber.d("lead id=======> " + addShop.lead_id)
+            Timber.d("stage id=======> " + addShop.stage_id)
+            Timber.d("funnel stage id=======> " + addShop.funnel_stage_id)
+            Timber.d("booking amount=======> " + addShop.booking_amount)
+            Timber.d("type id=======> " + addShop.type_id)
 
             if (shop_imgPath != null)
-                XLog.d("shop image path=======> $shop_imgPath")
+                Timber.d("shop image path=======> $shop_imgPath")
 
-            XLog.d("director name=======> " + addShop.director_name)
-            XLog.d("family member dob=======> " + addShop.family_member_dob)
-            XLog.d("key person's name=======> " + addShop.key_person_name)
-            XLog.d("phone no=======> " + addShop.phone_no)
-            XLog.d("additional dob=======> " + addShop.addtional_dob)
-            XLog.d("additional doa=======> " + addShop.addtional_doa)
-            XLog.d("doctor family member dob=======> " + addShop.doc_family_member_dob)
-            XLog.d("specialization=======> " + addShop.specialization)
-            XLog.d("average patient count per day=======> " + addShop.average_patient_per_day)
-            XLog.d("category=======> " + addShop.category)
-            XLog.d("doctor address=======> " + addShop.doc_address)
-            XLog.d("doctor pincode=======> " + addShop.doc_pincode)
-            XLog.d("chambers or hospital under same headquarter=======> " + addShop.is_chamber_same_headquarter)
-            XLog.d("chamber related remarks=======> " + addShop.is_chamber_same_headquarter_remarks)
-            XLog.d("chemist name=======> " + addShop.chemist_name)
-            XLog.d("chemist name=======> " + addShop.chemist_address)
-            XLog.d("chemist pincode=======> " + addShop.chemist_pincode)
-            XLog.d("assistant name=======> " + addShop.assistant_name)
-            XLog.d("assistant contact no=======> " + addShop.assistant_contact_no)
-            XLog.d("assistant dob=======> " + addShop.assistant_dob)
-            XLog.d("assistant date of anniversary=======> " + addShop.assistant_doa)
-            XLog.d("assistant family dob=======> " + addShop.assistant_family_dob)
-            XLog.d("entity id=======> " + addShop.entity_id)
-            XLog.d("party status id=======> " + addShop.party_status_id)
-            XLog.d("retailer id=======> " + addShop.retailer_id)
-            XLog.d("dealer id=======> " + addShop.dealer_id)
-            XLog.d("beat id=======> " + addShop.beat_id)
-            XLog.d("assigned to shop id=======> " + addShop.assigned_to_shop_id)
-            XLog.d("actual address=======> " + addShop.actual_address)
+            Timber.d("director name=======> " + addShop.director_name)
+            Timber.d("family member dob=======> " + addShop.family_member_dob)
+            Timber.d("key person's name=======> " + addShop.key_person_name)
+            Timber.d("phone no=======> " + addShop.phone_no)
+            Timber.d("additional dob=======> " + addShop.addtional_dob)
+            Timber.d("additional doa=======> " + addShop.addtional_doa)
+            Timber.d("doctor family member dob=======> " + addShop.doc_family_member_dob)
+            Timber.d("specialization=======> " + addShop.specialization)
+            Timber.d("average patient count per day=======> " + addShop.average_patient_per_day)
+            Timber.d("category=======> " + addShop.category)
+            Timber.d("doctor address=======> " + addShop.doc_address)
+            Timber.d("doctor pincode=======> " + addShop.doc_pincode)
+            Timber.d("chambers or hospital under same headquarter=======> " + addShop.is_chamber_same_headquarter)
+            Timber.d("chamber related remarks=======> " + addShop.is_chamber_same_headquarter_remarks)
+            Timber.d("chemist name=======> " + addShop.chemist_name)
+            Timber.d("chemist name=======> " + addShop.chemist_address)
+            Timber.d("chemist pincode=======> " + addShop.chemist_pincode)
+            Timber.d("assistant name=======> " + addShop.assistant_name)
+            Timber.d("assistant contact no=======> " + addShop.assistant_contact_no)
+            Timber.d("assistant dob=======> " + addShop.assistant_dob)
+            Timber.d("assistant date of anniversary=======> " + addShop.assistant_doa)
+            Timber.d("assistant family dob=======> " + addShop.assistant_family_dob)
+            Timber.d("entity id=======> " + addShop.entity_id)
+            Timber.d("party status id=======> " + addShop.party_status_id)
+            Timber.d("retailer id=======> " + addShop.retailer_id)
+            Timber.d("dealer id=======> " + addShop.dealer_id)
+            Timber.d("beat id=======> " + addShop.beat_id)
+            Timber.d("assigned to shop id=======> " + addShop.assigned_to_shop_id)
+            Timber.d("actual address=======> " + addShop.actual_address)
 
             if (degree_imgPath != null)
-                XLog.d("doctor degree image path=======> $degree_imgPath")
-            XLog.d("====================================================")
+                Timber.d("doctor degree image path=======> $degree_imgPath")
+            Timber.d("====================================================")
 
+        try {
             if (TextUtils.isEmpty(shop_imgPath) && TextUtils.isEmpty(degree_imgPath)) {
                 val repository = AddShopRepositoryProvider.provideAddShopWithoutImageRepository()
                 BaseActivity.compositeDisposable.add(
@@ -1397,7 +1603,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                                 .subscribeOn(Schedulers.io())
                                 .subscribe({ result ->
                                     val addShopResult = result as AddShopResponse
-                                    XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
+                                    Timber.d("f2 syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
                                     when (addShopResult.status) {
                                         NetworkConstant.SUCCESS -> {
                                             AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
@@ -1413,14 +1619,14 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
 
                                         }
                                         NetworkConstant.DUPLICATE_SHOP_ID -> {
-                                            XLog.d("DuplicateShop : " + ", SHOP: " + addShop.shop_name)
+                                            Timber.d(" f2 DuplicateShop : " + ", SHOP: " + addShop.shop_name)
                                             AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
                                             //progress_wheel.stopSpinning()
                                             if (AppDatabase.getDBInstance()!!.addShopEntryDao().getDuplicateShopData(addShop.owner_contact_no).size > 0) {
                                                 AppDatabase.getDBInstance()!!.addShopEntryDao().deleteShopById(addShop.shop_id)
 
 
-                                                XLog.d("=======Duplicate shop deleted from shop activity table (Average Shop)============")
+                                                Timber.d("=======Duplicate shop deleted from shop activity table (Average Shop)============")
                                                 AppDatabase.getDBInstance()!!.shopActivityDao().deleteShopByIdAndDate(addShop.shop_id!!, AppUtils.getCurrentDateForShopActi())
                                             }
                                             doAsync {
@@ -1447,7 +1653,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                                     progress_wheel.stopSpinning()
                                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.unable_to_sync))
                                     if (error != null)
-                                        XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
+                                        Timber.d(" f2 syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
                                 })
                 )
             }
@@ -1459,7 +1665,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                                 .subscribeOn(Schedulers.io())
                                 .subscribe({ result ->
                                     val addShopResult = result as AddShopResponse
-                                    XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
+                                    Timber.d("f2 multipart syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
                                     when (addShopResult.status) {
                                         NetworkConstant.SUCCESS -> {
                                             AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
@@ -1475,14 +1681,14 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
 
                                         }
                                         NetworkConstant.DUPLICATE_SHOP_ID -> {
-                                            XLog.d("DuplicateShop : " + ", SHOP: " + addShop.shop_name)
+                                            Timber.d("f2 DuplicateShop : " + ", SHOP: " + addShop.shop_name)
                                             AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
                                             //progress_wheel.stopSpinning()
                                             if (AppDatabase.getDBInstance()!!.addShopEntryDao().getDuplicateShopData(addShop.owner_contact_no).size > 0) {
                                                 AppDatabase.getDBInstance()!!.addShopEntryDao().deleteShopById(addShop.shop_id)
 
 
-                                                XLog.d("=======Duplicate shop deleted from shop activity table (Average Shop)============")
+                                                Timber.d("=======f2 Duplicate shop deleted from shop activity table (Average Shop)============")
                                                 AppDatabase.getDBInstance()!!.shopActivityDao().deleteShopByIdAndDate(addShop.shop_id!!, AppUtils.getCurrentDateForShopActi())
                                             }
                                             doAsync {
@@ -1509,11 +1715,12 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                                     progress_wheel.stopSpinning()
                                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.unable_to_sync))
                                     if (error != null)
-                                        XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
+                                        Timber.d("f2 multipart syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
                                 })
                 )
             }
         } catch (e: Exception) {
+            Timber.d( "AverageShopFragment f2 err2 syncShopFromShopList : ${e.printStackTrace()}")
             e.printStackTrace()
         }
     }
@@ -1613,6 +1820,16 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                 else
                     shopDurationData.approximate_1st_billing_value = ""
 
+                //duration garbage fix
+                try{
+                    if(shopDurationData.spent_duration!!.contains("-") || shopDurationData.spent_duration!!.length != 8)
+                    {
+                        shopDurationData.spent_duration="00:00:10"
+                    }
+                }catch (ex:Exception){
+                    shopDurationData.spent_duration="00:00:10"
+                }
+
                 shopDataList.add(shopDurationData)
             }
             else {
@@ -1691,6 +1908,27 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                     else
                         shopDurationData.approximate_1st_billing_value = ""
 
+                    //duration garbage fix
+                    try{
+                        if(shopDurationData.spent_duration!!.contains("-") || shopDurationData.spent_duration!!.length != 8)
+                        {
+                            shopDurationData.spent_duration="00:00:10"
+                        }
+                    }catch (ex:Exception){
+                        shopDurationData.spent_duration="00:00:10"
+                    }
+                    //New shop Create issue
+                    shopDurationData.isnewShop = shopActivity.isnewShop!!
+
+                    // 1.0 AverageShopFragment AppV 4.0.6  multiple contact Data added on Api called
+                    shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+                    shopDurationData.multi_contact_number = shopActivity.multi_contact_number
+
+                    //Begin Rev 17 DashboardActivity AppV 4.0.8 Suman    24/04/2023 distanct+station calculation 25806
+                    shopDurationData.distFromProfileAddrKms = shopActivity.distFromProfileAddrKms
+                    shopDurationData.stationCode = shopActivity.stationCode
+                    //End of Rev 17 DashboardActivity AppV 4.0.8 Suman    24/04/2023 distanct+station calculation 25806
+
                     shopDataList.add(shopDurationData)
                 }
             }
@@ -1707,7 +1945,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
                             .subscribe({ result ->
-                                XLog.d("syncShopActivityFromShopList : " + ", SHOP: " + list[0].shop_name + ", RESPONSE:" + result.message)
+                                Timber.d("syncShopActivityFromShopList : " + ", SHOP: " + list[0].shop_name + ", RESPONSE:" + result.message)
                                 if (result.status == NetworkConstant.SUCCESS) {
 
                                 }
@@ -1715,7 +1953,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                             }, { error ->
                                 error.printStackTrace()
                                 if (error != null)
-                                    XLog.d("syncShopActivityFromShopList : " + ", SHOP: " + list[0].shop_name + error.localizedMessage)
+                                    Timber.d("syncShopActivityFromShopList : " + ", SHOP: " + list[0].shop_name + error.localizedMessage)
 //                                (mContext as DashboardActivity).showSnackMessage("ERROR")
                             })
             )
@@ -2081,22 +2319,49 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
             shopDurationData.updated_on = ""
         }
 
+        /**/
+        try{
+            if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                shopDurationData.pros_id = shopActivity.pros_id!!
+            else
+                shopDurationData.pros_id = "0"
 
-        if (!TextUtils.isEmpty(shopActivity.pros_id!!))
-            shopDurationData.pros_id = shopActivity.pros_id!!
-        else
-            shopDurationData.pros_id = ""
+            if (!TextUtils.isEmpty(shopActivity.agency_name!!))
+                shopDurationData.agency_name =shopActivity.agency_name!!
+            else
+                shopDurationData.agency_name = ""
 
-        if (!TextUtils.isEmpty(shopActivity.agency_name!!))
-            shopDurationData.agency_name =shopActivity.agency_name!!
-        else
+            if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
+                shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+            else
+                shopDurationData.approximate_1st_billing_value = ""
+
+        }catch (ex:Exception){
+            shopDurationData.pros_id = "0"
             shopDurationData.agency_name = ""
-
-        if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
-            shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
-        else
             shopDurationData.approximate_1st_billing_value = ""
+        }
 
+        //duration garbage fix
+        try{
+            if(shopDurationData.spent_duration!!.contains("-") || shopDurationData.spent_duration!!.length != 8)
+            {
+                shopDurationData.spent_duration="00:00:10"
+            }
+        }catch (ex:Exception){
+            shopDurationData.spent_duration="00:00:10"
+        }
+        //New shop Create issue
+        shopDurationData.isnewShop = shopActivity.isnewShop!!
+
+        // 1.0 AverageShopFragment AppV 4.0.6  multiple contact Data added on Api called
+        shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+        shopDurationData.multi_contact_number = shopActivity.multi_contact_number
+
+        //Begin Rev 17 DashboardActivity AppV 4.0.8 Suman    24/04/2023 distanct+station calculation 25806
+        shopDurationData.distFromProfileAddrKms = shopActivity.distFromProfileAddrKms
+        shopDurationData.stationCode = shopActivity.stationCode
+        //End of Rev 17 DashboardActivity AppV 4.0.8 Suman    24/04/2023 distanct+station calculation 25806
 
         shopDataList.add(shopDurationData)
 
@@ -2110,29 +2375,29 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
 
         BaseActivity.isShopActivityUpdating = true
 
-        XLog.d("========SYNC ALL VISITED SHOP DATA (AVERAGE SHOP)=====")
-        XLog.d("SHOP ID======> " + shopDurationData.shop_id)
-        XLog.d("SPENT DURATION======> " + shopDurationData.spent_duration)
-        XLog.d("VISIT DATE=========> " + shopDurationData.visited_date)
-        XLog.d("VISIT DATE TIME==========> " + shopDurationData.visited_date)
-        XLog.d("TOTAL VISIT COUNT========> " + shopDurationData.total_visit_count)
-        XLog.d("DISTANCE TRAVELLED========> " + shopDurationData.distance_travelled)
-        XLog.d("FEEDBACK========> " + shopDurationData.feedback)
-        XLog.d("isFirstShopVisited========> " + shopDurationData.isFirstShopVisited)
-        XLog.d("distanceFromHomeLoc========> " + shopDurationData.distanceFromHomeLoc)
-        XLog.d("next_visit_date========> " + shopDurationData.next_visit_date)
-        XLog.d("early_revisit_reason========> " + shopDurationData.early_revisit_reason)
-        XLog.d("device_model========> " + shopDurationData.device_model)
-        XLog.d("android_version========> " + shopDurationData.android_version)
-        XLog.d("battery========> " + shopDurationData.battery)
-        XLog.d("net_status========> " + shopDurationData.net_status)
-        XLog.d("net_type========> " + shopDurationData.net_type)
-        XLog.d("in_time========> " + shopDurationData.in_time)
-        XLog.d("out_time========> " + shopDurationData.out_time)
-        XLog.d("start_timestamp========> " + shopDurationData.start_timestamp)
-        XLog.d("in_location========> " + shopDurationData.in_location)
-        XLog.d("out_location========> " + shopDurationData.out_location)
-        XLog.d("=======================================================")
+        Timber.d("========SYNC ALL VISITED SHOP DATA (AVERAGE SHOP)=====")
+        Timber.d("SHOP ID======> " + shopDurationData.shop_id)
+        Timber.d("SPENT DURATION======> " + shopDurationData.spent_duration)
+        Timber.d("VISIT DATE=========> " + shopDurationData.visited_date)
+        Timber.d("VISIT DATE TIME==========> " + shopDurationData.visited_date)
+        Timber.d("TOTAL VISIT COUNT========> " + shopDurationData.total_visit_count)
+        Timber.d("DISTANCE TRAVELLED========> " + shopDurationData.distance_travelled)
+        Timber.d("FEEDBACK========> " + shopDurationData.feedback)
+        Timber.d("isFirstShopVisited========> " + shopDurationData.isFirstShopVisited)
+        Timber.d("distanceFromHomeLoc========> " + shopDurationData.distanceFromHomeLoc)
+        Timber.d("next_visit_date========> " + shopDurationData.next_visit_date)
+        Timber.d("early_revisit_reason========> " + shopDurationData.early_revisit_reason)
+        Timber.d("device_model========> " + shopDurationData.device_model)
+        Timber.d("android_version========> " + shopDurationData.android_version)
+        Timber.d("battery========> " + shopDurationData.battery)
+        Timber.d("net_status========> " + shopDurationData.net_status)
+        Timber.d("net_type========> " + shopDurationData.net_type)
+        Timber.d("in_time========> " + shopDurationData.in_time)
+        Timber.d("out_time========> " + shopDurationData.out_time)
+        Timber.d("start_timestamp========> " + shopDurationData.start_timestamp)
+        Timber.d("in_location========> " + shopDurationData.in_location)
+        Timber.d("out_location========> " + shopDurationData.out_location)
+        Timber.d("=======================================================")
 
         ////////
         revisitStatusList.clear()
@@ -2163,7 +2428,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
-                            XLog.d("ShopActivityFromAverageShop : RESPONSE STATUS:= " + result.status + ", RESPONSE MESSAGE:= " + result.message +
+                            Timber.d("ShopActivityFromAverageShop : RESPONSE STATUS:= " + result.status + ", RESPONSE MESSAGE:= " + result.message +
                                     "\nUser Id" + Pref.user_id + ", Session Token" + Pref.session_token + ", SHOP_ID: " + mList[0].shopid +
                                     ", SHOP: " + mList[0].shop_name)
                             if (result.status == NetworkConstant.SUCCESS) {
@@ -2176,11 +2441,12 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                                 callCompetetorImgUploadApi(shopId)
 
 
-                                if (!Pref.isMultipleVisitEnable)
+                                if (!Pref.isMultipleVisitEnable) {
                                     AppDatabase.getDBInstance()!!.shopActivityDao().updateisUploaded(true, shopId, selectedDate)
-                                else
+                                }
+                                else {
                                     AppDatabase.getDBInstance()!!.shopActivityDao().updateisUploaded(true, shopId, selectedDate, shopActivity.startTimeStamp)
-
+                                }
                                 //
                                 i++
                                 if (i < list_.size) {
@@ -2263,9 +2529,9 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
 
                                             val dateWiseList = AppDatabase.getDBInstance()!!.shopActivityDao().getTotalShopVisitedForADay(selectedDate)
 
-                                            XLog.d("=======UPDATE ADAPTER FOR SYNC ALL VISIT SHOP DATA (AVERAGE SHOP)=======")
-                                            XLog.d("shop list size====> " + dateWiseList.size)
-                                            XLog.d("specific date====> $selectedDate")
+                                            Timber.d("=======UPDATE ADAPTER FOR SYNC ALL VISIT SHOP DATA (AVERAGE SHOP)=======")
+                                            Timber.d("shop list size====> " + dateWiseList.size)
+                                            Timber.d("specific date====> $selectedDate")
 
                                             averageShopListAdapter.updateList(dateWiseList)
                                             ShopActivityEntityList = AppDatabase.getDBInstance()!!.shopActivityDao().getTotalShopVisitedForADay(AppUtils.getCurrentDateForShopActi())
@@ -2295,7 +2561,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                             error.printStackTrace()
                             BaseActivity.isShopActivityUpdating = false
                             if (error != null) {
-                                XLog.d("ShopActivityFromAverageShop : ERROR:= " + error.localizedMessage + "\nUser Id" + Pref.user_id +
+                                Timber.d("ShopActivityFromAverageShop : ERROR:= " + error.localizedMessage + "\nUser Id" + Pref.user_id +
                                         ", Session Token" + Pref.session_token + ", SHOP_ID: " + mList[0].shopid + ", SHOP: " + mList[0].shop_name)
                                 (mContext as DashboardActivity).showSnackMessage(mContext.getString(R.string.unable_to_sync))
 
@@ -2321,7 +2587,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
-                            XLog.d("callRevisitStatusUploadApi : RESPONSE " + result.status)
+                            Timber.d("callRevisitStatusUploadApi : RESPONSE " + result.status)
                             if (result.status == NetworkConstant.SUCCESS){
                                 for(i in revisitStatusList.indices){
                                     AppDatabase.getDBInstance()?.shopVisitOrderStatusRemarksDao()!!.updateOrderStatus(revisitStatusList[i]!!.shop_revisit_uniqKey!!)
@@ -2330,9 +2596,9 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                             }
                         },{error ->
                             if (error == null) {
-                                XLog.d("callRevisitStatusUploadApi : ERROR " + "UNEXPECTED ERROR IN SHOP ACTIVITY API")
+                                Timber.d("callRevisitStatusUploadApi : ERROR " + "UNEXPECTED ERROR IN SHOP ACTIVITY API")
                             } else {
-                                XLog.d("callRevisitStatusUploadApi : ERROR " + error.localizedMessage)
+                                Timber.d("callRevisitStatusUploadApi : ERROR " + error.localizedMessage)
                                 error.printStackTrace()
                             }
                         })
@@ -2365,14 +2631,14 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                             val response = result as BaseResponse
                             if(response.status==NetworkConstant.SUCCESS){
                                 AppDatabase.getDBInstance()!!.shopVisitCompetetorImageDao().updateisUploaded(true,shop_id)
-                                XLog.d("FUSED LOCATION : CompetetorImg" + ", SHOP: " + shop_id + ", Success: ")
+                                Timber.d("FUSED LOCATION : CompetetorImg" + ", SHOP: " + shop_id + ", Success: ")
                             }else{
-                                XLog.d("FUSED LOCATION : CompetetorImg" + ", SHOP: " + shop_id + ", Failed: ")
+                                Timber.d("FUSED LOCATION : CompetetorImg" + ", SHOP: " + shop_id + ", Failed: ")
                             }
                         },{
                             error ->
                             if (error != null) {
-                                XLog.d("FUSED LOCATION : CompetetorImg" + ", SHOP: " + shop_id + ", ERROR: " + error.localizedMessage)
+                                Timber.d("FUSED LOCATION : CompetetorImg" + ", SHOP: " + shop_id + ", ERROR: " + error.localizedMessage)
                             }
                         })
         )
@@ -2380,99 +2646,131 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
 
 
     }
+       @SuppressLint("SuspiciousIndentation")
        private fun syncShopList() {
         val shopList = AppDatabase.getDBInstance()!!.addShopEntryDao().getUnSyncedShops(false)
            if (shopList.isEmpty()){
 
            }
            else {
-               val addShopData = AddShopRequestData()
-               val mAddShopDBModelEntity = shopList[0]
-               addShopData.session_token = Pref.session_token
-               addShopData.address = mAddShopDBModelEntity.address
-               addShopData.owner_contact_no = mAddShopDBModelEntity.ownerContactNumber
-               addShopData.owner_email = mAddShopDBModelEntity.ownerEmailId
-               addShopData.owner_name = mAddShopDBModelEntity.ownerName
-               addShopData.pin_code = mAddShopDBModelEntity.pinCode
-               addShopData.shop_lat = mAddShopDBModelEntity.shopLat.toString()
-               addShopData.shop_long = mAddShopDBModelEntity.shopLong.toString()
-               addShopData.shop_name = mAddShopDBModelEntity.shopName.toString()
-               addShopData.type = mAddShopDBModelEntity.type.toString()
-               addShopData.shop_id = mAddShopDBModelEntity.shop_id
-               addShopData.user_id = Pref.user_id
-               addShopData.assigned_to_dd_id = mAddShopDBModelEntity.assigned_to_dd_id
-               addShopData.assigned_to_pp_id = mAddShopDBModelEntity.assigned_to_pp_id
-               addShopData.added_date = mAddShopDBModelEntity.added_date
-               addShopData.amount = mAddShopDBModelEntity.amount
-               addShopData.area_id = mAddShopDBModelEntity.area_id
-               addShopData.model_id = mAddShopDBModelEntity.model_id
-               addShopData.primary_app_id = mAddShopDBModelEntity.primary_app_id
-               addShopData.secondary_app_id = mAddShopDBModelEntity.secondary_app_id
-               addShopData.lead_id = mAddShopDBModelEntity.lead_id
-               addShopData.stage_id = mAddShopDBModelEntity.stage_id
-               addShopData.funnel_stage_id = mAddShopDBModelEntity.funnel_stage_id
-               addShopData.booking_amount = mAddShopDBModelEntity.booking_amount
-               addShopData.type_id = mAddShopDBModelEntity.type_id
+               try{
+                   val addShopData = AddShopRequestData()
+                   val mAddShopDBModelEntity = shopList[0]
+                   addShopData.session_token = Pref.session_token
+                   addShopData.address = mAddShopDBModelEntity.address
+                   addShopData.owner_contact_no = mAddShopDBModelEntity.ownerContactNumber
+                   addShopData.owner_email = mAddShopDBModelEntity.ownerEmailId
+                   addShopData.owner_name = mAddShopDBModelEntity.ownerName
+                   addShopData.pin_code = mAddShopDBModelEntity.pinCode
+                   addShopData.shop_lat = mAddShopDBModelEntity.shopLat.toString()
+                   addShopData.shop_long = mAddShopDBModelEntity.shopLong.toString()
+                   addShopData.shop_name = mAddShopDBModelEntity.shopName.toString()
+                   addShopData.type = mAddShopDBModelEntity.type.toString()
+                   addShopData.shop_id = mAddShopDBModelEntity.shop_id
+                   addShopData.user_id = Pref.user_id
+                   addShopData.assigned_to_dd_id = mAddShopDBModelEntity.assigned_to_dd_id
+                   addShopData.assigned_to_pp_id = mAddShopDBModelEntity.assigned_to_pp_id
+                   addShopData.added_date = mAddShopDBModelEntity.added_date
+                   addShopData.amount = mAddShopDBModelEntity.amount
+                   addShopData.area_id = mAddShopDBModelEntity.area_id
+                   addShopData.model_id = mAddShopDBModelEntity.model_id
+                   addShopData.primary_app_id = mAddShopDBModelEntity.primary_app_id
+                   addShopData.secondary_app_id = mAddShopDBModelEntity.secondary_app_id
+                   addShopData.lead_id = mAddShopDBModelEntity.lead_id
+                   addShopData.stage_id = mAddShopDBModelEntity.stage_id
+                   addShopData.funnel_stage_id = mAddShopDBModelEntity.funnel_stage_id
+                   addShopData.booking_amount = mAddShopDBModelEntity.booking_amount
+                   addShopData.type_id = mAddShopDBModelEntity.type_id
 
-               addShopData.director_name = mAddShopDBModelEntity.director_name
-               addShopData.key_person_name = mAddShopDBModelEntity.person_name
-               addShopData.phone_no = mAddShopDBModelEntity.person_no
+                   addShopData.director_name = mAddShopDBModelEntity.director_name
+                   addShopData.key_person_name = mAddShopDBModelEntity.person_name
+                   addShopData.phone_no = mAddShopDBModelEntity.person_no
 
-               if (!TextUtils.isEmpty(mAddShopDBModelEntity.family_member_dob))
-                   addShopData.family_member_dob = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.family_member_dob)
+                   if (!TextUtils.isEmpty(mAddShopDBModelEntity.family_member_dob))
+                       addShopData.family_member_dob = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.family_member_dob)
 
-               if (!TextUtils.isEmpty(mAddShopDBModelEntity.add_dob))
-                   addShopData.addtional_dob = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.add_dob)
+                   if (!TextUtils.isEmpty(mAddShopDBModelEntity.add_dob))
+                       addShopData.addtional_dob = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.add_dob)
 
-               if (!TextUtils.isEmpty(mAddShopDBModelEntity.add_doa))
-                   addShopData.addtional_doa = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.add_doa)
+                   if (!TextUtils.isEmpty(mAddShopDBModelEntity.add_doa))
+                       addShopData.addtional_doa = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.add_doa)
 
-               addShopData.specialization = mAddShopDBModelEntity.specialization
-               addShopData.category = mAddShopDBModelEntity.category
-               addShopData.doc_address = mAddShopDBModelEntity.doc_address
-               addShopData.doc_pincode = mAddShopDBModelEntity.doc_pincode
-               addShopData.is_chamber_same_headquarter = mAddShopDBModelEntity.chamber_status.toString()
-               addShopData.is_chamber_same_headquarter_remarks = mAddShopDBModelEntity.remarks
-               addShopData.chemist_name = mAddShopDBModelEntity.chemist_name
-               addShopData.chemist_address = mAddShopDBModelEntity.chemist_address
-               addShopData.chemist_pincode = mAddShopDBModelEntity.chemist_pincode
-               addShopData.assistant_contact_no = mAddShopDBModelEntity.assistant_no
-               addShopData.average_patient_per_day = mAddShopDBModelEntity.patient_count
-               addShopData.assistant_name = mAddShopDBModelEntity.assistant_name
+                   addShopData.specialization = mAddShopDBModelEntity.specialization
+                   addShopData.category = mAddShopDBModelEntity.category
+                   addShopData.doc_address = mAddShopDBModelEntity.doc_address
+                   addShopData.doc_pincode = mAddShopDBModelEntity.doc_pincode
+                   addShopData.is_chamber_same_headquarter = mAddShopDBModelEntity.chamber_status.toString()
+                   addShopData.is_chamber_same_headquarter_remarks = mAddShopDBModelEntity.remarks
+                   addShopData.chemist_name = mAddShopDBModelEntity.chemist_name
+                   addShopData.chemist_address = mAddShopDBModelEntity.chemist_address
+                   addShopData.chemist_pincode = mAddShopDBModelEntity.chemist_pincode
+                   addShopData.assistant_contact_no = mAddShopDBModelEntity.assistant_no
+                   addShopData.average_patient_per_day = mAddShopDBModelEntity.patient_count
+                   addShopData.assistant_name = mAddShopDBModelEntity.assistant_name
 
-               if (!TextUtils.isEmpty(mAddShopDBModelEntity.doc_family_dob))
-                   addShopData.doc_family_member_dob = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.doc_family_dob)
+                   if (!TextUtils.isEmpty(mAddShopDBModelEntity.doc_family_dob))
+                       addShopData.doc_family_member_dob = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.doc_family_dob)
 
-               if (!TextUtils.isEmpty(mAddShopDBModelEntity.assistant_dob))
-                   addShopData.assistant_dob = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.assistant_dob)
+                   if (!TextUtils.isEmpty(mAddShopDBModelEntity.assistant_dob))
+                       addShopData.assistant_dob = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.assistant_dob)
 
-               if (!TextUtils.isEmpty(mAddShopDBModelEntity.assistant_doa))
-                   addShopData.assistant_doa = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.assistant_doa)
+                   if (!TextUtils.isEmpty(mAddShopDBModelEntity.assistant_doa))
+                       addShopData.assistant_doa = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.assistant_doa)
 
-               if (!TextUtils.isEmpty(mAddShopDBModelEntity.assistant_family_dob))
-                   addShopData.assistant_family_dob = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.assistant_family_dob)
+                   if (!TextUtils.isEmpty(mAddShopDBModelEntity.assistant_family_dob))
+                       addShopData.assistant_family_dob = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.assistant_family_dob)
 
-               addShopData.entity_id = mAddShopDBModelEntity.entity_id
-               addShopData.party_status_id = mAddShopDBModelEntity.party_status_id
-               addShopData.retailer_id = mAddShopDBModelEntity.retailer_id
-               addShopData.dealer_id = mAddShopDBModelEntity.dealer_id
-               addShopData.beat_id = mAddShopDBModelEntity.beat_id
-               addShopData.assigned_to_shop_id = mAddShopDBModelEntity.assigned_to_shop_id
-               addShopData.actual_address = mAddShopDBModelEntity.actual_address
+                   addShopData.entity_id = mAddShopDBModelEntity.entity_id
+                   addShopData.party_status_id = mAddShopDBModelEntity.party_status_id
+                   addShopData.retailer_id = mAddShopDBModelEntity.retailer_id
+                   addShopData.dealer_id = mAddShopDBModelEntity.dealer_id
+                   addShopData.beat_id = mAddShopDBModelEntity.beat_id
+                   addShopData.assigned_to_shop_id = mAddShopDBModelEntity.assigned_to_shop_id
+                   addShopData.actual_address = mAddShopDBModelEntity.actual_address
 
-               var uniqKeyObj = AppDatabase.getDBInstance()!!.shopActivityDao().getNewShopActivityKey(mAddShopDBModelEntity.shop_id, false)
-               addShopData.shop_revisit_uniqKey = uniqKeyObj?.shop_revisit_uniqKey!!
+                   var uniqKeyObj = AppDatabase.getDBInstance()!!.shopActivityDao().getNewShopActivityKey(mAddShopDBModelEntity.shop_id, false)
+                   addShopData.shop_revisit_uniqKey = uniqKeyObj?.shop_revisit_uniqKey!!
 
-               addShopData.project_name = mAddShopDBModelEntity.project_name
-               addShopData.landline_number = mAddShopDBModelEntity.landline_number
-               addShopData.agency_name = mAddShopDBModelEntity.agency_name
+                   addShopData.project_name = mAddShopDBModelEntity.project_name
+                   if(mAddShopDBModelEntity.landline_number!=null)
+                       addShopData.landline_number = mAddShopDBModelEntity.landline_number
+                   else
+                       addShopData.landline_number =""
+                   if(mAddShopDBModelEntity.agency_name!=null)
+                       addShopData.agency_name = mAddShopDBModelEntity.agency_name
+                   else
+                       addShopData.agency_name =""
 
-               callAddShopApi(addShopData, mAddShopDBModelEntity.shopImageLocalPath, shopList, true,
+                   if(mAddShopDBModelEntity.alternateNoForCustomer!=null)
+                       addShopData.alternateNoForCustomer = mAddShopDBModelEntity.alternateNoForCustomer
+                   else
+                       addShopData.alternateNoForCustomer =""
+
+                   if(mAddShopDBModelEntity.whatsappNoForCustomer!=null)
+                       addShopData.whatsappNoForCustomer = mAddShopDBModelEntity.whatsappNoForCustomer
+                   else
+                       addShopData.whatsappNoForCustomer =""
+
+                   // duplicate shop api call
+                   addShopData.isShopDuplicate=mAddShopDBModelEntity.isShopDuplicate
+
+                   addShopData.purpose=mAddShopDBModelEntity.purpose
+//start AppV 4.2.2 tufan    20/09/2023 FSSAI Lic No Implementation 26813
+                   try {
+                       addShopData.FSSAILicNo = mAddShopDBModelEntity.FSSAILicNo
+                   }catch (ex:Exception){
+                       ex.printStackTrace()
+                       addShopData.FSSAILicNo = ""
+                   }
+//end AppV 4.2.2 tufan    20/09/2023 FSSAI Lic No Implementation 26813
+
+
+                   callAddShopApi(addShopData, mAddShopDBModelEntity.shopImageLocalPath, shopList, true,
                        mAddShopDBModelEntity.doc_degree)
-
+               }catch (ex:Exception){
+                   Timber.d("AverageShopFragment err1 ${ex.printStackTrace()}")
+               }
            }
-
-
     }
 
     fun callAddShopApi(addShop: AddShopRequestData, shop_imgPath: String?, shopList: MutableList<AddShopDBModelEntity>?,
@@ -2482,175 +2780,179 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
             return
         }
 
-        XLog.d("=============SyncShop Input Params=================")
-        XLog.d("shop id=======> " + addShop.shop_id)
+        Timber.d("=============SyncShop Input Params AverageShopFragment f1 =================")
+        Timber.d("shop id=======> " + addShop.shop_id)
         val index = addShop.shop_id!!.indexOf("_")
-        XLog.d("decoded shop id=======> " + addShop.user_id + "_" + AppUtils.getDate(addShop.shop_id!!.substring(index + 1, addShop.shop_id!!.length).toLong()))
-        XLog.d("shop added date=======> " + addShop.added_date)
-        XLog.d("shop address=======> " + addShop.address)
-        XLog.d("assigned to dd id=======> " + addShop.assigned_to_dd_id)
-        XLog.d("assigned to pp id=======> " + addShop.assigned_to_pp_id)
-        XLog.d("date aniversery=======> " + addShop.date_aniversary)
-        XLog.d("dob=======> " + addShop.dob)
-        XLog.d("shop owner phn no=======> " + addShop.owner_contact_no)
-        XLog.d("shop owner email=======> " + addShop.owner_email)
-        XLog.d("shop owner name=======> " + addShop.owner_name)
-        XLog.d("shop pincode=======> " + addShop.pin_code)
-        XLog.d("session token=======> " + addShop.session_token)
-        XLog.d("shop lat=======> " + addShop.shop_lat)
-        XLog.d("shop long=======> " + addShop.shop_long)
-        XLog.d("shop name=======> " + addShop.shop_name)
-        XLog.d("shop type=======> " + addShop.type)
-        XLog.d("user id=======> " + addShop.user_id)
-        XLog.d("amount=======> " + addShop.amount)
-        XLog.d("area id=======> " + addShop.area_id)
-        XLog.d("model id=======> " + addShop.model_id)
-        XLog.d("primary app id=======> " + addShop.primary_app_id)
-        XLog.d("secondary app id=======> " + addShop.secondary_app_id)
-        XLog.d("lead id=======> " + addShop.lead_id)
-        XLog.d("stage id=======> " + addShop.stage_id)
-        XLog.d("funnel stage id=======> " + addShop.funnel_stage_id)
-        XLog.d("booking amount=======> " + addShop.booking_amount)
-        XLog.d("type id=======> " + addShop.type_id)
+        Timber.d("decoded shop id=======> " + addShop.user_id + "_" + AppUtils.getDate(addShop.shop_id!!.substring(index + 1, addShop.shop_id!!.length).toLong()))
+        Timber.d("shop added date=======> " + addShop.added_date)
+        Timber.d("shop address=======> " + addShop.address)
+        Timber.d("assigned to dd id=======> " + addShop.assigned_to_dd_id)
+        Timber.d("assigned to pp id=======> " + addShop.assigned_to_pp_id)
+        Timber.d("date aniversery=======> " + addShop.date_aniversary)
+        Timber.d("dob=======> " + addShop.dob)
+        Timber.d("shop owner phn no=======> " + addShop.owner_contact_no)
+        Timber.d("shop owner email=======> " + addShop.owner_email)
+        Timber.d("shop owner name=======> " + addShop.owner_name)
+        Timber.d("shop pincode=======> " + addShop.pin_code)
+        Timber.d("session token=======> " + addShop.session_token)
+        Timber.d("shop lat=======> " + addShop.shop_lat)
+        Timber.d("shop long=======> " + addShop.shop_long)
+        Timber.d("shop name=======> " + addShop.shop_name)
+        Timber.d("shop type=======> " + addShop.type)
+        Timber.d("user id=======> " + addShop.user_id)
+        Timber.d("amount=======> " + addShop.amount)
+        Timber.d("area id=======> " + addShop.area_id)
+        Timber.d("model id=======> " + addShop.model_id)
+        Timber.d("primary app id=======> " + addShop.primary_app_id)
+        Timber.d("secondary app id=======> " + addShop.secondary_app_id)
+        Timber.d("lead id=======> " + addShop.lead_id)
+        Timber.d("stage id=======> " + addShop.stage_id)
+        Timber.d("funnel stage id=======> " + addShop.funnel_stage_id)
+        Timber.d("booking amount=======> " + addShop.booking_amount)
+        Timber.d("type id=======> " + addShop.type_id)
 
         if (shop_imgPath != null)
-            XLog.d("shop image path=======> $shop_imgPath")
+            Timber.d("shop image path=======> $shop_imgPath")
 
-        XLog.d("director name=======> " + addShop.director_name)
-        XLog.d("family member dob=======> " + addShop.family_member_dob)
-        XLog.d("key person's name=======> " + addShop.key_person_name)
-        XLog.d("phone no=======> " + addShop.phone_no)
-        XLog.d("additional dob=======> " + addShop.addtional_dob)
-        XLog.d("additional doa=======> " + addShop.addtional_doa)
-        XLog.d("family member dob=======> " + addShop.family_member_dob)
-        XLog.d("key person's name=======> " + addShop.key_person_name)
-        XLog.d("phone no=======> " + addShop.phone_no)
-        XLog.d("additional dob=======> " + addShop.addtional_dob)
-        XLog.d("additional doa=======> " + addShop.addtional_doa)
-        XLog.d("doctor family member dob=======> " + addShop.doc_family_member_dob)
-        XLog.d("specialization=======> " + addShop.specialization)
-        XLog.d("average patient count per day=======> " + addShop.average_patient_per_day)
-        XLog.d("category=======> " + addShop.category)
-        XLog.d("doctor address=======> " + addShop.doc_address)
-        XLog.d("doctor pincode=======> " + addShop.doc_pincode)
-        XLog.d("chambers or hospital under same headquarter=======> " + addShop.is_chamber_same_headquarter)
-        XLog.d("chamber related remarks=======> " + addShop.is_chamber_same_headquarter_remarks)
-        XLog.d("chemist name=======> " + addShop.chemist_name)
-        XLog.d("chemist name=======> " + addShop.chemist_address)
-        XLog.d("chemist pincode=======> " + addShop.chemist_pincode)
-        XLog.d("assistant name=======> " + addShop.assistant_name)
-        XLog.d("assistant contact no=======> " + addShop.assistant_contact_no)
-        XLog.d("assistant dob=======> " + addShop.assistant_dob)
-        XLog.d("assistant date of anniversary=======> " + addShop.assistant_doa)
-        XLog.d("assistant family dob=======> " + addShop.assistant_family_dob)
-        XLog.d("entity id=======> " + addShop.entity_id)
-        XLog.d("party status id=======> " + addShop.party_status_id)
-        XLog.d("retailer id=======> " + addShop.retailer_id)
-        XLog.d("dealer id=======> " + addShop.dealer_id)
-        XLog.d("beat id=======> " + addShop.beat_id)
-        XLog.d("assigned to shop id=======> " + addShop.assigned_to_shop_id)
-        XLog.d("actual address=======> " + addShop.actual_address)
+        Timber.d("director name=======> " + addShop.director_name)
+        Timber.d("family member dob=======> " + addShop.family_member_dob)
+        Timber.d("key person's name=======> " + addShop.key_person_name)
+        Timber.d("phone no=======> " + addShop.phone_no)
+        Timber.d("additional dob=======> " + addShop.addtional_dob)
+        Timber.d("additional doa=======> " + addShop.addtional_doa)
+        Timber.d("family member dob=======> " + addShop.family_member_dob)
+        Timber.d("key person's name=======> " + addShop.key_person_name)
+        Timber.d("phone no=======> " + addShop.phone_no)
+        Timber.d("additional dob=======> " + addShop.addtional_dob)
+        Timber.d("additional doa=======> " + addShop.addtional_doa)
+        Timber.d("doctor family member dob=======> " + addShop.doc_family_member_dob)
+        Timber.d("specialization=======> " + addShop.specialization)
+        Timber.d("average patient count per day=======> " + addShop.average_patient_per_day)
+        Timber.d("category=======> " + addShop.category)
+        Timber.d("doctor address=======> " + addShop.doc_address)
+        Timber.d("doctor pincode=======> " + addShop.doc_pincode)
+        Timber.d("chambers or hospital under same headquarter=======> " + addShop.is_chamber_same_headquarter)
+        Timber.d("chamber related remarks=======> " + addShop.is_chamber_same_headquarter_remarks)
+        Timber.d("chemist name=======> " + addShop.chemist_name)
+        Timber.d("chemist name=======> " + addShop.chemist_address)
+        Timber.d("chemist pincode=======> " + addShop.chemist_pincode)
+        Timber.d("assistant name=======> " + addShop.assistant_name)
+        Timber.d("assistant contact no=======> " + addShop.assistant_contact_no)
+        Timber.d("assistant dob=======> " + addShop.assistant_dob)
+        Timber.d("assistant date of anniversary=======> " + addShop.assistant_doa)
+        Timber.d("assistant family dob=======> " + addShop.assistant_family_dob)
+        Timber.d("entity id=======> " + addShop.entity_id)
+        Timber.d("party status id=======> " + addShop.party_status_id)
+        Timber.d("retailer id=======> " + addShop.retailer_id)
+        Timber.d("dealer id=======> " + addShop.dealer_id)
+        Timber.d("beat id=======> " + addShop.beat_id)
+        Timber.d("assigned to shop id=======> " + addShop.assigned_to_shop_id)
+        Timber.d("actual address=======> " + addShop.actual_address)
 
         if (degree_imgPath != null)
-            XLog.d("doctor degree image path=======> $degree_imgPath")
-        XLog.d("====================================================")
+            Timber.d("doctor degree image path=======> $degree_imgPath")
+        Timber.d("====================================================")
 
-        if (TextUtils.isEmpty(shop_imgPath) && TextUtils.isEmpty(degree_imgPath)) {
-            val repository = AddShopRepositoryProvider.provideAddShopWithoutImageRepository()
-            BaseActivity.compositeDisposable.add(
+        try {
+            if (TextUtils.isEmpty(shop_imgPath) && TextUtils.isEmpty(degree_imgPath)) {
+                val repository = AddShopRepositoryProvider.provideAddShopWithoutImageRepository()
+                BaseActivity.compositeDisposable.add(
                     repository.addShop(addShop)
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeOn(Schedulers.io())
-                            .subscribe({ result ->
-                                val addShopResult = result as AddShopResponse
-                                XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            val addShopResult = result as AddShopResponse
+                            Timber.d("AverageShopFragment f1 syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
 
-                                when (addShopResult.status) {
-                                    NetworkConstant.SUCCESS -> {
-                                        AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
-
-                                        doAsync {
-                                            uiThread {
-                                                syncShopList()
-                                            }
+                            when (addShopResult.status) {
+                                NetworkConstant.SUCCESS -> {
+                                    AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
+                                    doAsync {
+                                        uiThread {
+                                            syncShopList()
                                         }
-                                    }
-                                    NetworkConstant.DUPLICATE_SHOP_ID -> {
-                                        XLog.d("DuplicateShop : " + ", SHOP: " + addShop.shop_name)
-                                        AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
-
-
-                                        if (AppDatabase.getDBInstance()!!.addShopEntryDao().getDuplicateShopData(addShop.owner_contact_no).size > 0) {
-                                            AppDatabase.getDBInstance()!!.addShopEntryDao().deleteShopById(addShop.shop_id)
-                                            AppDatabase.getDBInstance()!!.shopActivityDao().deleteShopByIdAndDate(addShop.shop_id!!, AppUtils.getCurrentDateForShopActi())
-                                        }
-                                        doAsync {
-                                            uiThread {
-                                                syncShopList()
-                                            }
-                                        }
-
-                                    }
-                                    else -> {
-                                        (this as DashboardActivity).showSnackMessage(addShopResult.message!!)
                                     }
                                 }
-                            }, { error ->
-                                error.printStackTrace()
-                                (this as DashboardActivity).showSnackMessage(getString(R.string.unable_to_sync))
-                                if (error != null)
-                                    XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
-                            })
-            )
-        }
-        else {
-            val repository = AddShopRepositoryProvider.provideAddShopRepository()
-            BaseActivity.compositeDisposable.add(
+                                NetworkConstant.DUPLICATE_SHOP_ID -> {
+                                    Timber.d("AverageShopFragment f1 DuplicateShop : " + ", SHOP: " + addShop.shop_name)
+                                    AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
+
+
+                                    if (AppDatabase.getDBInstance()!!.addShopEntryDao().getDuplicateShopData(addShop.owner_contact_no).size > 0) {
+                                        AppDatabase.getDBInstance()!!.addShopEntryDao().deleteShopById(addShop.shop_id)
+                                        AppDatabase.getDBInstance()!!.shopActivityDao().deleteShopByIdAndDate(addShop.shop_id!!, AppUtils.getCurrentDateForShopActi())
+                                    }
+                                    doAsync {
+                                        uiThread {
+                                            syncShopList()
+                                        }
+                                    }
+
+                                }
+                                else -> {
+                                    (this as DashboardActivity).showSnackMessage(addShopResult.message!!)
+                                }
+                            }
+                        }, { error ->
+                            error.printStackTrace()
+                            (this as DashboardActivity).showSnackMessage(getString(R.string.unable_to_sync))
+                            if (error != null)
+                                Timber.d("AverageShopFragment f1 not-multipart syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
+                        })
+                )
+            }
+            else {
+                val repository = AddShopRepositoryProvider.provideAddShopRepository()
+                BaseActivity.compositeDisposable.add(
                     repository.addShopWithImage(addShop, shop_imgPath, degree_imgPath, mContext)
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeOn(Schedulers.io())
-                            .subscribe({ result ->
-                                val addShopResult = result as AddShopResponse
-                                XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            val addShopResult = result as AddShopResponse
+                            Timber.d("AverageShopFragment f1 syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
 
-                                when (addShopResult.status) {
-                                    NetworkConstant.SUCCESS -> {
-                                        AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
+                            when (addShopResult.status) {
+                                NetworkConstant.SUCCESS -> {
+                                    AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
 
 
-                                        doAsync {
-                                            uiThread {
-                                                syncShopList()
-                                            }
+                                    doAsync {
+                                        uiThread {
+                                            syncShopList()
                                         }
-                                    }
-                                    NetworkConstant.DUPLICATE_SHOP_ID -> {
-                                        XLog.d("DuplicateShop : " + ", SHOP: " + addShop.shop_name)
-                                        AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
-
-                                        if (AppDatabase.getDBInstance()!!.addShopEntryDao().getDuplicateShopData(addShop.owner_contact_no).size > 0) {
-                                            AppDatabase.getDBInstance()!!.addShopEntryDao().deleteShopById(addShop.shop_id)
-                                            AppDatabase.getDBInstance()!!.shopActivityDao().deleteShopByIdAndDate(addShop.shop_id!!, AppUtils.getCurrentDateForShopActi())
-                                        }
-                                        doAsync {
-                                            uiThread {
-                                                syncShopList()
-                                            }
-                                        }
-
-                                    }
-                                    else -> {
-                                        (this as DashboardActivity).showSnackMessage(addShopResult.message!!)
                                     }
                                 }
-                            }, { error ->
-                                error.printStackTrace()
-                                (this as DashboardActivity).showSnackMessage(getString(R.string.unable_to_sync))
-                                if (error != null)
-                                    XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
-                            })
-            )
+                                NetworkConstant.DUPLICATE_SHOP_ID -> {
+                                    Timber.d("AverageShopFragment f1 DuplicateShop : " + ", SHOP: " + addShop.shop_name)
+                                    AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
+
+                                    if (AppDatabase.getDBInstance()!!.addShopEntryDao().getDuplicateShopData(addShop.owner_contact_no).size > 0) {
+                                        AppDatabase.getDBInstance()!!.addShopEntryDao().deleteShopById(addShop.shop_id)
+                                        AppDatabase.getDBInstance()!!.shopActivityDao().deleteShopByIdAndDate(addShop.shop_id!!, AppUtils.getCurrentDateForShopActi())
+                                    }
+                                    doAsync {
+                                        uiThread {
+                                            syncShopList()
+                                        }
+                                    }
+
+                                }
+                                else -> {
+                                    (this as DashboardActivity).showSnackMessage(addShopResult.message!!)
+                                }
+                            }
+                        }, { error ->
+                            error.printStackTrace()
+                            (this as DashboardActivity).showSnackMessage(getString(R.string.unable_to_sync))
+                            if (error != null)
+                                Timber.d("AverageShopFragment f1 multipart syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
+                        })
+                )
+            }
+        }catch (ex:Exception){
+            Timber.d("AverageShopFragment f1 err01 ${ex.printStackTrace()}")
         }
+
     }
 
     fun dialogOpenQa(shopId:String) {

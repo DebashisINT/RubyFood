@@ -2,6 +2,7 @@ package com.rubyfood.features.login.api
 
 import com.rubyfood.app.NetworkConstant
 import com.rubyfood.base.BaseResponse
+import com.rubyfood.features.login.model.GetConcurrentUserResponse
 import com.rubyfood.features.login.model.LoginResponse
 import com.rubyfood.features.login.model.NewSettingsResponseModel
 import com.rubyfood.features.login.model.mettingListModel.MeetingListResponseModel
@@ -23,6 +24,18 @@ interface LoginApi {
                          @Field("version_name") version: String, @Field("address") address: String, @Field("device_token") device_token: String)
             : Observable<LoginResponse>
 
+    @FormUrlEncoded
+    @POST("LoginConcurrentusers/FetchConcurrentUser")
+    fun getConcurrentUserDtlsApi(@Field("user_id") user_id: String): Observable<GetConcurrentUserResponse>
+
+    @FormUrlEncoded
+    @POST("LoginConcurrentusers/InsertConcurrentUser")
+    fun insertConcurrentUserDtlsApi(@Field("user_id") user_id: String,@Field("imei") imei: String,
+                                    @Field("date_time") date_time: String): Observable<BaseResponse>
+
+    @FormUrlEncoded
+    @POST("LoginConcurrentusers/DeleteConcurrentUser")
+    fun deleteConcurrentUserDtlsApi(@Field("user_id") user_id: String): Observable<BaseResponse>
 
     @FormUrlEncoded
     @POST("Configuration/MeetingType")

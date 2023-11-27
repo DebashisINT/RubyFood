@@ -2,12 +2,22 @@ package com.rubyfood.features.shopdetail.presentation.api
 
 import android.content.Context
 import android.net.Uri
+import android.os.Environment
 import android.text.TextUtils
+import android.util.Log
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.rubyfood.app.FileUtils
+import com.rubyfood.app.Pref
+import com.rubyfood.base.BaseResponse
+import com.rubyfood.features.addshop.model.AddLogReqData
 import com.rubyfood.features.addshop.model.AddShopRequestData
 import com.rubyfood.features.addshop.model.AddShopResponse
+import com.rubyfood.features.addshop.model.LogFileResponse
 import com.rubyfood.features.dashboard.presentation.DashboardActivity
+import com.rubyfood.features.document.model.AddEditDocumentInputParams
+import com.rubyfood.features.document.model.DocumentAttachmentModel
+import com.rubyfood.features.login.model.WhatsappApiData
+import com.rubyfood.features.login.model.WhatsappApiFetchData
 import com.google.gson.Gson
 import io.reactivex.Observable
 import okhttp3.MediaType
@@ -23,6 +33,15 @@ class EditShopRepo(val apiService: EditShopApi) {
     fun editShop(shop: AddShopRequestData): Observable<AddShopResponse> {
         return apiService.editShop(shop)
     }
+
+    fun whatsAppStatusSync(obj: WhatsappApiData): Observable<BaseResponse> {
+        return apiService.whatsAppStatusSyncApi(obj)
+    }
+
+    fun whatsAppStatusFetch(user_id: String): Observable<WhatsappApiFetchData> {
+        return apiService.whatsAppStatusFetchApi(user_id)
+    }
+
 
     fun addShopWithImage(shop: AddShopRequestData, shop_image: String?, context: Context): Observable<AddShopResponse> {
         var profile_img_data: MultipartBody.Part? = null
@@ -121,4 +140,56 @@ class EditShopRepo(val apiService: EditShopApi) {
             apiService.editShopWithImage(jsonInString, profile_img_data)
         // return apiService.getAddShopWithoutImage(jsonInString)
     }
+
+
+
+    fun addLogfile(user_id: AddLogReqData, shop_image: String, context: Context): Observable<LogFileResponse> {
+       /* var log_attachments:MultipartBody.Part? = null
+        if (!TextUtils.isEmpty(shop_image)) {
+            val profile_img_file = FileUtils.getFile(context, Uri.parse(shop_image))
+            if (profile_img_file != null && profile_img_file.exists()) {
+                val profileImgBody = RequestBody.create(MediaType.parse("multipart/form-data"), profile_img_file)
+                log_attachments = MultipartBody.Part.createFormData("attachments", profile_img_file.name, profileImgBody)
+            }
+        }
+
+        val imageName = Pref.user_id + "~" + shop_image+ "~"
+        //val fileName = imageName + "_" + System.currentTimeMillis() + "." + fileExt
+        val fileName = imageName + "_" + System.currentTimeMillis() + ".txt"
+
+        Log.e("Document Image", "File Name=========> $fileName")
+        //var shopObject: RequestBody? = null
+        var jsonInString = ""
+        try {
+            jsonInString = Gson().toJson(user_id)
+            //  shopObject = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonInString)
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+
+
+        return  apiService.logshareFile(jsonInString, log_attachments)
+        // return apiService.getAddShopWithoutImage(jsonInString)*/
+
+
+
+        //////
+        var log_attachments_new:MultipartBody.Part? = null
+        var log_attachments_file: File? = null
+        log_attachments_file = File(shop_image)
+        val profileImgBody = RequestBody.create(MediaType.parse("multipart/form-data"), log_attachments_file)
+        var jsonInString = ""
+        try {
+            jsonInString = ObjectMapper().writeValueAsString(user_id)
+            //  shopObject = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonInString)
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+        log_attachments_new = MultipartBody.Part.createFormData("attachments", "${Pref.user_id}.zip", profileImgBody)
+        return  apiService.logshareFile(jsonInString, log_attachments_new)
+    }
+
+
+
+
 }

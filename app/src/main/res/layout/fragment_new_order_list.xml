@@ -25,7 +25,7 @@
         android:id="@+id/rv_order_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tv_order_count"/>
+        android:layout_below="@+id/tv_order_count" />
 
     <com.rubyfood.widgets.AppCustomTextView
         android:id="@+id/no_shop_tv"

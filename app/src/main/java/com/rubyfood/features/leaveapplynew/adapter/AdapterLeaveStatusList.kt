@@ -31,6 +31,7 @@ class AdapterLeaveStatusList(var context: Context, var applied_leave_list:ArrayL
         holder.leave_type.text = applied_leave_list.get(position).leave_type
         holder.date_to.text = applied_leave_list.get(position).to_date
         holder.remarks.text = applied_leave_list.get(position).approver_remarks
+        holder.leave_reason.text = applied_leave_list.get(position).leave_reason
 
         if(applied_leave_list.get(position).approve_status!!){
             holder.leave_status.text = "Approved"
@@ -47,6 +48,7 @@ class AdapterLeaveStatusList(var context: Context, var applied_leave_list:ArrayL
         val leave_type=itemView.leave_type_show_tv
         val leave_status = itemView.leave_status_show_tv
         val remarks = itemView.remark_show_tv
+        val leave_reason = itemView.tv_leave_reason
 
     }
 

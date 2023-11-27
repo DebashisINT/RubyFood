@@ -10,7 +10,8 @@ import com.rubyfood.app.AlarmReceiver
 import com.rubyfood.app.Pref
 import com.rubyfood.app.utils.AppUtils
 import com.rubyfood.features.dashboard.presentation.ToastBroadcastReceiver
-import com.elvishew.xlog.XLog
+
+import timber.log.Timber
 
 
 /**
@@ -38,10 +39,12 @@ class AlarmBootReceiver : BroadcastReceiver() {
 
 
             if (!TextUtils.isEmpty(Pref.user_id)) {
-                XLog.e("=======================Boot Completed successfully ${AppUtils.getCurrentDateTime()} (AlarmBootReceiver)=======================")
+                Timber.e("=======================Boot Completed successfully ${AppUtils.getCurrentDateTime()} (AlarmBootReceiver)=======================")
 
                 val toastIntent = Intent(context, ToastBroadcastReceiver::class.java)
-                val toastAlarmIntent = PendingIntent.getBroadcast(context, 1, toastIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+                //val toastAlarmIntent = PendingIntent.getBroadcast(context, 1, toastIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+                // FLAG_IMMUTABLE update
+                val toastAlarmIntent = PendingIntent.getBroadcast(context, 1, toastIntent, PendingIntent.FLAG_IMMUTABLE)
                 val startTime = System.currentTimeMillis() //alarm starts immediately
                 val backupAlarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                 backupAlarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, startTime, AlarmManager.INTERVAL_HOUR, toastAlarmIntent)

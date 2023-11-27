@@ -55,7 +55,9 @@ class LeaveListFragment : BaseFragment(), View.OnClickListener, DatePickerDialog
         val view = inflater.inflate(R.layout.fragment_leave_list, container, false)
 
         initView(view)
-        getLeaveList(AppUtils.getCurrentDateForShopActi(), AppUtils.getCurrentDateForShopActi())
+        var nextDT=AppUtils.getNextDateForShopActi()
+        getLeaveList(nextDT, nextDT)
+        //getLeaveList(AppUtils.getCurrentDateForShopActi(), AppUtils.getCurrentDateForShopActi())
 
         return view
     }

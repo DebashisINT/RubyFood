@@ -29,6 +29,7 @@ import com.rubyfood.app.NetworkConstant
 import com.rubyfood.app.NewFileUtils
 import com.rubyfood.app.Pref
 import com.rubyfood.app.domain.DocumentListEntity
+import com.rubyfood.app.types.FragType
 import com.rubyfood.app.utils.AppUtils
 import com.rubyfood.app.utils.FTStorageUtils
 import com.rubyfood.app.utils.PermissionUtils
@@ -48,7 +49,7 @@ import com.rubyfood.widgets.AppCustomTextView
 import com.downloader.Error
 import com.downloader.OnDownloadListener
 import com.downloader.PRDownloader
-import com.elvishew.xlog.XLog
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.pnikosis.materialishprogress.ProgressWheel
 import com.themechangeapp.pickimage.PermissionHelper
@@ -56,6 +57,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import timber.log.Timber
 import java.io.File
 
 class DocumentListFragment : BaseFragment() {
@@ -183,6 +185,20 @@ class DocumentListFragment : BaseFragment() {
 
 
     private fun initPermissionCheck() {
+
+        //begin mantis id 26741 Storage permission updation Suman 22-08-2023
+        var permissionList = arrayOf<String>( Manifest.permission.CAMERA)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            permissionList += Manifest.permission.READ_MEDIA_IMAGES
+            permissionList += Manifest.permission.READ_MEDIA_AUDIO
+            permissionList += Manifest.permission.READ_MEDIA_VIDEO
+        }else{
+            permissionList += Manifest.permission.WRITE_EXTERNAL_STORAGE
+            permissionList += Manifest.permission.READ_EXTERNAL_STORAGE
+        }
+//end mantis id 26741 Storage permission updation Suman 22-08-2023
+
         permissionUtils = PermissionUtils(mContext as Activity, object : PermissionUtils.OnPermissionListener {
             override fun onPermissionGranted() {
                 showPictureDialog()
@@ -192,7 +208,7 @@ class DocumentListFragment : BaseFragment() {
                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.accept_permission))
             }
 
-        }, arrayOf<String>(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+        },permissionList)// arrayOf<String>(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
     }
 
     fun onRequestPermission(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -247,7 +263,7 @@ class DocumentListFragment : BaseFragment() {
 
             uiThread {
                 if (newFile != null) {
-                    XLog.e("=========Image from new technique==========")
+                    Timber.e("=========Image from new technique==========")
                     documentPic(newFile!!.length(), newFile?.absolutePath!!)
                 } else {
                     // Image compression
@@ -346,7 +362,7 @@ class DocumentListFragment : BaseFragment() {
                         .subscribe({ result ->
                             progress_wheel.stopSpinning()
                             val response = result as BaseResponse
-                            XLog.d("ADD/EDIT DOCUMENT RESPONSE=======> " + response.status)
+                            Timber.d("ADD/EDIT DOCUMENT RESPONSE=======> " + response.status)
 
                             if (response.status == NetworkConstant.SUCCESS) {
                                 AppDatabase.getDBInstance()?.documentListDao()?.updateIsUploaded(true, docListEntity.list_id!!)
@@ -376,7 +392,7 @@ class DocumentListFragment : BaseFragment() {
                         }, { error ->
                             error.printStackTrace()
                             progress_wheel.stopSpinning()
-                            XLog.d("ADD/EDIT DOCUMENT ERROR=======> " + error.localizedMessage)
+                            Timber.d("ADD/EDIT DOCUMENT ERROR=======> " + error.localizedMessage)
                             if (isAdd)
                                 (mContext as DashboardActivity).showSnackMessage("Document added successfully")
                             else
@@ -402,11 +418,12 @@ class DocumentListFragment : BaseFragment() {
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as DocumentListResponseModel
-                            XLog.d("DOCUMENT LIST RESPONSE=======> " + response.status)
+                            Timber.d("DOCUMENT LIST RESPONSE=======> " + response.status)
 
                             if (response.status == NetworkConstant.SUCCESS) {
                                 if (response.doc_list != null && response.doc_list!!.size > 0) {
                                     doAsync {
+                                        AppDatabase.getDBInstance()?.documentListDao()?.deleteAll()
                                         response.doc_list?.forEach {
                                             val docListEntity = DocumentListEntity()
                                             AppDatabase.getDBInstance()?.documentListDao()?.insert(docListEntity.apply {
@@ -442,7 +459,7 @@ class DocumentListFragment : BaseFragment() {
                             progress_wheel.stopSpinning()
                             tv_no_data.visibility = View.VISIBLE
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
-                            XLog.d("DOCUMENT LIST ERROR=======> " + error.localizedMessage)
+                            Timber.d("DOCUMENT LIST ERROR=======> " + error.localizedMessage)
                         })
         )
     }
@@ -493,29 +510,46 @@ class DocumentListFragment : BaseFragment() {
         },
                 { doc ->
 //                    val file = File(FTStorageUtils.getFolderPath(mContext) + "/" + doc.attachment)
-                    val file = File(doc.attachment)
-                    var strFileName = ""
-                    if (!doc.attachment!!.startsWith("http")) {
+                    var tt="aer"
+                    if(doc.attachment!!.contains("Commonfolder") &&  AppUtils.isOnline(mContext)){
+                        (mContext as DashboardActivity).loadFragment(FragType.OpenFileWebViewFragment, true,doc.attachment!!)
+                    }else{
+                        val file = File(doc.attachment)
+                        var strFileName = ""
+                        if (!doc.attachment!!.startsWith("http")) {
                         strFileName = file.name
-                        openFile(file = file)
-                    } else {
+                         openFile(file = file)
+                        } else {
                         strFileName = doc.attachment!!.substring(doc.attachment!!.lastIndexOf("/")!! + 1)
                         downloadFile(doc.attachment, strFileName)
+                        }
                     }
+
+
+
 
 //                    openFile(file)
 
                 },
                 { doc, fileName ->
                     //19-10-2021  file open
-                    val file = File(doc.attachment!!)
-                    var strFileName = ""
-                    if (!doc.attachment!!.startsWith("http")) {
-                        strFileName = file.name
-                        openFile(file = file)
-                    } else {
-                        strFileName = doc.attachment!!.substring(doc.attachment!!.lastIndexOf("/")!! + 1)
-                        downloadFile(doc.attachment, strFileName)
+
+                    if(doc.attachment!!.contains("Commonfolder") &&  AppUtils.isOnline(mContext)){
+                        (mContext as DashboardActivity).loadFragment(FragType.OpenFileWebViewFragment, true,doc.attachment!!)
+                    }else {
+                        val file = File(doc.attachment!!)
+                        var strFileName = ""
+                        if (!doc.attachment!!.startsWith("http")) {
+                            strFileName = file.name
+                            openFile(file = file)
+//                        val intent = Intent(mContext, OpenFileWebViewFragment::class.java)
+//                        intent.putExtra("file_url", file)
+//                        (mContext as DashboardActivity).loadFragment(FragType.OpenFileWebViewFragment, true, FileProvider.getUriForFile(mContext, "", file))
+
+                        } else {
+                            strFileName = doc.attachment!!.substring(doc.attachment!!.lastIndexOf("/")!! + 1)
+                            downloadFile(doc.attachment, strFileName)
+                        }
                     }
 
                     //val file = File(doc.attachment)
@@ -567,7 +601,7 @@ class DocumentListFragment : BaseFragment() {
 
                             val response = result as BaseResponse
 
-                            XLog.d("DELETE DOCUMENT RESPONSE=======> " + response.status)
+                            Timber.d("DELETE DOCUMENT RESPONSE=======> " + response.status)
 
                             if (response.status == NetworkConstant.SUCCESS) {
                                 AppDatabase.getDBInstance()?.documentListDao()?.delete(id)
@@ -586,7 +620,7 @@ class DocumentListFragment : BaseFragment() {
                             error.printStackTrace()
                             progress_wheel.stopSpinning()
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
-                            XLog.d("DELETE DOCUMENT ERROR=======> " + error.localizedMessage)
+                            Timber.d("DELETE DOCUMENT ERROR=======> " + error.localizedMessage)
 
                             docList = AppDatabase.getDBInstance()?.documentListDao()?.getDataTypeWise(typeId) as ArrayList<DocumentListEntity>?
                             if (docList != null && docList!!.isNotEmpty())
@@ -603,7 +637,7 @@ class DocumentListFragment : BaseFragment() {
 
         val docInfo = DocumentAttachmentModel(docListEntity.attachment!!, docListEntity.list_id!!, docListEntity.type_id!!,
                 docListEntity.date_time!!)
-        println("upload_doc"+docInfo.toString());
+        println("upload_doc" + docInfo.toString());
         val docInfoList = ArrayList<DocumentAttachmentModel>()
         docInfoList.add(docInfo)
 
@@ -616,7 +650,7 @@ class DocumentListFragment : BaseFragment() {
                         .subscribe({ result ->
                             progress_wheel.stopSpinning()
                             val response = result as BaseResponse
-                            XLog.d("SYNC DOCUMENT RESPONSE=======> " + response.status)
+                            Timber.d("SYNC DOCUMENT RESPONSE=======> " + response.status)
 
                             if (response.status == NetworkConstant.SUCCESS) {
                                 AppDatabase.getDBInstance()?.documentListDao()?.updateIsUploaded(true, docListEntity.list_id!!)
@@ -629,7 +663,7 @@ class DocumentListFragment : BaseFragment() {
                         }, { error ->
                             error.printStackTrace()
                             progress_wheel.stopSpinning()
-                            XLog.d("SYNC DOCUMENT ERROR=======> " + error.localizedMessage)
+                            Timber.d("SYNC DOCUMENT ERROR=======> " + error.localizedMessage)
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                         })
         )
@@ -707,7 +741,12 @@ class DocumentListFragment : BaseFragment() {
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
             try {
-                startActivity(intent)
+                 val fileUri = Uri.parse((file).path)
+                (mContext as DashboardActivity).loadFragment(FragType.OpenFileWebViewFragment, true,fileUri)
+//                val intent = Intent(mContext, OpenFileWebViewFragment::class.java)
+//                intent.putExtra("file_url", file.toURI())
+//                startActivity(intent)
+//                startActivity(intent)
             } catch (e: ActivityNotFoundException) {
                 (mContext as DashboardActivity).showSnackMessage("No Application Available to View Pdf")
             }

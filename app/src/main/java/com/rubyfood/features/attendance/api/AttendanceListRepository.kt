@@ -1,7 +1,6 @@
 package com.rubyfood.features.attendance.api
 
-import com.rubyfood.features.attendance.model.AttendanceRequest
-import com.rubyfood.features.attendance.model.AttendanceResponse
+import com.rubyfood.features.attendance.model.*
 import io.reactivex.Observable
 
 /**
@@ -10,5 +9,13 @@ import io.reactivex.Observable
 class AttendanceListRepository(val apiService: AttendanceListApi) {
     fun getAttendanceList(attendanceRequest: AttendanceRequest?): Observable<AttendanceResponse> {
         return apiService.getAttendanceList(attendanceRequest)
+    }
+
+    fun getDayStartEndList(attendanceRequest: AttendanceRequest?): Observable<DayStartEndListResponse> {
+        return apiService.getDayStartEndListAPI(attendanceRequest)
+    }
+
+    fun getNotVisitedPartyList(inputRequest: InputRequest?): Observable<OutputResponse> {
+        return apiService.getPartyListNotVisited(inputRequest)
     }
 }

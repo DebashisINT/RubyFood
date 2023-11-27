@@ -1,7 +1,10 @@
 package com.rubyfood.features.member.presentation
 
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.speech.RecognizerIntent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
@@ -9,11 +12,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import com.rubyfood.CustomStatic
 import com.rubyfood.R
-import com.rubyfood.app.AppDatabase
-import com.rubyfood.app.NetworkConstant
-import com.rubyfood.app.Pref
-import com.rubyfood.app.SearchListener
+import com.rubyfood.app.*
 import com.rubyfood.app.domain.MemberEntity
 import com.rubyfood.app.types.FragType
 import com.rubyfood.app.uiaction.IntentActionable
@@ -31,10 +32,14 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by Saikat on 03-Jul-20.
  */
+// Revision Histroy
+// 1.0 OfflineMemberListFragment saheli 24-02-2032 AppV 4.0.7 mantis 0025683
 class OfflineMemberListFragment : BaseFragment() {
 
     private lateinit var mContext: Context
@@ -178,7 +183,51 @@ class OfflineMemberListFragment : BaseFragment() {
                 }
             }
         })
+
+        // 1.0 MemberListFragment AppV 4.0.7 mantis 0025683 start
+        (mContext as DashboardActivity).searchView.setVoiceIcon(R.drawable.ic_mic)
+        (mContext as DashboardActivity).searchView.setOnVoiceClickedListener({ startVoiceInput() })
+        // 1.0 MemberListFragment AppV 4.0.7 mantis 0025683 end
     }
+    // 1.0 MemberListFragment AppV 4.0.7 mantis 0025683 start
+    private fun startVoiceInput() {
+        try {
+            val intent: Intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            intent.putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            )
+            //intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"hi")
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH)
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Hello, How can I help you?")
+            try {
+                startActivityForResult(intent, MaterialSearchView.REQUEST_VOICE)
+            } catch (a: ActivityNotFoundException) {
+                a.printStackTrace()
+            }
+        }
+        catch (ex:Exception) {
+            ex.printStackTrace()
+        }
+
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == MaterialSearchView.REQUEST_VOICE){
+            try {
+                val result = data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                var t= result!![0]
+                (mContext as DashboardActivity).searchView.setQuery(t,false)
+            }
+            catch (ex:Exception) {
+                ex.printStackTrace()
+            }
+
+//            tv_search_frag_order_type_list.setText(t)
+//            tv_search_frag_order_type_list.setSelection(t.length);
+        }
+    }
+    // 1.0 MemberListFragment AppV 4.0.7 mantis 0025683 end
 
 
     private fun initAdapter(member_list: List<MemberEntity>) {
@@ -212,8 +261,10 @@ class OfflineMemberListFragment : BaseFragment() {
                         if (Pref.isShowPartyInAreaWiseTeam) {
                             (mContext as DashboardActivity).loadFragment(FragType.OfflineAreaListFragment, true, member.user_id!!)
                             (mContext as DashboardActivity).isAllMemberShop = true
-                        } else
+                        } else {
+                                CustomStatic.ShopFeedBachHisUserId = member.user_id!!
                             (mContext as DashboardActivity).loadFragment(FragType.OfflineAllShopListFragment, true, member.user_id!!)
+                        }
                     }
 
                     override fun onRightClick(editableData: String) {
@@ -222,8 +273,10 @@ class OfflineMemberListFragment : BaseFragment() {
                         if (Pref.isShowPartyInAreaWiseTeam) {
                             (mContext as DashboardActivity).loadFragment(FragType.OfflineAreaListFragment, true, member.user_id!!)
                             (mContext as DashboardActivity).isAllMemberShop = false
-                        } else
+                        } else {
+                            CustomStatic.ShopFeedBachHisUserId = member.user_id!!
                             (mContext as DashboardActivity).loadFragment(FragType.OfflineShopListFragment, true, member.user_id!!)
+                        }
                     }
 
                 }).show((mContext as DashboardActivity).supportFragmentManager, "")

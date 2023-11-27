@@ -1,27 +1,32 @@
 package com.rubyfood.features.averageshop.presentation
 
 import android.content.Context
-import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.recyclerview.widget.RecyclerView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.amulyakhare.textdrawable.util.ColorGenerator
 import com.rubyfood.R
 import com.rubyfood.app.AppDatabase
 import com.rubyfood.app.Pref
-import com.rubyfood.app.domain.AddShopDao
 import com.rubyfood.app.domain.OrderDetailsListEntity
 import com.rubyfood.app.domain.ShopActivityEntity
+import com.rubyfood.app.domain.VisitRevisitWhatsappStatus
 import com.rubyfood.app.types.FragType
 import com.rubyfood.app.uiaction.IntentActionable
 import com.rubyfood.app.utils.AppUtils
 import com.rubyfood.app.utils.Toaster
-import com.rubyfood.features.commondialogsinglebtn.AddFeedbackSingleBtnDialog
+import com.rubyfood.features.damageProduct.ShopDamageProductSubmitFrag
 import com.rubyfood.features.dashboard.presentation.DashboardActivity
 import kotlinx.android.synthetic.main.inflate_avg_shop_item.view.*
+import kotlinx.android.synthetic.main.inflate_avg_shop_item.view.activity_view
+import kotlinx.android.synthetic.main.inflate_avg_shop_item.view.myshop_gstin_TV
+import kotlinx.android.synthetic.main.inflate_avg_shop_item.view.myshop_pancard_TV
+import kotlinx.android.synthetic.main.inflate_avg_shop_item.view.shop_damage_ll
+import kotlinx.android.synthetic.main.inflate_avg_shop_item.view.shop_damage_view
 import kotlinx.android.synthetic.main.inflate_nearby_shops.view.*
 import kotlinx.android.synthetic.main.inflate_registered_shops.view.*
 import kotlinx.android.synthetic.main.inflate_registered_shops.view.add_order_ll
@@ -49,24 +54,32 @@ import kotlinx.android.synthetic.main.inflate_registered_shops.view.tv_shop_code
 import kotlinx.android.synthetic.main.inflate_registered_shops.view.tv_shop_contact_no
 import kotlinx.android.synthetic.main.inflate_registered_shops.view.update_address_TV
 import kotlinx.android.synthetic.main.inflate_registered_shops.view.update_stage_TV
+import kotlinx.android.synthetic.main.inflate_avg_shop_item.view.add_multiple_ll
+import kotlinx.android.synthetic.main.inflate_avg_shop_item.view.multiple_tv
+import kotlinx.android.synthetic.main.inflate_avg_shop_item.view.new_multi_view
 import java.util.*
 
 /**
  * Created by Pratishruti on 15-11-2017.
  */
-class AverageShopListAdapter(context: Context, userLocationDataEntity: List<ShopActivityEntity>, val listener: AverageShopListClickListener) : RecyclerView.Adapter<AverageShopListAdapter.MyViewHolder>() {
+// revision Note
+// 1.0 AverageShopListAdapter mantis 0026066: saheli 09-05-2023 Total Visit Tab design issue fixing
+// 2.0 AverageShopListAdapter mantis 26346: Suman 15-06-2023 Current Stock visibility updation
+class AverageShopListAdapter(context: Context, userLocationDataEntity: List<ShopActivityEntity>,selectedD:String, val listener: AverageShopListClickListener) : RecyclerView.Adapter<AverageShopListAdapter.MyViewHolder>() {
     private val layoutInflater: LayoutInflater
     private var context: Context
     private var shopType = ""
+    private var selectedDate = ""
     var userLocationDataEntity: List<ShopActivityEntity> = userLocationDataEntity
 
     init {
         layoutInflater = LayoutInflater.from(context)
         this.context = context
+        selectedDate = selectedD
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bindItems(context, userLocationDataEntity, listener)
+        holder.bindItems(context, userLocationDataEntity, listener,selectedDate)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -80,7 +93,7 @@ class AverageShopListAdapter(context: Context, userLocationDataEntity: List<Shop
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bindItems(context: Context, userLocationDataEntity: List<ShopActivityEntity>, listener: AverageShopListClickListener) {
+        fun bindItems(context: Context, userLocationDataEntity: List<ShopActivityEntity>, listener: AverageShopListClickListener,selectedDate:String) {
 
             try {
 
@@ -381,6 +394,18 @@ class AverageShopListAdapter(context: Context, userLocationDataEntity: List<Shop
 
                 }
 
+                if (Pref.IsAllowBreakageTracking) {
+                    itemView.shop_damage_ll.visibility = View.VISIBLE
+                    itemView.shop_damage_view.visibility = View.VISIBLE
+                }
+                else {
+                    itemView.shop_damage_ll.visibility = View.GONE
+                    itemView.shop_damage_view.visibility = View.GONE
+                }
+                itemView.shop_damage_ll.setOnClickListener{
+                    listener.onDamageClick(userLocationDataEntity[adapterPosition].shopid!!)
+                }
+
 
 
                 if (!TextUtils.isEmpty(userLocationDataEntity[adapterPosition].device_model))
@@ -412,10 +437,19 @@ class AverageShopListAdapter(context: Context, userLocationDataEntity: List<Shop
                         itemView.current_stock_view.visibility=View.VISIBLE
                     }else{
                         //if(shop?.type?.toInt() == 1 || shop?.type?.toInt() == 3){
-                        if(currentViewSt==1){
+                        //begin 2.0 AverageShopListAdapter mantis 26346: Suman 15-06-2023 Current Stock visibility updation
+                        /*if(currentViewSt==1){
                             itemView.ll_current_stock.visibility=View.VISIBLE
                             itemView.current_stock_view.visibility=View.VISIBLE
+                        }*/
+                        if(currentViewSt==2 || currentViewSt==4){
+                            itemView.ll_current_stock.visibility=View.VISIBLE
+                            itemView.current_stock_view.visibility=View.VISIBLE
+                        }else{
+                            itemView.ll_current_stock.visibility=View.GONE
+                            itemView.current_stock_view.visibility=View.GONE
                         }
+                        //end of  2.0 AverageShopListAdapter mantis 26346: Suman 15-06-2023 Current Stock visibility updation
                     }
                 }
                 if(AppUtils.getSharedPreferencesIscompetitorStockRequired(context)){
@@ -447,9 +481,144 @@ class AverageShopListAdapter(context: Context, userLocationDataEntity: List<Shop
 
                 itemView.myyshop_Type_TV.text = type_name
 
+                if (Pref.willActivityShow) {
+                    itemView.ll_activity.visibility = View.VISIBLE
+                    itemView.activity_view.visibility = View.VISIBLE
+                }else{
+                    itemView.ll_activity.visibility = View.GONE
+                    itemView.activity_view.visibility = View.GONE
+                }
+
+
+                if(Pref.IsSurveyRequiredforDealer && shop!!.type!!.equals("1")) {
+                    itemView.shop_totalv_survey_ll.visibility = View.VISIBLE
+                    itemView.shop_totalv_survey_view.visibility = View.VISIBLE
+                }
+                else if(Pref.IsSurveyRequiredforNewParty && shop!!.type!!.equals("3")){
+                    itemView.shop_totalv_survey_ll.visibility = View.VISIBLE
+                    itemView.shop_totalv_survey_view.visibility = View.VISIBLE
+                }
+                else{
+                    itemView.shop_totalv_survey_ll.visibility = View.GONE
+                    itemView.shop_totalv_survey_view.visibility = View.GONE
+                }
+
+                itemView.shop_totalv_survey_ll.setOnClickListener{
+                    listener.onSurveyClick(shop!!.shop_id!!)
+                }
+
+
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+
+            try {
+                val shopGSTINNumber = AppDatabase.getDBInstance()?.addShopEntryDao()
+                    ?.getGSTINNumber(userLocationDataEntity[adapterPosition].shopid)
+                val shopPANNumber = AppDatabase.getDBInstance()?.addShopEntryDao()
+                    ?.getPancardNumber(userLocationDataEntity[adapterPosition].shopid)
+                if (Pref.IsGSTINPANEnableInShop) {
+                    if (shopGSTINNumber!!.isNotEmpty()) {
+                        itemView.myshop_gstin_TV.text = "GSTIN : " + shopGSTINNumber
+                        itemView.myshop_gstin_TV.visibility = View.VISIBLE
+                    } else {
+                        itemView.myshop_Gstin_TV.text = "GSTIN : " + "N.A"
+                        itemView.myshop_gstin_TV.visibility = View.VISIBLE
+                    }
+                }
+                else {
+                    itemView.myshop_gstin_TV.visibility = View.GONE
+                }
+                if (Pref.IsGSTINPANEnableInShop) {
+                    if (shopPANNumber!!.isNotEmpty()) {
+                        itemView.myshop_pancard_TV.text = "PAN     : " + shopPANNumber
+                        itemView.myshop_pancard_TV.visibility = View.VISIBLE
+                    } else {
+                        itemView.myshop_pancard_TV.text = "PAN     : " + "N.A"
+                        itemView.myshop_pancard_TV.visibility = View.VISIBLE
+                    }
+                } else {
+                    itemView.myshop_pancard_TV.visibility = View.GONE
+                }
+            }
+            catch (ex:Exception){
+                itemView.myshop_gstin_TV.text = "GSTIN : "+"N.A"
+                itemView.myshop_pancard_TV.text = "PAN     : "+"N.A"
+            }
+
+            if(Pref.IsMultipleImagesRequired){
+                itemView.add_multiple_ll.visibility = View.VISIBLE
+                //1.0 AverageShopListAdapterStart mantis 0026066: saheli 09-05-2023 Total Visit Tab design issue fixing
+//                itemView.new_multi_view.visibility = View.GONE
+                itemView.new_multi_view.visibility = View.VISIBLE
+                // 1.0 rev end mantis 0026066 AverageShopListAdapterStart
+                itemView.add_multiple_ll.setOnClickListener {
+                    listener.onMultipleImageClick(userLocationDataEntity[adapterPosition],adapterPosition)
+                }
+            }
+            else{
+                itemView.add_multiple_ll.visibility = View.GONE
+                itemView.new_multi_view.visibility = View.GONE
+            }
+
+
+            try{
+                if(Pref.IsShowWhatsAppIconforVisit && userLocationDataEntity[adapterPosition].date.equals(AppUtils.getCurrentDateForShopActi())){
+                    var shopWiseWhatsObj = AppDatabase.getDBInstance()?.visitRevisitWhatsappStatusDao()!!.getByShopIDDate(userLocationDataEntity[adapterPosition].shopid!!,AppUtils.getCurrentDateForShopActi())
+                    if(shopWiseWhatsObj == null){
+                        var shopVisitObj = AppDatabase.getDBInstance()!!.shopActivityDao().getShopForDay(userLocationDataEntity[adapterPosition].shopid.toString(), AppUtils.getCurrentDateForShopActi()).first()
+                        var shopDtlsObj = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(userLocationDataEntity[adapterPosition].shopid)
+                        var obj = VisitRevisitWhatsappStatus()
+                        obj.shop_id = shopDtlsObj.shop_id!!
+                        obj.shop_name = shopDtlsObj.shopName!!
+                        obj.contactNo = shopDtlsObj.ownerContactNumber!!
+                        obj.isNewShop = true
+                        obj.date = AppUtils.getCurrentDateForShopActi()
+                        obj.time = AppUtils.getCurrentTime()
+                        obj.isWhatsappSent = false
+                        obj.whatsappSentMsg =""
+                        obj.isUploaded = false
+                        AppDatabase.getDBInstance()?.visitRevisitWhatsappStatusDao()!!.insert(obj)
+
+                        itemView.ll_avg_shop_item_whatsapp_api.visibility = View.VISIBLE
+                        itemView.shop_totalv_whats_view.visibility = View.VISIBLE
+                        itemView.ll_avg_shop_item_whatsapp_api.isEnabled = true
+                        itemView.iv_avg_shop_item_whatsapp_api.setImageResource(R.drawable.ic_whatsapp)
+                    }else if(shopWiseWhatsObj.isWhatsappSent || shopWiseWhatsObj.isUploaded){
+                        itemView.ll_avg_shop_item_whatsapp_api.isEnabled = true
+                        itemView.iv_avg_shop_item_whatsapp_api.setImageResource(R.drawable.icon_whatsapp_black)
+                    }else{
+                        itemView.ll_avg_shop_item_whatsapp_api.isEnabled = true
+                        itemView.iv_avg_shop_item_whatsapp_api.setImageResource(R.drawable.ic_whatsapp)
+                    }
+                }else{
+                    var shopWiseWhatsObj = AppDatabase.getDBInstance()?.visitRevisitWhatsappStatusDao()!!.getByShopIDDate(userLocationDataEntity[adapterPosition].shopid!!,selectedDate)
+                    if(shopWiseWhatsObj == null){
+                        itemView.ll_avg_shop_item_whatsapp_api.visibility = View.GONE
+                        itemView.shop_totalv_whats_view.visibility = View.GONE
+                    }else{
+                        itemView.ll_avg_shop_item_whatsapp_api.visibility = View.VISIBLE
+                        itemView.shop_totalv_whats_view.visibility = View.VISIBLE
+                        itemView.ll_avg_shop_item_whatsapp_api.isEnabled = true
+                        itemView.iv_avg_shop_item_whatsapp_api.setImageResource(R.drawable.icon_whatsapp_black)
+                    }
+
+                }
+                itemView.ll_avg_shop_item_whatsapp_api.setOnClickListener {
+                    var ob = AppDatabase.getDBInstance()?.visitRevisitWhatsappStatusDao()!!.getByShopIDDate(userLocationDataEntity[adapterPosition].shopid!!,selectedDate)
+                    if(ob!!.isUploaded || ob.isWhatsappSent){
+                        Toaster.msgShort(context,"Message "+ob.whatsappSentMsg.toLowerCase()+".")
+                    }else{
+                        if(selectedDate.equals(AppUtils.getCurrentDateForShopActi()) && ob!!.isUploaded == false && ob.isWhatsappSent == false){
+                            listener.onWhatsApiClick(userLocationDataEntity[adapterPosition].shopid.toString())
+                        }
+                    }
+                }
+            }catch (ex:Exception){
+                ex.printStackTrace()
+            }
+
+
         }
     }
 

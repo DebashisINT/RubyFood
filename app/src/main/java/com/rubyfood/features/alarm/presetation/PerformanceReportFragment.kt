@@ -199,6 +199,7 @@ class PerformanceReportFragment : BaseFragment(), View.OnClickListener, DatePick
 
         tv_no_data_available.visibility = View.GONE
 
+
         rv_performance_report_list.adapter = PerformanceReportAdapter(mContext, performance_report_list, object : PerformanceReportAdapter.OnClickListener {
             override fun onCallClick(adapterPosition: Int) {
                 /* if (TextUtils.isEmpty(performance_report_list?.get(adapterPosition)?.contact_no) || performance_report_list[adapterPosition].contact_no.equals("null", ignoreCase = true)
@@ -276,17 +277,20 @@ class PerformanceReportFragment : BaseFragment(), View.OnClickListener, DatePick
                         e.printStackTrace()
                     }
                 }
-                else
+                else {
                     (mContext as DashboardActivity).showSnackMessage("Pdf can not be sent.")
+                }
             }
         }
     }
 
     private fun checkValidation() {
-        if (!iv_check_icon.isSelected)
+        if (!iv_check_icon.isSelected) {
             (mContext as DashboardActivity).showSnackMessage(getString(R.string.error_check_review))
-        else
+        }
+        else {
             callConfirmReviewApi()
+        }
 
     }
 

@@ -16,11 +16,14 @@ import android.widget.RelativeLayout
 import com.rubyfood.R
 import com.rubyfood.app.AppDatabase
 import com.rubyfood.app.Pref
+import com.rubyfood.app.domain.AddShopDBModelEntity
 import com.rubyfood.app.domain.OrderDetailsListEntity
 import com.rubyfood.app.uiaction.IntentActionable
 import com.rubyfood.app.utils.AppUtils
 import com.rubyfood.base.presentation.BaseFragment
 import com.rubyfood.features.dashboard.presentation.DashboardActivity
+import com.rubyfood.features.location.LocationWizard
+import com.rubyfood.features.viewAllOrder.orderOptimized.OrderProductCartFrag
 import com.rubyfood.widgets.AppCustomTextView
 
 /**
@@ -98,7 +101,13 @@ class ViewCartFragment : BaseFragment() {
         tv_total_order_value = view.findViewById(R.id.tv_total_order_value)
         tv_shop_name = view.findViewById(R.id.tv_shop_name)
 
-        val shop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopDetail(orderDetails?.shop_id)
+
+        var shop = AddShopDBModelEntity()
+        try {
+             shop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopDetail(orderDetails?.shop_id)
+        }catch (ex:Exception){
+            ex.printStackTrace()
+        }
         tv_shop_name.text = shop.shopName
 
         tv_order_id = view.findViewById(R.id.tv_order_id)
@@ -181,7 +190,9 @@ class ViewCartFragment : BaseFragment() {
                 totalAmount += list[i].total_price?.toDouble()!!
             }
             //val totalPrice = DecimalFormat("##.##").format(totalAmount)
-            val totalPrice = String.format("%.2f", totalAmount.toFloat())
+            //val totalPrice = String.format("%.2f", totalAmount.toFloat())
+            //mantis id 26274
+            val totalPrice = String.format("%.2f", totalAmount.toDouble())
             tv_total_order_amount.text = totalPrice
         }, 200)
 
@@ -195,7 +206,9 @@ class ViewCartFragment : BaseFragment() {
                 ex.printStackTrace()
                 totalScAmount = 0.0
             }
-            val totalScPrice = String.format("%.2f", totalScAmount.toFloat())
+            //val totalScPrice = String.format("%.2f", totalScAmount.toFloat())
+            //mantis id 26274
+            val totalScPrice = String.format("%.2f", totalScAmount.toDouble())
             tv_total_order_amount_sc.text = totalScPrice
         }, 200)
 

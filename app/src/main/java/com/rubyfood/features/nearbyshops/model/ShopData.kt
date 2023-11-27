@@ -77,6 +77,16 @@ class ShopData {
     var agency_name = ""
     var lead_contact_number = ""
 
+    var alternateNoForCustomer = ""
+    var whatsappNoForCustomer = ""
+
+    var isShopDuplicate = false
+    var purpose = ""
+    var GSTN_Number = ""
+    var ShopOwner_PAN = ""
+    var FSSAILicNo = ""
+
+    var isUpdateAddressFromShopMaster = false
 //    "shop_id": "1639_1512128366843",
 //    "shop_name": "company 1",
 //    "address": "sdf,kolkata",

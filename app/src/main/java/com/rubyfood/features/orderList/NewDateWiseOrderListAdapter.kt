@@ -65,7 +65,8 @@ class NewDateWiseOrderListAdapter(context: Context, userLocationDataEntity: Arra
                 itemView.total_visited_value_TV.text = userLocationDataEntity[adapterPosition].order_id
                 if (!TextUtils.isEmpty(userLocationDataEntity[adapterPosition].date))
                     itemView.tv_order_date.text = AppUtils.convertDateTimeToCommonFormat(userLocationDataEntity[adapterPosition].date!!)
-                val shop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(userLocationDataEntity[adapterPosition].shop_id)
+
+                var shop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(userLocationDataEntity[adapterPosition].shop_id)
                 itemView.myshop_name_TV.text = shop?.shopName
                 itemView.myshop_address_TV.text = shop?.address
                 val list = AppDatabase.getDBInstance()!!.orderProductListDao().getDataAccordingToOrderId(userLocationDataEntity[adapterPosition].order_id!!) as ArrayList<OrderProductListEntity>
@@ -96,7 +97,9 @@ class NewDateWiseOrderListAdapter(context: Context, userLocationDataEntity: Arra
                     totalAmount += list[i].total_price?.toDouble()!!
                 }
                 //val totalPrice = DecimalFormat("##.##").format(totalAmount)
-                val totalPrice = String.format("%.2f", totalAmount.toFloat())
+                //val totalPrice = String.format("%.2f", totalAmount.toFloat())
+                //mantis id 26274
+                val totalPrice = String.format("%.2f", totalAmount.toDouble())
                 itemView.tv_total_amount.text = context.getString(R.string.rupee_symbol) + totalPrice
 
                 if (Pref.isOrderMailVisible) {
@@ -107,10 +110,24 @@ class NewDateWiseOrderListAdapter(context: Context, userLocationDataEntity: Arra
                 } else
                     itemView.email_icon.visibility = View.GONE
 
-                if (Pref.isCollectioninMenuShow)
+                /*if (Pref.isCollectioninMenuShow)
                     itemView.collection_icon.visibility = View.VISIBLE
                 else
+                    itemView.collection_icon.visibility = View.GONE*/
+
+                if(Pref.isCollectioninMenuShow && Pref.ShowCollectionOnlywithInvoiceDetails ==false){
+                    itemView.collection_icon.visibility = View.VISIBLE
+                }else if(Pref.isCollectioninMenuShow && Pref.ShowCollectionOnlywithInvoiceDetails){
+                    val list = AppDatabase.getDBInstance()!!.billingDao().getDataOrderIdWise(userLocationDataEntity[adapterPosition]?.order_id!!) as ArrayList
+                    if(list.size>0){
+                        itemView.collection_icon.visibility = View.VISIBLE
+                    }else{
+                        itemView.collection_icon.visibility = View.GONE
+                    }
+                }else{
                     itemView.collection_icon.visibility = View.GONE
+                }
+
 
                 itemView.setOnClickListener {
                     (context as DashboardActivity).loadFragment(FragType.ViewCartFragment, true, userLocationDataEntity.get(adapterPosition))
